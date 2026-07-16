@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: ubumonitorweb
+  profiles:
+    active: dev
+  web:
+    locale: en
+    error.include-stacktrace: never
+  messages:
+    fallback-to-system-locale: false
+
+logging:
+  level:
+    es.ubu.lsi.ubumonitorweb: DEBUG
+
+project:
+  name: ${projectName}
+
+exchange:
+  auth-endpoint: /login/token.php?service=moodle_mobile_app
+  rest-endpoint: /webservice/rest/server.php?moodlewsrestformat=json
+  host-header: Moodle-Host
+
