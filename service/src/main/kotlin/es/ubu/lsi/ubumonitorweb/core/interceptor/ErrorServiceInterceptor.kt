@@ -1,4 +1,4 @@
-package es.ubu.lsi.ubumonitorweb.core.rest.interceptor
+package es.ubu.lsi.ubumonitorweb.core.interceptor
 
 import org.springframework.http.HttpRequest
 import org.springframework.http.HttpStatus

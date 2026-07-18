@@ -1,4 +1,4 @@
-package es.ubu.lsi.ubumonitorweb.core.rest.interceptor
+package es.ubu.lsi.ubumonitorweb.core.interceptor
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.context.annotation.Profile

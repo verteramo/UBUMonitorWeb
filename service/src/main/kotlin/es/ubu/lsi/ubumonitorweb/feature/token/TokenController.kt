@@ -12,13 +12,14 @@ data class Credentials(val username: String, val password: String)
 @RequestMapping("/api/token")
 class TokenController(
     private val jwtService: JwtService,
-    private val moodleTokenService: MoodleTokenService,
+    private val tokenService: TokenService,
 ) {
 
   @PostMapping
-  fun getToken(@RequestBody credentials: Credentials): String =
-      jwtService.generateToken(
-        moodleTokenService.getMoodleToken(credentials),
-      )
-
+  fun getToken(@RequestBody credentials: Credentials): MoodleToken {
+    return tokenService.getToken(
+      credentials.username,
+      credentials.password,
+    )
+  }
 }

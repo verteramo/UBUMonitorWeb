@@ -1,5 +1,6 @@
 package es.ubu.lsi.ubumonitorweb.core.base
 
+import es.ubu.lsi.ubumonitorweb.core.rest.ParamResolver
 import org.springframework.stereotype.Component
 import java.lang.reflect.Method
 
@@ -25,8 +26,8 @@ import java.lang.reflect.Method
  *
  * @author Marcelo Verteramo Pérsico (mvp1011@alu.ubu.es)
  */
-@Component
-class SnakeCaseResolver : (Method) -> String {
+@Component("snakeCaseResolver")
+class SnakeCaseResolver : ParamResolver {
   companion object {
     private const val SUFFIX = "Service"
     private val regex = Regex("(?<=[a-z])(?=[A-Z])")

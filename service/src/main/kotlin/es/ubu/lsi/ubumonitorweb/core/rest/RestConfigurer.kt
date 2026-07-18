@@ -9,17 +9,20 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory
 import org.springframework.http.converter.HttpMessageConverter
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.support.RestClientHttpServiceGroupConfigurer
+import org.springframework.web.service.annotation.HttpExchange
 import org.springframework.web.service.invoker.HttpRequestValues
 import org.springframework.web.service.registry.HttpServiceGroupConfigurer
 import org.springframework.web.service.registry.ImportHttpServices
+import java.io.InputStream
+
 
 /**
- * Configurador de servicios [org.springframework.web.service.annotation.HttpExchange].
+ * Configurador de servicios [HttpExchange].
  *
  * Importa los **servicios**,
  *
  * Construye la **factoría con volcado a memoria**. Las respuestas HTTP por
- * defecto son un flujo de red unidireccional de un solo uso [java.io.InputStream]. Si
+ * defecto son un flujo de red unidireccional de un solo uso [InputStream]. Si
  * se lee el flujo para registrarlo en el log se consumen los datos, el flujo se
  * cierra y Spring ya no puede volver a leerlo para, por ejemplo, convertirlo en
  * un objeto JSON.

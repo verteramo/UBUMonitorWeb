@@ -11,13 +11,22 @@ spring:
 
 logging:
   level:
-    es.ubu.lsi.ubumonitorweb: DEBUG
+    es.ubu.lsi.ubumonitorweb: debug
 
-project:
-  name: ${projectName}
+moodle:
+  services:
+    auth:
+      endpoint: /login/token.php
+      host-header: Moodle-Host
+      headers: [ Accept-Language ]
+      params:
+        service: moodle_mobile_app
 
-exchange:
-  auth-endpoint: /login/token.php?service=moodle_mobile_app
-  rest-endpoint: /webservice/rest/server.php?moodlewsrestformat=json
-  host-header: Moodle-Host
-
+    rest:
+      endpoint: /webservice/rest/server.php
+      host-header: Moodle-Host
+      headers: [ Accept-Language ]
+      params:
+        moodlewsformat: json
+        wsfunction: snakeCaseResolver
+        wstoken:

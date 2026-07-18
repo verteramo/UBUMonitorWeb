@@ -42,8 +42,7 @@ class MessageProvider(private val source: MessageSource) {
  */
 enum class Message(private val code: String) {
   ERROR_HTTP_MISSING_HEADER("error.http.missing_header"),
-  ERROR_HTTP_BLANK_HEADER("error.http.blank_header"),
-  ERROR_HTTP_INVALID_HEADER("error.http.invalid_header"),
+  ERROR_NET_INVALID_URI("error.net.invalid_uri"),
   ;
 
   operator fun invoke(vararg args: Any) =
@@ -68,12 +67,8 @@ enum class ErrorResponse(
     HttpStatus.BAD_REQUEST, Message.ERROR_HTTP_MISSING_HEADER,
   ),
 
-  HTTP_INVALID_HEADER(
-    HttpStatus.BAD_REQUEST, Message.ERROR_HTTP_INVALID_HEADER,
-  ),
-
-  HTTP_BLANK_HEADER(
-    HttpStatus.BAD_REQUEST, Message.ERROR_HTTP_BLANK_HEADER,
+  NET_INVALID_URI(
+    HttpStatus.BAD_REQUEST, Message.ERROR_NET_INVALID_URI,
   ),
   ;
 

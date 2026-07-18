@@ -1,4 +1,4 @@
-package es.ubu.lsi.ubumonitorweb.core.rest.converter
+package es.ubu.lsi.ubumonitorweb.core.converter
 
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
