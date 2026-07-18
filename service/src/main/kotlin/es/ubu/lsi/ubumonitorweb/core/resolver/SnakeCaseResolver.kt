@@ -1,28 +1,27 @@
-package es.ubu.lsi.ubumonitorweb.core.base
+package es.ubu.lsi.ubumonitorweb.core.locale
 
 import es.ubu.lsi.ubumonitorweb.core.rest.ParamResolver
 import org.springframework.stereotype.Component
 import java.lang.reflect.Method
 
 /**
- * Resolver para obtener el nombre de las funciones del webservice de Moodle, de
- * acuerdo con la
+ * Resolutor para obtener el nombre de las funciones del webservice de Moodle,
+ * de acuerdo con la
  * [convención](https://docs.moodle.org/dev/Web_service_API_functions#Web_service_functions).
  *
  * Por ejemplo:
  * ```kotlin
- * @HttpExchange(url = "...")
- * @RestParam("wsfunction", resolver = SnakeCaseResolver::class)
+ * @MoodleService("config.section")
  * interface CoreUserService {
  *   @PostExchange
  *   fun getUserPreferences() {...}
  * }
  * ```
  *
- * La anotación `@RestParam` utiliza el resolver para transformar
+ * El procesador del servicio utiliza el resolutor para transformar
  * `CoreUserService.getUserPreferences` en `core_user_get_user_preferences` y,
  * posteriormente, inyecta en la solicitud saliente el parámetro `wsfunction`
- * con el valor obtenido por el resolver.
+ * con el valor obtenido.
  *
  * @author Marcelo Verteramo Pérsico (mvp1011@alu.ubu.es)
  */

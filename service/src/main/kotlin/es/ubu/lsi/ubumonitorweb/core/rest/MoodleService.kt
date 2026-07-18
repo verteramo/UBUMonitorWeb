@@ -1,7 +1,7 @@
 package es.ubu.lsi.ubumonitorweb.core.rest
 
-import es.ubu.lsi.ubumonitorweb.core.base.ErrorResponse
-import es.ubu.lsi.ubumonitorweb.core.base.SnakeCaseResolver
+import es.ubu.lsi.ubumonitorweb.core.locale.Error
+import es.ubu.lsi.ubumonitorweb.core.locale.SnakeCaseResolver
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.beans.factory.getBean
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -101,7 +101,7 @@ class MoodleServiceProcessor(
 
       // Si el header no existe o está vacío no se puede continuar
       if (host.isNullOrBlank()) {
-        throw ErrorResponse.HTTP_MISSING_HEADER(props.hostHeader)
+        throw Error.HTTP_MISSING_HEADER(props.hostHeader)
       }
 
       // Construcción del UriBuilderFactory
@@ -113,7 +113,7 @@ class MoodleServiceProcessor(
         )
       } // Error de sintaxis en la URI
       catch (e: URISyntaxException) {
-        throw ErrorResponse.NET_INVALID_URI(e, e.input)
+        throw Error.NET_INVALID_URI(e, e.input)
       }
 
       // Propagación de headers desde la solicitud entrante hacia la solicitud
