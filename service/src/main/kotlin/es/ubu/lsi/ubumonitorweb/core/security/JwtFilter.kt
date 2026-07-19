@@ -23,9 +23,7 @@ class JwtFilter(private val jwtService: JwtService) : OncePerRequestFilter() {
   }
 
   override fun shouldNotFilter(request: HttpServletRequest): Boolean {
-    return SecurityConfig.PUBLIC_ROUTES.any {
-      ANT_PATH_MATCHER.match(it, request.servletPath)
-    }
+    return SecurityConfig.PUBLIC_ROUTES.any { ANT_PATH_MATCHER.match(it, request.servletPath) }
   }
 
   override fun doFilterInternal(
@@ -36,8 +34,7 @@ class JwtFilter(private val jwtService: JwtService) : OncePerRequestFilter() {
     request.getBearerToken()?.let { token ->
       try {
         val moodleToken = jwtService.extract(token, MoodleToken::class)
-        val auth =
-            UsernamePasswordAuthenticationToken(moodleToken, null, emptyList())
+        val auth = UsernamePasswordAuthenticationToken(moodleToken, null, emptyList())
         SecurityContextHolder.getContext().authentication = auth
       }
       catch (e: Exception) {
@@ -49,9 +46,8 @@ class JwtFilter(private val jwtService: JwtService) : OncePerRequestFilter() {
     filterChain.doFilter(request, response)
   }
 
-  private fun HttpServletRequest.getBearerToken(): String? =
-      getHeader(HttpHeaders.AUTHORIZATION)
-          ?.takeIf { it.startsWith(BEARER_PREFIX) }
-          ?.removePrefix(BEARER_PREFIX)
+  private fun HttpServletRequest.getBearerToken(): String? = getHeader(HttpHeaders.AUTHORIZATION)
+      ?.takeIf { it.startsWith(BEARER_PREFIX) }
+      ?.removePrefix(BEARER_PREFIX)
 
 }

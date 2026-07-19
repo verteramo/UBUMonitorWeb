@@ -44,22 +44,16 @@ class JwtService(private val mapper: ObjectMapper) {
     )
   }
 
-  fun <T : Any> generateToken(payload: T): String =
-      Jwts
-          .builder()
-          .issuedAt(Date())
-          .expiration(Date.from(Instant.now().plusSeconds(EXPIRATION)))
-          .claim(payload::class.simpleName, payload)
-          .encryptWith(key, Jwts.KEY.DIRECT, Jwts.ENC.A256GCM)
-          .compact()
+  fun <T : Any> generateToken(payload: T): String = Jwts
+      .builder()
+      .issuedAt(Date())
+      .expiration(Date.from(Instant.now().plusSeconds(EXPIRATION)))
+      .claim(payload::class.simpleName, payload)
+      .encryptWith(key, Jwts.KEY.DIRECT, Jwts.ENC.A256GCM)
+      .compact()
 
-  fun <T : Any> extract(jwe: String, type: KClass<T>): T =
-      mapper.convertValue(
-        Jwts
-            .parser()
-            .decryptWith(key)
-            .build()
-            .parseEncryptedClaims(jwe).payload[type.simpleName],
-        type.java,
-      )
+  fun <T : Any> extract(jwe: String, type: KClass<T>): T = mapper.convertValue(
+    Jwts.parser().decryptWith(key).build().parseEncryptedClaims(jwe).payload[type.simpleName],
+    type.java,
+  )
 }

@@ -20,9 +20,7 @@ class TokenController(
 
   @PostMapping
   fun getToken(@RequestBody credentials: Credentials): MoodleToken {
-    logger.debug { "Received request for ${credentials.username}: ${credentials.password}" }
     val token = tokenService.getToken(credentials)
-    logger.debug { "Token: $token" }
     return token
   }
 }

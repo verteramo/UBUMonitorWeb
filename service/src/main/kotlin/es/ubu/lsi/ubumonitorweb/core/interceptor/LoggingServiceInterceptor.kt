@@ -22,10 +22,13 @@ class LoggingServiceInterceptor : ClientHttpRequestInterceptor {
   private val logger = KotlinLogging.logger {}
 
   /**
-   * Mapea
+   * Convierte el mapa de headers a una lista de cadenas compuestas por el header y sus valores.
+   *
+   * @return Lista de headers con valores.
    */
-  private fun headersAsString(headers: HttpHeaders) =
-    headers.toSingleValueMap().map { "${it.key}: ${it.value}" }.joinToString("\n")
+  private fun HttpHeaders.toList(): List<String> {
+    return toSingleValueMap().map { "${it.key}: ${it.value}" }
+  }
 
   override fun intercept(
       request: HttpRequest,
@@ -37,7 +40,7 @@ class LoggingServiceInterceptor : ClientHttpRequestInterceptor {
       |
       |===HTTP Request===
       |${request.method} ${request.uri}
-      |${headersAsString(request.headers)}
+      |${request.headers.toList().joinToString("\n")}
       |
       |${body.decodeToString()}
     """.trimMargin()
@@ -50,7 +53,7 @@ class LoggingServiceInterceptor : ClientHttpRequestInterceptor {
       |
       |===HTTP Response===
       |${response.statusCode}
-      |${headersAsString(response.headers)}
+      |${response.headers.toList().joinToString("\n")}
       |
       |${response.body.readAllBytes().decodeToString()}
     """.trimMargin()

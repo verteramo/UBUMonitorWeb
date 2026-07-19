@@ -35,6 +35,10 @@ import java.io.InputStream
  * cuando ya se han recopilado los datos de la solicitud, pero aún no se ha
  * enviado al servicio remoto.
  *
+ * @param argumentResolvers Resolutores de argumentos.
+ * @param serviceInterceptors Interceptores de solicitudes salientes.
+ * @param serviceProcessors Procesadores de solicitudes salientes.
+ *
  * @author Marcelo Verteramo Pérsico (mvp1011@alu.ubu.es)
  */
 @Configuration
@@ -45,8 +49,14 @@ class RestConfigurer(
     private val serviceProcessors: List<HttpRequestValues.Processor>,
 ) : RestClientHttpServiceGroupConfigurer {
 
+  /** Logger */
   private val logger = KotlinLogging.logger {}
 
+  /**
+   * Configura los grupos de servicios.
+   *
+   * @param groups Grupos de servicios.
+   */
   override fun configureGroups(groups: HttpServiceGroupConfigurer.Groups<RestClient.Builder>) {
     logger.debug { "HttpServiceArgumentResolver count: ${argumentResolvers.size}" }
     logger.debug { "ClientHttpRequestInterceptor count: ${serviceInterceptors.size}" }
@@ -54,6 +64,7 @@ class RestConfigurer(
 
     groups.forEachGroup { _, clientBuilder, factoryBuilder ->
 
+      // Configuración del builder de clientes
       clientBuilder
           .requestFactory(
             // Permite la lectura múltiple del flujo de respuesta,
@@ -61,10 +72,11 @@ class RestConfigurer(
             BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory()),
           )
           .requestInterceptors { list ->
-            serviceInterceptors.forEach { interceptor ->
-              list.add(interceptor)
-            }
+            list.addAll(serviceInterceptors)
           }
+
+
+      // Configuración de la factoría de servicios
 
       argumentResolvers.forEach { resolver ->
         factoryBuilder.customArgumentResolver(resolver)

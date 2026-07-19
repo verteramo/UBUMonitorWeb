@@ -15,8 +15,11 @@ import java.net.URI
 import java.net.URISyntaxException
 
 /**
- * Procesador de la anotación que toma los metadatos definidos en las
- * propiedades del servicio y los inyecta en la solicitud saliente.
+ * Procesador de la anotación que toma los metadatos definidos en las propiedades del servicio y los
+ * inyecta en la solicitud saliente.
+ *
+ * @param request Solicitud entrante.
+ * @param context Contexto de la aplicación.
  *
  * @author Marcelo Verteramo Pérsico (mvp1011@alu.ubu.es)
  */
@@ -26,17 +29,29 @@ class MoodleServiceProcessor(
     private val context: ApplicationContext,
 ) : HttpRequestValues.Processor {
 
+  /**
+   * Obtiene una anotación del método.
+   *
+   * @param T Clase de la anotación.
+   * @return Anotación o `null` si no se encuentra.
+   */
+  private inline fun <reified T : Annotation> Method.annotation(): T? {
+    return AnnotatedElementUtils.getMergedAnnotation(declaringClass, T::class.java)
+  }
+
   override fun process(
       method: Method,
       parameters: Array<out MethodParameter>,
       arguments: Array<out Any?>,
       requestValues: HttpRequestValues.Builder,
   ) {
-    AnnotatedElementUtils.getMergedAnnotation(
-      method.declaringClass,
-      MoodleService::class.java,
-    )?.profile?.let { profile ->
+    method.annotation<MoodleService>()?.profile?.let { profile ->
+
+      // Obtención de bean de propiedades
       context.getBean<MoodleProperties>().profiles.run {
+
+        // Fusión de las propiedades indicadas en la anotación del servicio y fusión con las
+        // propiedades por defecto, si están disponibles
         getOrDefault(
           profile,
           MoodleProperties.Profile(),
@@ -62,13 +77,14 @@ class MoodleServiceProcessor(
             UriComponentsBuilder.fromUri(URI(host + profile.endpoint)),
           ),
         )
-      } // Error de sintaxis en la URI
+      }
+
+      // Error de sintaxis en la URI
       catch (e: URISyntaxException) {
         throw Error.NET_INVALID_URI(e, e.input)
       }
 
-      // Propagación de headers desde la solicitud entrante hacia la solicitud
-      // saliente
+      // Propagación de headers desde la solicitud entrante hacia la solicitud saliente
       for (name in profile.sendHeaders) {
         request
             .getHeader(name)

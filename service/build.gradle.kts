@@ -51,12 +51,6 @@ tasks.withType<Test> {
 	useJUnitPlatform()
 }
 
-//tasks.withType<ProcessResources> {
-//	expand(
-//		"projectName" to project.name,
-//	)
-//}
-
 val copyFrontendToBuild = tasks.register<Copy>("copyFrontendToBuild") {
 	description = "Copia del frontend a los recursos estáticos"
   dependsOn(project(":client").tasks.named("buildFrontend"))

@@ -53,12 +53,12 @@ class ErrorServiceInterceptor(
    *
    * @param block Código de usuario con el mapper adecuado.
    */
-  private fun MediaType?.useMapper(block: (ObjectMapper) -> Unit) = block(
-    if (this?.let { includes(MediaType.TEXT_XML) || includes(MediaType.APPLICATION_XML) } == true)
-      xmlMapper
-    else
-      jsonMapper
-  )
+  private fun MediaType?.useMapper(block: (ObjectMapper) -> Unit) {
+    block(
+      if (this?.let { includes(MediaType.TEXT_XML) || includes(MediaType.APPLICATION_XML) } == true) xmlMapper
+      else jsonMapper,
+    )
+  }
 
   /**
    * Método interceptor.

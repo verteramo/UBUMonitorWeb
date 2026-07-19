@@ -4,6 +4,7 @@ import org.springframework.core.MethodParameter
 import org.springframework.core.annotation.AnnotatedElementUtils
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.service.annotation.HttpExchange
 import org.springframework.web.service.invoker.HttpRequestValues
 import org.springframework.web.service.invoker.HttpServiceArgumentResolver
 import java.lang.reflect.Array
@@ -14,13 +15,12 @@ import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberProperties
 
 /**
- * Codificador de data classes como parámetros de solicitud, Spring no incluye
- * un resolutor de argumentos que resuelva data classes (DTOs o POJOs), en caso
- * de intentar enviar un objeto anotado con [RequestParam], se recibe una
- * excepción como la siguiente:
+ * Codificador de data classes como parámetros de solicitud, Spring no incluye un resolutor de
+ * argumentos que resuelva data classes (DTO/POJO), en caso de intentar enviar un objeto anotado con
+ * [RequestParam], se recibe una excepción como la siguiente:
  *
- * `ConverterNotFoundException: No converter found capable of converting from
- * type [@Credentials] to type [String]`
+ * `ConverterNotFoundException: No converter found capable of converting from type [@Credentials] to
+ * type [String]`
  *
  * Viéndose el usuario obligado a segregar la solicitud en tipos primitivos:
  *
@@ -52,29 +52,51 @@ import kotlin.reflect.full.memberProperties
 @Component
 class DataArgumentResolver : HttpServiceArgumentResolver {
 
-  /** Caché para evitar reflexiones costosas innecesarias */
-  private val cache =
-    ConcurrentHashMap<KClass<*>, Collection<KProperty1<*, *>>>()
+  /** Caché para evitar reflexiones costosas recurrentes */
+  private val cache = ConcurrentHashMap<KClass<*>, Collection<KProperty1<*, *>>>()
 
-  /**
-   *
-   */
-  private inline fun <reified T : Annotation> MethodParameter.isCandidate() =
-    parameterType.kotlin.isData && AnnotatedElementUtils.isAnnotated(
-      this.parameter, T::class.java,
-    )
-
-  private val RequestParam.encodedName
+  /** Nombre del parámetro de solicitud. */
+  private val RequestParam.encodedName: String?
     get() = value.ifBlank { null } ?: name.ifBlank { null }
 
-  private val KProperty1<*, *>.encodedName
+  /** Nombre de la propiedad resolviendo el posible nombre de la anotación [RequestParam]. */
+  private val KProperty1<*, *>.encodedName: String
     get() = findAnnotation<RequestParam>()?.encodedName ?: name
 
-  private fun Any.toArray(): List<Any?> =
-    (0 until Array.getLength(this)).map { index ->
+  /**
+   * Determina si un parámetro es candidato a ser interceptado y procesado por este resolutor de
+   * argumentos. Se debe evitar interceptar tipos primitivos ([Int], [String], [Boolean], etc.) para
+   * que sea Spring quien procese dichos argumentos, una buena forma de discriminarlos es conociendo
+   * si están anotados con [T] y si fueron declarados con la keyword `data`.
+   *
+   * @param T Anotación discriminante.
+   * @return `true` si el parámetro es candidato, `false` en caso contrario.
+   */
+  private inline fun <reified T : Annotation> MethodParameter.isCandidate(): Boolean {
+    return parameterType.kotlin.isData && AnnotatedElementUtils.hasAnnotation(
+      parameter, T::class.java,
+    )
+  }
+
+  /**
+   * Convierte un [Array] nativo en una lista.
+   *
+   * @return Lista con los elementos del array original.
+   */
+  private fun Array.toList(): List<Any?> {
+    return (0 until Array.getLength(this)).map { index ->
       Array.get(this, index)
     }
+  }
 
+  /**
+   * Método resolutor.
+   *
+   * @param argument Valor pasado al método de la interfaz [HttpExchange].
+   * @param parameter Reflexión encapsulada con los metadatos del método.
+   * @param requestValues Builder de la solicitud saliente.
+   * @return `true` si el parámetro fue resuelto, `false` en caso contrario.
+   */
   override fun resolve(
       argument: Any?,
       parameter: MethodParameter,
@@ -83,32 +105,39 @@ class DataArgumentResolver : HttpServiceArgumentResolver {
     if (parameter.isCandidate<RequestParam>() && argument != null) {
       val type = argument.javaClass.kotlin
 
+      // Se obtienen las propiedades por reflexión siempre que las propiedades clase no hayan sido
+      // extraídas con anterioridad
       cache.computeIfAbsent(type) { type.memberProperties }.forEach { prop ->
         prop.getter.call(argument)?.let { value ->
-          when (value) {
+          when (value) { // Conversión de los elementos del iterable a cadena
             is Iterable<*> -> {
               value.filterNotNull().map(Any::toString)
             }
 
-            is Array,
-            is IntArray, is LongArray, is DoubleArray, is FloatArray,
-            is BooleanArray, is ByteArray, is CharArray, is ShortArray,
-              -> {
-              value.toArray().filterNotNull().map(Any::toString)
+            // Conversión del array a lista y de sus elementos a cadena
+            is Array -> {
+              value.toList().filterNotNull().map(Any::toString)
             }
 
+            // Si solo hay un elemento, se encapsula en una lista
             else -> {
               listOf(value.toString())
             }
           }.forEach {
+
+            // Finalmente, se añaden los parámetros con todos sus valores
             requestValues.addRequestParameter(prop.encodedName, it)
           }
         }
       }
 
+      // Si se ha procesado el argumento se devuelve true para que Spring no siga buscando un
+      // resolutor compatible
       return true
     }
 
+    // Al devolver falso, se le indica a Spring que debe seguir buscando un resolutor para el
+    // argumento actual
     return false
   }
 }
