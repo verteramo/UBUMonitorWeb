@@ -9,24 +9,28 @@ spring:
   messages:
     fallback-to-system-locale: false
 
+
 logging:
   level:
     es.ubu.lsi.ubumonitorweb: debug
 
 moodle:
-  services:
+  profiles:
+
+    default:
+      host-header: Moodle-Host
+      send-headers: [ Accept-Language ]
+      headers:
+        Content-Type: application/x-www-form-urlencoded
+
     auth:
       endpoint: /login/token.php
-      host-header: Moodle-Host
-      headers: [ Accept-Language ]
       params:
         service: moodle_mobile_app
 
     rest:
       endpoint: /webservice/rest/server.php
-      host-header: Moodle-Host
-      headers: [ Accept-Language ]
       params:
-        moodlewsformat: json
-        wsfunction: snakeCaseResolver
+        moodlewsrestformat: json
+        wsfunction: snakeCaseStrategy
         wstoken:

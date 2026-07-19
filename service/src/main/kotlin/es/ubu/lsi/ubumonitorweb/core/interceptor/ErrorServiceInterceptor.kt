@@ -8,12 +8,13 @@ import org.springframework.http.client.ClientHttpRequestExecution
 import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.http.client.ClientHttpResponse
 import org.springframework.stereotype.Component
+import tools.jackson.databind.JsonNode
 import tools.jackson.databind.ObjectMapper
 import tools.jackson.dataformat.xml.XmlMapper
 
 /**
- * Interceptor que lee el cuerpo de la respuesta y si puede mapear el contenido
- * a error lanza una excepción.
+ * Interceptor que lee el cuerpo de la respuesta y, si puede mapear el contenido
+ * a error, lanza una excepción.
  *
  * @author Marcelo Verteramo Pérsico (mvp1011@alu.ubu.es)
  */
@@ -22,14 +23,24 @@ class ErrorServiceInterceptor(
     private val jsonMapper: ObjectMapper, private val xmlMapper: XmlMapper,
 ) : ClientHttpRequestInterceptor {
 
-  /**
-   * Devuelve el mapper correspondiente de acuerdo con el header Content-Type.
-   */
-  private fun getMapper(contentType: MediaType?): ObjectMapper =
-      if (contentType?.let {
-            it.includes(MediaType.TEXT_XML) || it.includes(MediaType.APPLICATION_XML)
-          } == true) xmlMapper
-      else jsonMapper
+  private fun JsonNode.has(vararg props: String): Boolean {
+    for (prop in props) {
+      if (!has(prop)) {
+        return false
+      }
+    }
+
+    return true
+  }
+
+  private fun MediaType?.withMapper(block: (ObjectMapper) -> Unit) =
+      block(
+        if (this?.let {
+              includes(MediaType.TEXT_XML) || includes(MediaType.APPLICATION_XML)
+            } == true) xmlMapper
+        else jsonMapper,
+      )
+
 
   /**
    * Método interceptor.
@@ -43,30 +54,30 @@ class ErrorServiceInterceptor(
 
     // Solo se habilita en respuestas con código 200
     if (response.statusCode.isSameCodeAs(HttpStatus.OK)) {
-      val mapper = getMapper(response.headers.contentType)
-      val tree = mapper.readTree(response.body)
+      response.headers.contentType.withMapper { mapper ->
 
-      // Error del servicio de autenticación
-      if (tree.has("errorcode") && tree.has("error")) {
-        throw MoodleException(
-          mapper.treeToValue(
-            tree,
-            MoodleException.AuthError::class.java,
-          ),
-        )
-      }
+        val tree = mapper.readTree(response.body)
 
-      // Error de los servicios REST
-      if ((tree.has("errorcode") && tree.has("exception")) || (tree.has("class") && tree.has(
-            "ERRORCODE",
-          ))
-      ) {
-        throw MoodleException(
-          mapper.treeToValue(
-            tree,
-            MoodleException.RestError::class.java,
-          ),
-        )
+        // Error del servicio de autenticación
+        if (tree.has("errorcode", "error")) {
+          throw MoodleException(
+            mapper.treeToValue(
+              tree, MoodleException.AuthError::class.java,
+            ),
+          )
+        }
+
+        // Error de los servicios REST
+        if (
+            tree.has("errorcode", "exception") ||
+            tree.has("class", "ERRORCODE")
+        ) {
+          throw MoodleException(
+            mapper.treeToValue(
+              tree, MoodleException.RestError::class.java,
+            ),
+          )
+        }
       }
     }
 

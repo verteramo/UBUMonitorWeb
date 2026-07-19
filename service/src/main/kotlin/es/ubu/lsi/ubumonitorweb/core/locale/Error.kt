@@ -3,7 +3,6 @@ package es.ubu.lsi.ubumonitorweb.core.locale
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException
 
-
 /**
  * Enumeración que mapea códigos de estado [HttpStatus] con mensajes de la
  * enumeración [Message], su propósito es proporcionar una fábrica de

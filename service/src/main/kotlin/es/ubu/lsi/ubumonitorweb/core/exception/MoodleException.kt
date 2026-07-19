@@ -1,7 +1,6 @@
 package es.ubu.lsi.ubumonitorweb.core.exception
 
 import org.springframework.http.HttpStatus
-import org.springframework.http.HttpStatusCode
 import org.springframework.web.server.ResponseStatusException
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty
 
@@ -54,16 +53,18 @@ class MoodleException : ResponseStatusException {
       @JacksonXmlProperty(isAttribute = true, localName = "class")
       val exception: String,
 
-      @JacksonXmlProperty(localName = "ERRORCODE") val errorcode: String,
+      @JacksonXmlProperty(localName = "ERRORCODE")
+      val errorcode: String,
 
-      @JacksonXmlProperty(localName = "MESSAGE") val message: String,
+      @JacksonXmlProperty(localName = "MESSAGE")
+      val message: String,
   )
 
   companion object {
     /**
      * Mapeo de códigos de error de Moodle a códigos de estado HTTP.
      */
-    private val STATUS_CODES = mapOf<String, HttpStatusCode>(
+    private val STATUS_CODES = mapOf(
       "invalidlogin" to HttpStatus.UNAUTHORIZED,
       "invalidtoken" to HttpStatus.UNAUTHORIZED,
     )

@@ -6,11 +6,11 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.http.client.BufferingClientHttpRequestFactory
 import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.http.client.SimpleClientHttpRequestFactory
-import org.springframework.http.converter.HttpMessageConverter
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.support.RestClientHttpServiceGroupConfigurer
 import org.springframework.web.service.annotation.HttpExchange
 import org.springframework.web.service.invoker.HttpRequestValues
+import org.springframework.web.service.invoker.HttpServiceArgumentResolver
 import org.springframework.web.service.registry.HttpServiceGroupConfigurer
 import org.springframework.web.service.registry.ImportHttpServices
 import java.io.InputStream
@@ -40,7 +40,7 @@ import java.io.InputStream
 @Configuration
 @ImportHttpServices(basePackageClasses = [Application::class])
 class RestConfigurer(
-    private val messageConverters: List<HttpMessageConverter<*>>,
+    private val argumentResolvers: List<HttpServiceArgumentResolver>,
     private val serviceInterceptors: List<ClientHttpRequestInterceptor>,
     private val serviceProcessors: List<HttpRequestValues.Processor>,
 ) : RestClientHttpServiceGroupConfigurer {
@@ -48,9 +48,9 @@ class RestConfigurer(
   private val logger = KotlinLogging.logger {}
 
   override fun configureGroups(groups: HttpServiceGroupConfigurer.Groups<RestClient.Builder>) {
-    logger.debug { "MessageConverters count: ${messageConverters.size}" }
-    logger.debug { "ServiceInterceptors count: ${serviceInterceptors.size}" }
-    logger.debug { "ServiceProcessors count: ${serviceProcessors.size}" }
+    logger.debug { "HttpServiceArgumentResolver count: ${argumentResolvers.size}" }
+    logger.debug { "ClientHttpRequestInterceptor count: ${serviceInterceptors.size}" }
+    logger.debug { "HttpRequestValues.Processor count: ${serviceProcessors.size}" }
 
     groups.forEachGroup { _, clientBuilder, factoryBuilder ->
 
@@ -60,17 +60,15 @@ class RestConfigurer(
             // útil para logging o interceptores
             BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory()),
           )
-          .configureMessageConverters { builder ->
-            builder.registerDefaults()
-            messageConverters.forEach { converter ->
-              builder.addCustomConverter(converter)
-            }
-          }
           .requestInterceptors { list ->
             serviceInterceptors.forEach { interceptor ->
               list.add(interceptor)
             }
           }
+
+      argumentResolvers.forEach { resolver ->
+        factoryBuilder.customArgumentResolver(resolver)
+      }
 
       serviceProcessors.forEach { processor ->
         factoryBuilder.httpRequestValuesProcessor(processor)

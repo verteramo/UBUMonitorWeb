@@ -1,6 +1,5 @@
-package es.ubu.lsi.ubumonitorweb.core.locale
+package es.ubu.lsi.ubumonitorweb.core.rest
 
-import es.ubu.lsi.ubumonitorweb.core.rest.ParamResolver
 import org.springframework.stereotype.Component
 import java.lang.reflect.Method
 
@@ -25,18 +24,18 @@ import java.lang.reflect.Method
  *
  * @author Marcelo Verteramo Pérsico (mvp1011@alu.ubu.es)
  */
-@Component("snakeCaseResolver")
-class SnakeCaseResolver : ParamResolver {
+@Component("snakeCaseStrategy")
+class SnakeCaseStrategy : (Method) -> String {
   companion object {
     private const val SUFFIX = "Service"
     private val regex = Regex("(?<=[a-z])(?=[A-Z])")
   }
 
   fun Method.toSnakeCase() =
-    "${declaringClass.simpleName.removeSuffix(SUFFIX)}_${name}".replace(
-      regex, "_",
-    ).lowercase()
+      "${declaringClass.simpleName.removeSuffix(SUFFIX)}_${name}".replace(
+        regex, "_",
+      ).lowercase()
 
   override fun invoke(method: Method) =
-    method.toSnakeCase()
+      method.toSnakeCase()
 }

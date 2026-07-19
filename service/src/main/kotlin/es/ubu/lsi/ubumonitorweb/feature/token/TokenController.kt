@@ -1,6 +1,7 @@
 package es.ubu.lsi.ubumonitorweb.feature.token
 
 import es.ubu.lsi.ubumonitorweb.core.security.JwtService
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -15,11 +16,13 @@ class TokenController(
     private val tokenService: TokenService,
 ) {
 
+  private val logger = KotlinLogging.logger {}
+
   @PostMapping
   fun getToken(@RequestBody credentials: Credentials): MoodleToken {
-    return tokenService.getToken(
-      credentials.username,
-      credentials.password,
-    )
+    logger.debug { "Received request for ${credentials.username}: ${credentials.password}" }
+    val token = tokenService.getToken(credentials)
+    logger.debug { "Token: $token" }
+    return token
   }
 }

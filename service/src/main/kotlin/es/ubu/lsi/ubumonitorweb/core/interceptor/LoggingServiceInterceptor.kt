@@ -22,9 +22,9 @@ class LoggingServiceInterceptor : ClientHttpRequestInterceptor {
   private val logger = KotlinLogging.logger {}
 
   private fun headersAsString(headers: HttpHeaders) =
-    headers.toSingleValueMap()
-        .map { "${it.key}: ${it.value}" }
-        .joinToString("\n")
+      headers.toSingleValueMap()
+          .map { "${it.key}: ${it.value}" }
+          .joinToString("\n")
 
   override fun intercept(
       request: HttpRequest,

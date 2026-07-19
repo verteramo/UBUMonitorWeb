@@ -10,8 +10,5 @@ data class MoodleToken(val token: String, val privatetoken: String)
 interface TokenService {
 
   @PostExchange
-  fun getToken(
-      @RequestParam username: String,
-      @RequestParam password: String,
-  ): MoodleToken
+  fun getToken(@RequestParam credentials: Credentials): MoodleToken
 }
