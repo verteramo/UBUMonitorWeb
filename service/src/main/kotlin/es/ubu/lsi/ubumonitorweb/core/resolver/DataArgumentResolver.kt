@@ -46,13 +46,19 @@ import kotlin.reflect.full.memberProperties
  *   fun auth(@RequestParam credentials: Credentials): Any
  * }
  * ```
+ *
+ * @author Marcelo Verteramo Pérsico (mvp1011@alu.ubu.es)
  */
 @Component
 class DataArgumentResolver : HttpServiceArgumentResolver {
 
+  /** Caché para evitar reflexiones costosas innecesarias */
   private val cache =
     ConcurrentHashMap<KClass<*>, Collection<KProperty1<*, *>>>()
 
+  /**
+   *
+   */
   private inline fun <reified T : Annotation> MethodParameter.isCandidate() =
     parameterType.kotlin.isData && AnnotatedElementUtils.isAnnotated(
       this.parameter, T::class.java,

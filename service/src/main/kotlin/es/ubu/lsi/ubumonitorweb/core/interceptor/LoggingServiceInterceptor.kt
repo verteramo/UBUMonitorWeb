@@ -10,8 +10,7 @@ import org.springframework.http.client.ClientHttpResponse
 import org.springframework.stereotype.Component
 
 /**
- * Interceptor que loguea el contenido de las solicitudes y respuestas de los
- * servicios HTTP.
+ * Interceptor que loguea el contenido de las solicitudes y respuestas de los servicios HTTP.
  *
  * @author Marcelo Verteramo Pérsico (mvp1011@alu.ubu.es)
  */
@@ -19,12 +18,14 @@ import org.springframework.stereotype.Component
 @Profile("dev")
 class LoggingServiceInterceptor : ClientHttpRequestInterceptor {
 
+  /** Logger */
   private val logger = KotlinLogging.logger {}
 
+  /**
+   * Mapea
+   */
   private fun headersAsString(headers: HttpHeaders) =
-      headers.toSingleValueMap()
-          .map { "${it.key}: ${it.value}" }
-          .joinToString("\n")
+    headers.toSingleValueMap().map { "${it.key}: ${it.value}" }.joinToString("\n")
 
   override fun intercept(
       request: HttpRequest,
