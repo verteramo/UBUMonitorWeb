@@ -1,4 +1,4 @@
-package es.ubu.lsi.ubumonitorweb.core.exception
+package es.ubu.lsi.ubumonitorweb.moodle.exception
 
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException

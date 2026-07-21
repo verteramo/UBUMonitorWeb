@@ -1,4 +1,4 @@
-package es.ubu.lsi.ubumonitorweb.core.rest
+package es.ubu.lsi.ubumonitorweb.core.http
 
 import es.ubu.lsi.ubumonitorweb.Application
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -21,19 +21,16 @@ import java.io.InputStream
  *
  * Importa los **servicios**,
  *
- * Construye la **factoría con volcado a memoria**. Las respuestas HTTP por
- * defecto son un flujo de red unidireccional de un solo uso [InputStream]. Si
- * se lee el flujo para registrarlo en el log se consumen los datos, el flujo se
- * cierra y Spring ya no puede volver a leerlo para, por ejemplo, convertirlo en
- * un objeto JSON.
+ * Construye la **factoría con volcado a memoria**. Las respuestas HTTP por defecto son un flujo de
+ * red unidireccional de un solo uso [InputStream]. Si se lee el flujo para registrarlo en el log se
+ * consumen los datos, el flujo se cierra y Spring ya no puede volver a leerlo para, por ejemplo,
+ * convertirlo en un objeto JSON.
  *
- * Inyecta **procesadores**, que se ejecutan justo antes de llamar a los métodos
- * de los servicios y dan acceso reflexivo al método y al builder de la
- * solicitud.
+ * Inyecta **procesadores**, que se ejecutan justo antes de llamar a los métodos de los servicios y
+ * dan acceso reflexivo al método y al builder de la solicitud.
  *
- * Inyecta **interceptores**, que se ejecutan justo después de los procesadores,
- * cuando ya se han recopilado los datos de la solicitud, pero aún no se ha
- * enviado al servicio remoto.
+ * Inyecta **interceptores**, que se ejecutan justo después de los procesadores, cuando ya se han
+ * recopilado los datos de la solicitud, pero aún no se ha enviado al servicio remoto.
  *
  * @param argumentResolvers Resolutores de argumentos.
  * @param serviceInterceptors Interceptores de solicitudes salientes.
@@ -43,7 +40,7 @@ import java.io.InputStream
  */
 @Configuration
 @ImportHttpServices(basePackageClasses = [Application::class])
-class RestConfigurer(
+class ServiceConfigurer(
     private val argumentResolvers: List<HttpServiceArgumentResolver>,
     private val serviceInterceptors: List<ClientHttpRequestInterceptor>,
     private val serviceProcessors: List<HttpRequestValues.Processor>,

@@ -1,7 +1,6 @@
 package es.ubu.lsi.ubumonitorweb.core.security
 
 import es.ubu.lsi.ubumonitorweb.feature.token.MoodleToken
-import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -13,9 +12,7 @@ import org.springframework.util.AntPathMatcher
 import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
-class JwtFilter(private val jweService: JweService) : OncePerRequestFilter() {
-
-  private val log = KotlinLogging.logger {}
+class JweFilter(private val jweService: JweService) : OncePerRequestFilter() {
 
   companion object {
     private const val BEARER_PREFIX = "Bearer "
@@ -31,14 +28,14 @@ class JwtFilter(private val jweService: JweService) : OncePerRequestFilter() {
       response: HttpServletResponse,
       filterChain: FilterChain,
   ) {
-    request.getJwtToken()?.let { token ->
+    request.getBearerToken()?.let { token ->
       try {
-        val moodleToken = jweService.extract(token, MoodleToken::class)
+        val moodleToken = jweService.extract<MoodleToken>(token)
         val auth = UsernamePasswordAuthenticationToken(moodleToken, null, emptyList())
         SecurityContextHolder.getContext().authentication = auth
       }
       catch (e: Exception) {
-        log.debug(e) { "Error al procesar el token JWT en la ruta ${request.servletPath}: ${e.message}" }
+        //log.debug(e) { Message.ERROR_SEC_JWE(request.servletPath, e.message ?: "") }
         SecurityContextHolder.clearContext()
       }
     }
@@ -46,7 +43,7 @@ class JwtFilter(private val jweService: JweService) : OncePerRequestFilter() {
     filterChain.doFilter(request, response)
   }
 
-  private fun HttpServletRequest.getJwtToken(): String? {
+  private fun HttpServletRequest.getBearerToken(): String? {
     return getHeader(HttpHeaders.AUTHORIZATION)
         ?.takeIf { it.startsWith(BEARER_PREFIX) }
         ?.removePrefix(BEARER_PREFIX)

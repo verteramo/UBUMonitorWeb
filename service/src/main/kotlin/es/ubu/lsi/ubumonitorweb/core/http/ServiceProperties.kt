@@ -1,21 +1,21 @@
-package es.ubu.lsi.ubumonitorweb.core.rest
+package es.ubu.lsi.ubumonitorweb.core.http
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Component
 
 /**
- * Propiedades de configuración de los servicios de Moodle.
+ * Propiedades de configuración de los servicios.
  *
  * En la versión anterior los servicios se configuraban con anotaciones, dando lugar a
  * configuraciones dispersas en el código fuente, algo con evidentes desventajas en caso de querer
- * realizar refactorizaciones, es por ello que en esta versión, los metadatos de los servicios pasan
+ * realizar refactorizaciones, es por ello que en esta versión los metadatos de los servicios pasan
  * a residir exclusivamente en el fichero de configuración de la aplicación, bien `application.yaml`
  * o bien `application.properties`.
  *
  * De esta manera, los servicios ahora se anotan con
  *
  * ```kotlin
- * @MoodleService("profile")
+ * @ServiceProfile("profile")
  * ```
  *
  * y el procesador de la anotación construye la solicitud saliente de acuerdo con las propiedades
@@ -24,8 +24,8 @@ import org.springframework.stereotype.Component
  * @author Marcelo Verteramo Pérsico (mvp1011@alu.ubu.es)
  */
 @Component
-@ConfigurationProperties("moodle")
-abstract class ServiceProperties(val profiles: Map<String, Profile> = HashMap()) {
+@ConfigurationProperties("services")
+data class ServiceProperties(val profiles: Map<String, Profile> = HashMap()) {
 
   /**
    * Propiedades de configuración de un perfil.
@@ -36,8 +36,8 @@ abstract class ServiceProperties(val profiles: Map<String, Profile> = HashMap())
    * solicitud saliente.
    * @param headers Mapa de headers con sus valores para añadir a la solicitud saliente.
    * @param params Mapa de parámetros para añadir a la solicitud saliente; se pueden indicar beans
-   * por su nombre, si Spring encuentra un bean, se resuelve el valor del parámetro con una
-   * estrategia; las estrategias tienen la forma "(Method) -> Spring".
+   * por su nombre, si Spring encuentra un bean de tipo [ServicePropertySupplier], se resuelve el
+   * valor del parámetro.
    */
   data class Profile(
       val endpoint: String = "",

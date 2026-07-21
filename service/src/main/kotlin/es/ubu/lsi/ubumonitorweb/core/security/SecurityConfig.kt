@@ -13,13 +13,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * Clase que define el bean [SecurityFilterChain] de la aplicación. Entre otras cosas, define las
  * rutas públicas, las rutas protegidas y la gestión de tokens JWE.
  *
- * @param jwtFilter Filtro de solicitudes para la gestión de tokens JWE.
+ * @param jweFilter Filtro de solicitudes para la gestión de tokens JWE.
  *
  * @author Marcelo Verteramo Pérsico (mvp1011@alu.ubu.es)
  */
 @Configuration
 @EnableWebSecurity
-class SecurityConfig(private val jwtFilter: JwtFilter) {
+class SecurityConfig(private val jweFilter: JweFilter) {
 
   companion object {
     /** Rutas públicas */
@@ -46,7 +46,7 @@ class SecurityConfig(private val jwtFilter: JwtFilter) {
       it.requestMatchers(*PUBLIC_ROUTES).permitAll()
       it.anyRequest().authenticated()
     }.addFilterBefore(
-      jwtFilter, UsernamePasswordAuthenticationFilter::class.java,
+      jweFilter, UsernamePasswordAuthenticationFilter::class.java,
     ).build()
   }
 }

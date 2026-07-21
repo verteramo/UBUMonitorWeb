@@ -20,25 +20,22 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-webmvc")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
-	implementation("tools.jackson.module:jackson-module-kotlin")
-	implementation("tools.jackson.dataformat:jackson-dataformat-xml:3.1.1")
-	implementation("com.fasterxml.woodstox:woodstox-core:6.5.0")
-	implementation("io.github.oshai:kotlin-logging-jvm:7.0.3")
-	implementation("org.springframework.boot:spring-boot-starter-actuator")
+	implementation("org.springframework.boot:spring-boot-starter-webmvc")
 	implementation("org.springframework.boot:spring-boot-starter-security")
-	testImplementation("org.springframework.security:spring-security-test")
-	developmentOnly("org.springframework.boot:spring-boot-devtools")
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
+	implementation("tools.jackson.module:jackson-module-kotlin")
+	implementation("tools.jackson.dataformat:jackson-dataformat-xml")
+	implementation("com.fasterxml.woodstox:woodstox-core")
 	providedRuntime("org.springframework.boot:spring-boot-starter-tomcat-runtime")
-	testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+	testImplementation("org.springframework.security:spring-security-test")
+	testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-	// JJWT
-	implementation("io.jsonwebtoken:jjwt-api:0.12.5")
-	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
-	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.5")
+	implementation("com.nimbusds:nimbus-jose-jwt:10.9.1")
+	implementation("io.github.oshai:kotlin-logging-jvm:7.0.3")
 }
 
 kotlin {

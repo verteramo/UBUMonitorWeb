@@ -11,6 +11,7 @@ package es.ubu.lsi.ubumonitorweb.core.locale
 enum class Message(private val code: String) {
   ERROR_HTTP_MISSING_HEADER("error.http.missing_header"),
   ERROR_NET_INVALID_URI("error.net.invalid_uri"),
+  ERROR_SEC_JWE("error.sec.jwe"),
   ;
 
 

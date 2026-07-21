@@ -1,18 +1,21 @@
 package es.ubu.lsi.ubumonitorweb.core.security
 
+import com.nimbusds.jose.EncryptionMethod
+import com.nimbusds.jose.JWEAlgorithm
+import com.nimbusds.jose.JWEHeader
+import com.nimbusds.jose.JWEObject
+import com.nimbusds.jose.Payload
+import com.nimbusds.jose.crypto.DirectDecrypter
+import com.nimbusds.jose.crypto.DirectEncrypter
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.jsonwebtoken.Jwts
 import org.springframework.stereotype.Service
 import tools.jackson.databind.ObjectMapper
-import java.security.MessageDigest
-import java.security.SecureRandom
-import java.time.Instant
-import java.util.*
-import javax.crypto.spec.SecretKeySpec
+import javax.crypto.KeyGenerator
+import javax.crypto.SecretKey
 import kotlin.reflect.KClass
 
 /**
- * Servicio de generación de tokens JWT.
+ * Servicio de generación de tokens JWE.
  *
  * Al ser una aplicación de escritorio que se ejecuta localmente, se autogenera
  * la clave en memoria en cada arranque, garantizando que ningún secreto
@@ -20,53 +23,36 @@ import kotlin.reflect.KClass
  * ingeniería inversa sobre el archivo war o la base de datos local.
  */
 @Service
-class JwtService(private val mapper: ObjectMapper) {
+class JweService(private val mapper: ObjectMapper) {
 
   companion object {
-    private const val BYTES_LENGTH = 32
     private const val CRYPT_ALGORITHM = "AES"
-    private const val DIGEST_ALGORITHM = "SHA-256"
-    private const val EXPIRATION: Long = 60 * 60 * 24
   }
 
   private val logger = KotlinLogging.logger {}
 
-  private val key: SecretKeySpec
-
-  init {
-    val randomBytes = ByteArray(BYTES_LENGTH)
-    SecureRandom().nextBytes(randomBytes)
-
-    key = SecretKeySpec(
-      MessageDigest.getInstance(DIGEST_ALGORITHM).digest(randomBytes), CRYPT_ALGORITHM,
-    )
-
-    val bytes = key.encoded
-    val hex = bytes.joinToString("") { "%02x".format(it) }
-    val base64 = Base64.getEncoder().encodeToString(bytes)
-
-    logger.debug { "Private key (hex): $hex" }
-    logger.debug { "Private key (base64): $base64" }
-  }
+  private val key: SecretKey = KeyGenerator.getInstance(
+    CRYPT_ALGORITHM,
+  ).apply {
+    init(256)
+  }.generateKey()
 
   fun generateToken(payload: Any): String {
-    return Jwts
-        .builder()
-        .issuedAt(Date())
-        .expiration(Date.from(Instant.now().plusSeconds(EXPIRATION)))
-        .claim(payload::class.simpleName, payload)
-        .encryptWith(key, Jwts.ENC.A256GCM)
-        .compact()
+    val jsonPayload = mapper.writeValueAsString(payload)
+    val header = JWEHeader(JWEAlgorithm.DIR, EncryptionMethod.A256GCM)
+    val jweObject = JWEObject(header, Payload(jsonPayload))
+
+    jweObject.encrypt(DirectEncrypter(key))
+    return jweObject.serialize()
   }
 
-  fun <T : Any> extract(jwe: String, type: KClass<T>): T {
-    return mapper.convertValue(
-      Jwts.parser().decryptWith(key).build().parseEncryptedClaims(jwe).payload[type.simpleName],
-      type.java,
-    )
+  fun <T : Any> extract(token: String, type: KClass<T>): T {
+    val jweObject = JWEObject.parse(token)
+    jweObject.decrypt(DirectDecrypter(key))
+    return mapper.readValue(jweObject.payload.toString(), type.java)
   }
 
-  final inline fun <reified T : Any> extract(jwe: String): T {
-    return extract(jwe, T::class)
+  final inline fun <reified T : Any> extract(token: String): T {
+    return extract(token, T::class)
   }
 }

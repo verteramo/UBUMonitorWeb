@@ -14,7 +14,7 @@ logging:
   level:
     es.ubu.lsi.ubumonitorweb: debug
 
-moodle:
+services:
   profiles:
 
     default:
@@ -32,5 +32,5 @@ moodle:
       endpoint: /webservice/rest/server.php
       params:
         moodlewsrestformat: json
-        wsfunction: snakeCaseStrategy
-        wstoken:
+        wsfunction: functionPropertySupplier
+        wstoken: tokenPropertySupplier

@@ -25,6 +25,10 @@ enum class Error(private val status: HttpStatus, private val message: Message) {
   NET_INVALID_URI(
     HttpStatus.BAD_REQUEST, Message.ERROR_NET_INVALID_URI,
   ),
+
+  SEC_JWE(
+    HttpStatus.FORBIDDEN, Message.ERROR_SEC_JWE,
+  )
   ;
 
   /**

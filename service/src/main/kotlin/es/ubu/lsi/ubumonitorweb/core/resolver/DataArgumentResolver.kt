@@ -1,5 +1,6 @@
 package es.ubu.lsi.ubumonitorweb.core.resolver
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.core.MethodParameter
 import org.springframework.core.annotation.AnnotatedElementUtils
 import org.springframework.stereotype.Component
@@ -13,6 +14,8 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberProperties
+import kotlin.reflect.full.primaryConstructor
+import kotlin.reflect.jvm.javaField
 
 /**
  * Codificador de data classes como parámetros de solicitud, Spring no incluye un resolutor de
@@ -25,7 +28,7 @@ import kotlin.reflect.full.memberProperties
  * Viéndose el usuario obligado a segregar la solicitud en tipos primitivos:
  *
  * ```kotlin *
- * @MoodleService("profile")
+ * @ServiceProfile("profile")
  * interface MyService {
  *   @PostMapping
  *   fun auth(
@@ -40,7 +43,7 @@ import kotlin.reflect.full.memberProperties
  * ```kotlin
  * data class Credentials(val username: String, val password: String)
  *
- * @MoodleService("profile")
+ * @ServiceProfile("profile")
  * interface MyService {
  *   @PostMapping
  *   fun auth(@RequestParam credentials: Credentials): Any
@@ -52,16 +55,29 @@ import kotlin.reflect.full.memberProperties
 @Component
 class DataArgumentResolver : HttpServiceArgumentResolver {
 
+  private val logger = KotlinLogging.logger {}
+
   /** Caché para evitar reflexiones costosas recurrentes */
   private val cache = ConcurrentHashMap<KClass<*>, Collection<KProperty1<*, *>>>()
 
   /** Nombre del parámetro de solicitud. */
   private val RequestParam.encodedName: String?
-    get() = value.ifBlank { null } ?: name.ifBlank { null }
+    get() {
+      logger.debug { "ADIOSSSSSSSSSSSSSS2" }
+      return value.ifBlank { null } ?: name.ifBlank { null }
+    }
 
   /** Nombre de la propiedad resolviendo el posible nombre de la anotación [RequestParam]. */
   private val KProperty1<*, *>.encodedName: String
-    get() = findAnnotation<RequestParam>()?.encodedName ?: name
+    get() {
+      logger.debug { "ADIOSSSSSSSSSSSSSS1" }
+      val annotation =
+        javaField?.declaringClass?.kotlin?.primaryConstructor?.parameters
+              ?.firstOrNull { it.name == name }
+              ?.findAnnotation<RequestParam>()
+
+      return annotation?.encodedName ?: name
+    }
 
   /**
    * Determina si un parámetro es candidato a ser interceptado y procesado por este resolutor de
