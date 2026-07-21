@@ -13,7 +13,7 @@ import org.springframework.util.AntPathMatcher
 import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
-class JwtFilter(private val jwtService: JwtService) : OncePerRequestFilter() {
+class JwtFilter(private val jweService: JweService) : OncePerRequestFilter() {
 
   private val log = KotlinLogging.logger {}
 
@@ -31,9 +31,9 @@ class JwtFilter(private val jwtService: JwtService) : OncePerRequestFilter() {
       response: HttpServletResponse,
       filterChain: FilterChain,
   ) {
-    request.getBearerToken()?.let { token ->
+    request.getJwtToken()?.let { token ->
       try {
-        val moodleToken = jwtService.extract(token, MoodleToken::class)
+        val moodleToken = jweService.extract(token, MoodleToken::class)
         val auth = UsernamePasswordAuthenticationToken(moodleToken, null, emptyList())
         SecurityContextHolder.getContext().authentication = auth
       }
@@ -46,8 +46,10 @@ class JwtFilter(private val jwtService: JwtService) : OncePerRequestFilter() {
     filterChain.doFilter(request, response)
   }
 
-  private fun HttpServletRequest.getBearerToken(): String? = getHeader(HttpHeaders.AUTHORIZATION)
-      ?.takeIf { it.startsWith(BEARER_PREFIX) }
-      ?.removePrefix(BEARER_PREFIX)
+  private fun HttpServletRequest.getJwtToken(): String? {
+    return getHeader(HttpHeaders.AUTHORIZATION)
+        ?.takeIf { it.startsWith(BEARER_PREFIX) }
+        ?.removePrefix(BEARER_PREFIX)
+  }
 
 }

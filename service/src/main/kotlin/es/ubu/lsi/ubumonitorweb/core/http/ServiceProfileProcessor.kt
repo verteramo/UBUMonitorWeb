@@ -1,4 +1,4 @@
-package es.ubu.lsi.ubumonitorweb.core.rest
+package es.ubu.lsi.ubumonitorweb.core.http
 
 import es.ubu.lsi.ubumonitorweb.core.locale.Error
 import jakarta.servlet.http.HttpServletRequest
@@ -24,7 +24,7 @@ import java.net.URISyntaxException
  * @author Marcelo Verteramo Pérsico (mvp1011@alu.ubu.es)
  */
 @Component
-class MoodleServiceProcessor(
+class ServicePropertiesProcessor(
     private val request: HttpServletRequest,
     private val context: ApplicationContext,
 ) : HttpRequestValues.Processor {
@@ -45,19 +45,19 @@ class MoodleServiceProcessor(
       arguments: Array<out Any?>,
       requestValues: HttpRequestValues.Builder,
   ) {
-    method.annotation<MoodleService>()?.profile?.let { profile ->
+    method.annotation<ServiceProfile>()?.profile?.let { profile ->
 
       // Obtención de bean de propiedades
-      context.getBean<MoodleProperties>().profiles.run {
+      context.getBean<ServiceProperties>().profiles.run {
 
         // Fusión de las propiedades indicadas en la anotación del servicio y fusión con las
         // propiedades por defecto, si están disponibles
         getOrDefault(
           profile,
-          MoodleProperties.Profile(),
+          ServiceProperties.Profile(),
         ) merge getOrDefault(
-          MoodleProperties.DEFAULT_PROFILE,
-          MoodleProperties.Profile(),
+          ServiceProperties.DEFAULT_PROFILE,
+          ServiceProperties.Profile(),
         )
       }
     }?.let { profile ->
@@ -100,7 +100,10 @@ class MoodleServiceProcessor(
       // Construcción y paso de parámetros a la solicitud saliente
       for ((key, value) in profile.params) {
         val processedValue = if (context.containsBean(value)) {
-          context.getBean<(Method) -> String>(value).invoke(method)
+          val bean = context.getBean<ServicePropertySupplier<*>>(value)
+          with(bean) {
+            ServiceContext(method, parameters.zip(arguments).toMap()).get()
+          }.toString()
         }
         else {
           value

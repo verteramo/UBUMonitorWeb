@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component
  */
 @Component
 @ConfigurationProperties("moodle")
-data class MoodleProperties(val profiles: Map<String, Profile> = HashMap()) {
+abstract class ServiceProperties(val profiles: Map<String, Profile> = HashMap()) {
 
   /**
    * Propiedades de configuración de un perfil.

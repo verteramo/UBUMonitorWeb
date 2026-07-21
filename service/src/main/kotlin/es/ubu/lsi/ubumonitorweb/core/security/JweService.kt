@@ -1,5 +1,6 @@
 package es.ubu.lsi.ubumonitorweb.core.security
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.jsonwebtoken.Jwts
 import org.springframework.stereotype.Service
 import tools.jackson.databind.ObjectMapper
@@ -28,6 +29,8 @@ class JwtService(private val mapper: ObjectMapper) {
     private const val EXPIRATION: Long = 60 * 60 * 24
   }
 
+  private val logger = KotlinLogging.logger {}
+
   private val key: SecretKeySpec
 
   init {
@@ -35,25 +38,35 @@ class JwtService(private val mapper: ObjectMapper) {
     SecureRandom().nextBytes(randomBytes)
 
     key = SecretKeySpec(
-      MessageDigest.getInstance(
-        DIGEST_ALGORITHM,
-      ).digest(
-        randomBytes,
-      ),
-      CRYPT_ALGORITHM,
+      MessageDigest.getInstance(DIGEST_ALGORITHM).digest(randomBytes), CRYPT_ALGORITHM,
+    )
+
+    val bytes = key.encoded
+    val hex = bytes.joinToString("") { "%02x".format(it) }
+    val base64 = Base64.getEncoder().encodeToString(bytes)
+
+    logger.debug { "Private key (hex): $hex" }
+    logger.debug { "Private key (base64): $base64" }
+  }
+
+  fun generateToken(payload: Any): String {
+    return Jwts
+        .builder()
+        .issuedAt(Date())
+        .expiration(Date.from(Instant.now().plusSeconds(EXPIRATION)))
+        .claim(payload::class.simpleName, payload)
+        .encryptWith(key, Jwts.ENC.A256GCM)
+        .compact()
+  }
+
+  fun <T : Any> extract(jwe: String, type: KClass<T>): T {
+    return mapper.convertValue(
+      Jwts.parser().decryptWith(key).build().parseEncryptedClaims(jwe).payload[type.simpleName],
+      type.java,
     )
   }
 
-  fun <T : Any> generateToken(payload: T): String = Jwts
-      .builder()
-      .issuedAt(Date())
-      .expiration(Date.from(Instant.now().plusSeconds(EXPIRATION)))
-      .claim(payload::class.simpleName, payload)
-      .encryptWith(key, Jwts.KEY.DIRECT, Jwts.ENC.A256GCM)
-      .compact()
-
-  fun <T : Any> extract(jwe: String, type: KClass<T>): T = mapper.convertValue(
-    Jwts.parser().decryptWith(key).build().parseEncryptedClaims(jwe).payload[type.simpleName],
-    type.java,
-  )
+  final inline fun <reified T : Any> extract(jwe: String): T {
+    return extract(jwe, T::class)
+  }
 }

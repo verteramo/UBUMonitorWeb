@@ -1,7 +1,8 @@
-package es.ubu.lsi.ubumonitorweb.core.rest
+package es.ubu.lsi.ubumonitorweb.moodle.supplier
 
+import es.ubu.lsi.ubumonitorweb.core.http.ServiceContext
+import es.ubu.lsi.ubumonitorweb.core.http.ServiceParamSupplier
 import org.springframework.stereotype.Component
-import org.springframework.web.service.annotation.HttpExchange
 import java.lang.reflect.Method
 
 /**
@@ -23,11 +24,11 @@ import java.lang.reflect.Method
  *
  * @author Marcelo Verteramo Pérsico (mvp1011@alu.ubu.es)
  */
-@Component("snakeCaseStrategy")
-class SnakeCaseStrategy : (Method) -> String {
+@Component("functionParamSupplier")
+class FunctionParamSupplier : ServiceParamSupplier<String> {
 
   companion object {
-    /** Sufijo del nombre de las interfaces [HttpExchange]. */
+    /** Sufijo del nombre de las interfaces [org.springframework.web.service.annotation.HttpExchange]. */
     private const val SUFFIX = "Service"
 
     /** Expresión regular para la identificación de cambios de minúscula a mayúscula. */
@@ -48,13 +49,13 @@ class SnakeCaseStrategy : (Method) -> String {
   }
 
   /**
-   * Invocador del objeto de estrategia que invoca el procesador [MoodleServiceProcessor] para
+   * Invocador del objeto de estrategia que invoca el procesador [es.ubu.lsi.ubumonitorweb.core.http.ServicePropertiesProcessor] para
    * resolver el valor del parámetro.
    *
-   * @param method Método del servicio.
    * @return Nombre cualificado del método en formato snake case.
    */
-  override fun invoke(method: Method): String {
+
+  override fun ServiceContext.get(): String {
     return method.toSnakeCase()
   }
 }

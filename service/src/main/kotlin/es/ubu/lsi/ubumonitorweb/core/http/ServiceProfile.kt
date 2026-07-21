@@ -8,7 +8,10 @@ package es.ubu.lsi.ubumonitorweb.core.rest
  * moodle:
  *   profiles:
  *     profile1:
- *       ...
+ *       host-header: X-Host
+ *       headers:
+ *         Accept-Language: en
+ *         Content-Type: application/x-www-form-urlencoded
  * ```
  *
  * ```kotlin
@@ -20,4 +23,4 @@ package es.ubu.lsi.ubumonitorweb.core.rest
  * @author Marcelo Verteramo Pérsico (mvp1011@alu.ubu.es)
  */
 @Target(AnnotationTarget.CLASS)
-annotation class MoodleService(val profile: String = MoodleProperties.DEFAULT_PROFILE)
+annotation class MoodleService(val profile: String = ServiceProperties.DEFAULT_PROFILE)
