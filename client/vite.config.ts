@@ -1,11 +1,9 @@
 import adapter from '@sveltejs/adapter-auto';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
-import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
 	plugins: [
-		tailwindcss(),
 		sveltekit({
 			compilerOptions: {
 				// Force runes mode for the project, except for libraries. Can be removed in svelte 6.
@@ -21,11 +19,7 @@ export default defineConfig({
 	],
 	server: {
 		proxy: {
-			'/api': {
-				target: 'http://localhost:8080',
-				changeOrigin: true,
-				secure: false
-			}
+			'/api': 'http://localhost:8080'
 		}
 	}
 });

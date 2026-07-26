@@ -21,12 +21,19 @@ repositories {
 
 dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
+	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-webmvc")
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
+
 	implementation("tools.jackson.module:jackson-module-kotlin")
 	implementation("tools.jackson.dataformat:jackson-dataformat-xml")
 	implementation("com.fasterxml.woodstox:woodstox-core")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.0")
+
+	implementation("com.nimbusds:nimbus-jose-jwt:10.9.1")
+	implementation("io.github.oshai:kotlin-logging-jvm:7.0.3")
+
 	providedRuntime("org.springframework.boot:spring-boot-starter-tomcat-runtime")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testImplementation("org.springframework.security:spring-security-test")
@@ -34,8 +41,7 @@ dependencies {
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-	implementation("com.nimbusds:nimbus-jose-jwt:10.9.1")
-	implementation("io.github.oshai:kotlin-logging-jvm:7.0.3")
+
 }
 
 kotlin {
@@ -48,13 +54,8 @@ tasks.withType<Test> {
 	useJUnitPlatform()
 }
 
-val copyFrontendToBuild = tasks.register<Copy>("copyFrontendToBuild") {
-	description = "Copia del frontend a los recursos estáticos"
-  dependsOn(project(":client").tasks.named("buildFrontend"))
-	from(project(":client").layout.projectDirectory.dir("build"))
-	into(layout.buildDirectory.dir("resources/main/static"))
-}
-
-tasks.named("processResources") {
-	dependsOn(copyFrontendToBuild)
-}
+//tasks.processResources {
+//	from(project(":client").tasks.named("buildFrontend")) {
+//		into("static")
+//	}
+//}

@@ -9,20 +9,52 @@ spring:
   messages:
     fallback-to-system-locale: false
 
+openapi:
+  parameters:
+    Moodle-Host:
+      in: header
+      description: URL base del servidor Moodle de destino.
+  security-schemes:
+    cookieAuth:
+      type: apikey
+      in: cookie
+      name: auth-token
+      description: Cookie con token JWE.
 
 logging:
   level:
-    es.ubu.lsi.ubumonitorweb: debug
+    es.ubu.lsi.ubumonitorweb: DEBUG
 
-services:
+security:
+  filter.public-routes:
+    - /api/token
+    - /actuator**
+    - /swagger-ui**
+    - /v3/api-docs**
+  strategy: cookie
+  codec: jwe
+  codec.jwe:
+    key-size: 256
+    algorithm: AES
+  strategy.cookie:
+    name: principal
+    path: /
+    http-only: true
+    same-site: strict
+    max-age: 86400
+  strategy.header:
+    scheme: Bearer
+    key: principal
+
+service:
+  default:
+    host-header: Moodle-Host
+    send-headers:
+      - Accept-Language
+    headers:
+      Content-Type: application/x-www-form-urlencoded
+
   profiles:
-
-    default:
-      host-header: Moodle-Host
-      send-headers: [ Accept-Language ]
-      headers:
-        Content-Type: application/x-www-form-urlencoded
-
     auth:
       endpoint: /login/token.php
       params:
@@ -32,5 +64,10 @@ services:
       endpoint: /webservice/rest/server.php
       params:
         moodlewsrestformat: json
-        wsfunction: functionPropertySupplier
-        wstoken: tokenPropertySupplier
+      suppliers:
+        wstoken:
+          location: param
+          bean: es.ubu.lsi.ubumonitorweb.core.moodle.TokenParameterSupplier
+        wsfunction:
+          location: param
+          bean: es.ubu.lsi.ubumonitorweb.core.moodle.FunctionParameterSupplier
