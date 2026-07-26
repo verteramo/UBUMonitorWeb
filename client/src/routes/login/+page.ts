@@ -1,12 +1,11 @@
-import { fail, redirect } from '@sveltejs/kit';
-import { superValidate, message } from 'sveltekit-superforms';
+import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
-import type { Actions, PageServerLoad } from './$types';
+import type { PageLoad } from './$types';
 import { loginSchema } from '$lib/schemas/login';
-import { getPreferences, saveAuth } from '$lib/server/cookies';
+import { getPreferences } from '$lib/client/preferences';
 
-export const load: PageServerLoad = async ({ cookies }) => {
-  const prefs = getPreferences(cookies);
+export const load: PageLoad = async () => {
+  const prefs = getPreferences();
 
   const form = await superValidate(
     {
@@ -21,41 +20,4 @@ export const load: PageServerLoad = async ({ cookies }) => {
   );
 
   return { form };
-};
-
-export const actions: Actions = {
-  default: async ({ request, cookies }) => {
-    const form = await superValidate(request, zod4(loginSchema));
-
-    if (!form.valid) {
-      return fail(400, { form });
-    }
-
-    try {
-      const response = await fetch('http://localhost:8080/api/token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Moodle-Host': form.data.host,
-          'Accept-Language': request.headers.get('accept-language') || 'es'
-        },
-        body: JSON.stringify({
-          username: form.data.username,
-          password: form.data.password
-        })
-      });
-
-      const resData = await response.json();
-
-      if (!response.ok) {
-        return message(form, resData.message || 'Error de autenticación', { status: response.status });
-      }
-
-      saveAuth(cookies, resData.token, form.data);
-    } catch {
-      return message(form, 'No se pudo conectar con el servidor de autenticación', { status: 500 });
-    }
-
-    redirect(303, '/dashboard');
-  }
 };
