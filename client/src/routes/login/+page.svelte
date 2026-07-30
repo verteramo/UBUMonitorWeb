@@ -1,7 +1,7 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-  import { superForm } from "sveltekit-superforms";
-  import { zod4 } from "sveltekit-superforms/adapters";
+  import { superForm, defaults } from "sveltekit-superforms";
+  import { arktype } from "sveltekit-superforms/adapters";
   import {
     TextInput,
     PasswordInput,
@@ -12,50 +12,47 @@
     Stack,
   } from "carbon-components-svelte";
   import { Clean } from "carbon-icons-svelte";
-  import type { PageProps } from "./$types";
   import { loginSchema } from "$lib/schemas/login";
-  import { savePreferences } from "$lib/client/preferences";
-  import { apiFetch } from "$lib/client/api";
+  import { getPreferences, savePreferences } from "$lib/client/preferences";
+  import { api } from "$lib/client/api";
+  import { isHTTPError } from "ky";
+  import { type ApiError } from "$lib/schemas/apierror";
 
-  let { data }: PageProps = $props();
+  const { form, errors, message, enhance, reset } = superForm(
+    defaults(getPreferences(), arktype(loginSchema)),
+    {
+      SPA: true,
+      validators: arktype(loginSchema),
+      async onUpdate({ form, cancel }) {
+        if (form.valid) {
+          try {
+            await api.post("/api/token", {
+              headers: {
+                "Moodle-Host": String(form.data.host),
+              },
+              json: {
+                username: form.data.username,
+                password: form.data.password,
+              },
+            });
 
-  const { form, errors, message, enhance, reset } = superForm(data.form, {
-    SPA: true,
-    validators: zod4(loginSchema),
-    async onUpdate({ form, cancel }) {
-      // Si la validación de Zod falla, detenemos el envío
-      if (!form.valid) return cancel();
+            savePreferences(form.data);
+            goto("#/dashboard");
+          } catch (error) {
+            // 3. Recuperar la asignación del mensaje de error
+            if (isHTTPError<ApiError>(error)) {
+              const data = error.data as ApiError;
+              $message = data.message;
+            }
 
-      try {
-        const response = await apiFetch("/api/token", {
-          method: "POST",
-          headers: {
-            "Moodle-Host": form.data.host,
-          },
-          body: JSON.stringify({
-            username: form.data.username,
-            password: form.data.password,
-          }),
-        });
-
-        if (!response.ok) {
-          // Extraemos el JSON con el mensaje de error de Spring Boot
-          const errorData = await response.json().catch(() => ({}));
-
-          // Asignamos el error directamente a la variable reactiva del mensaje
-          $message = errorData.message || "Error de autenticación";
-          return cancel();
+            cancel();
+          }
+        } else {
+          cancel();
         }
-
-        // Si es 200 OK, el navegador ya ha guardado la cookie HttpOnly
-        savePreferences(form.data);
-        goto("/dashboard");
-      } catch (e) {
-        $message = "No se pudo conectar con el servidor";
-        cancel();
-      }
+      },
     },
-  });
+  );
 </script>
 
 <div
@@ -76,7 +73,7 @@
       {#if $message}
         <InlineNotification
           kind="error"
-          title="Error:"
+          title="Error"
           subtitle={$message}
           hideCloseButton
         />

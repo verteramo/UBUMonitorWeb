@@ -47,7 +47,7 @@ enum class Message(private val code: String) {
    * @return Excepción HTTP.
    */
   operator fun invoke(status: HttpStatus, vararg args: Any): ResponseStatusException {
-    return ResponseStatusException(status, this(args))
+    return ResponseStatusException(status, this(*args))
   }
 
   /**
@@ -58,7 +58,7 @@ enum class Message(private val code: String) {
    * @return Excepción HTTP.
    */
   operator fun invoke(code: Int, vararg args: Any): ResponseStatusException {
-    return ResponseStatusException(HttpStatusCode.valueOf(code), this(args))
+    return ResponseStatusException(HttpStatusCode.valueOf(code), this(*args))
   }
 
   /**

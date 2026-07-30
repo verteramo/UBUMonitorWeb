@@ -1,18 +1,20 @@
-export async function apiFetch(endpoint: string, options: RequestInit = {}): Promise<Response> {
-    const headers = new Headers(options.headers);
+import ky from 'ky';
 
-    // Inyectamos el Accept-Language por defecto si no se ha establecido uno manualmente
-    if (!headers.has('Accept-Language')) {
-        headers.set('Accept-Language', 'es');
+export const api = ky.extend({
+    hooks: {
+        beforeRequest: [
+            ({ request }) => {
+                const host = localStorage.getItem('host');
+                const language = localStorage.getItem('language') || navigator.language;
+
+                if (host && !request.headers.has('Moodle-Host')) {
+                    request.headers.set('Moodle-Client', host);
+                }
+
+                if (language) {
+                    request.headers.set('Accept-Language', language);
+                }
+            }
+        ]
     }
-
-    // Puedes aprovechar para forzar que todas tus llamadas a la API incluyan Content-Type JSON
-    if (!headers.has('Content-Type') && options.body) {
-        headers.set('Content-Type', 'application/json');
-    }
-
-    return fetch(endpoint, {
-        ...options,
-        headers
-    });
-}
+});

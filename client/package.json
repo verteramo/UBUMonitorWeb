@@ -12,7 +12,6 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
 	},
 	"devDependencies": {
-		"@sveltejs/adapter-auto": "^7.0.1",
 		"@sveltejs/adapter-static": "^3.0.10",
 		"@sveltejs/kit": "^2.63.0",
 		"@sveltejs/vite-plugin-svelte": "^7.1.2",
@@ -22,10 +21,10 @@
 		"vite": "^8.0.16"
 	},
 	"dependencies": {
+		"arktype": "^2.2.3",
 		"carbon-components-svelte": "^0.110.1",
 		"carbon-icons-svelte": "^13.13.0",
-		"openapi-fetch": "^0.17.0",
-		"sveltekit-superforms": "^2.30.2",
-		"zod": "^4.4.3"
+		"ky": "^2.0.2",
+		"sveltekit-superforms": "^2.30.2"
 	}
 }

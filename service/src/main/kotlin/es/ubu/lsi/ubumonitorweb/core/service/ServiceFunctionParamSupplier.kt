@@ -1,5 +1,6 @@
-package es.ubu.lsi.ubumonitorweb.core.moodle
+package es.ubu.lsi.ubumonitorweb.core.exception
 
+import es.ubu.lsi.ubumonitorweb.core.service.ServiceParamSupplier
 import org.springframework.core.MethodParameter
 import org.springframework.stereotype.Component
 import org.springframework.web.service.annotation.HttpExchange
@@ -25,7 +26,7 @@ import java.lang.reflect.Method
  * @author Marcelo Verteramo Pérsico (mvp1011@alu.ubu.es)
  */
 @Component
-class FunctionParameterSupplier : (Method, Map<MethodParameter, Any?>) -> String {
+class ServiceFunctionParamSupplier : ServiceParamSupplier<String> {
 
   companion object {
     /** Sufijo del nombre de las interfaces [HttpExchange]. */
@@ -37,9 +38,7 @@ class FunctionParameterSupplier : (Method, Map<MethodParameter, Any?>) -> String
 
   /** Nombre del servicio sin sufijo. */
   private val Class<*>.serviceName: String
-    get() {
-      return simpleName.removeSuffix(SUFFIX)
-    }
+    get() = simpleName.removeSuffix(SUFFIX)
 
   /**
    * Obtiene el nombre del método (cualificado con el nombre de su tipo) en formato snake case.

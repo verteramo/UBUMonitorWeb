@@ -1,6 +1,5 @@
 package es.ubu.lsi.ubumonitorweb.core.service
 
-import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.core.MethodParameter
 import org.springframework.core.annotation.AnnotatedElementUtils
 import org.springframework.stereotype.Component

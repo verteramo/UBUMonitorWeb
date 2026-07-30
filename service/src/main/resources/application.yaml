@@ -9,6 +9,54 @@ spring:
   messages:
     fallback-to-system-locale: false
 
+server:
+  servlet:
+    session:
+      cookie:
+        same-site: strict
+
+logging:
+  level:
+    org.springframework.security: trace
+    es.ubu.lsi.ubumonitorweb: debug
+
+security:
+  public-routes:
+    - /auth/login
+    - /actuator**
+    - /swagger-ui**
+    - /v3/api-docs**
+  logout-url: /auth/logout
+
+service:
+  default:
+    host-header: Moodle-Host
+    send-headers:
+      - Accept-Language
+    headers:
+      Content-Type: application/x-www-form-urlencoded
+
+  profiles:
+    token:
+      endpoint: /login/token.php
+      params:
+        service: moodle_mobile_app
+
+    principal:
+      endpoint: /webservice/rest/server.php
+      params:
+        moodlewsrestformat: json
+        wsfunction: core_webservice_get_site_info
+
+    rest:
+      endpoint: /webservice/rest/server.php
+      params:
+        moodlewsrestformat: json
+      suppliers:
+        wsfunction:
+          location: param
+          bean: es.ubu.lsi.ubumonitorweb.core.exception.ServiceFunctionParamSupplier
+
 openapi:
   parameters:
     Moodle-Host:
@@ -20,54 +68,3 @@ openapi:
       in: cookie
       name: auth-token
       description: Cookie con token JWE.
-
-logging:
-  level:
-    es.ubu.lsi.ubumonitorweb: DEBUG
-
-security:
-  filter.public-routes:
-    - /api/token
-    - /actuator**
-    - /swagger-ui**
-    - /v3/api-docs**
-  strategy: cookie
-  codec: jwe
-  codec.jwe:
-    key-size: 256
-    algorithm: AES
-  strategy.cookie:
-    name: principal
-    path: /
-    http-only: true
-    same-site: strict
-    max-age: 86400
-  strategy.header:
-    scheme: Bearer
-    key: principal
-
-service:
-  default:
-    host-header: Moodle-Host
-    send-headers:
-      - Accept-Language
-    headers:
-      Content-Type: application/x-www-form-urlencoded
-
-  profiles:
-    auth:
-      endpoint: /login/token.php
-      params:
-        service: moodle_mobile_app
-
-    rest:
-      endpoint: /webservice/rest/server.php
-      params:
-        moodlewsrestformat: json
-      suppliers:
-        wstoken:
-          location: param
-          bean: es.ubu.lsi.ubumonitorweb.core.moodle.TokenParameterSupplier
-        wsfunction:
-          location: param
-          bean: es.ubu.lsi.ubumonitorweb.core.moodle.FunctionParameterSupplier

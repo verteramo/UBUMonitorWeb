@@ -1,11 +1,11 @@
-import { z } from "zod";
+import { type } from "arktype";
 
-export const loginSchema = z.object({
-    host: z.url("Debe ser una URL válida"),
-    username: z.string().min(1, "El nombre de usuario es obligatorio"),
-    password: z.string().min(1, "La contraseña es obligatoria"),
-    rememberHost: z.boolean().default(true),
-    rememberUsername: z.boolean().default(true)
-})
+export const loginSchema = type({
+    host: "string.url",
+    username: "string>0",
+    password: "string>0",
+    "rememberHost?": "boolean",
+    "rememberUsername?": "boolean"
+});
 
-export type LoginSchema = z.infer<typeof loginSchema>
+export type Login = typeof loginSchema.infer;

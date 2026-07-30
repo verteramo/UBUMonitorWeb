@@ -1,21 +1,15 @@
-import type { LoginSchema } from '$lib/schemas/login';
+import type { Login } from '$lib/schemas/login';
 
-export function getPreferences() {
-    if (typeof window === 'undefined') {
-        return { host: '', username: '', rememberHost: true, rememberUsername: true };
-    }
-
+export const getPreferences = () => {
     return {
         host: localStorage.getItem('host') ?? '',
         username: localStorage.getItem('username') ?? '',
         rememberHost: localStorage.getItem('remember_host') !== 'false',
         rememberUsername: localStorage.getItem('remember_username') !== 'false'
     };
-}
+};
 
-export function savePreferences(input: LoginSchema) {
-    if (typeof window === 'undefined') return;
-
+export function savePreferences(input: Login) {
     if (input.rememberHost) {
         localStorage.setItem('host', input.host);
     } else {

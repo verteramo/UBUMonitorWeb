@@ -2,6 +2,7 @@ package es.ubu.lsi.ubumonitorweb.core.service
 
 import es.ubu.lsi.ubumonitorweb.Application
 import io.github.oshai.kotlinlogging.KotlinLogging
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.client.BufferingClientHttpRequestFactory
 import org.springframework.http.client.ClientHttpRequestInterceptor
@@ -38,6 +39,7 @@ import java.io.InputStream
  * @author Marcelo Verteramo Pérsico (mvp1011@alu.ubu.es)
  */
 @Configuration
+@EnableConfigurationProperties(ServiceProperties::class)
 @ImportHttpServices(basePackageClasses = [Application::class])
 class ServiceConfigurer(
     private val argumentResolvers: List<HttpServiceArgumentResolver>,

@@ -13,5 +13,10 @@ data class FindParams(
 interface CoreUserService {
 
   @PostExchange
+  fun getUsersByField(
+      @RequestParam wstoken: String,
+      @RequestParam params: FindParams): Any
+
+  @PostExchange
   fun getUsersByField(@RequestParam params: FindParams): Any
 }

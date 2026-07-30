@@ -5,10 +5,16 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 const config = {
     preprocess: vitePreprocess(),
     kit: {
+        output: {
+            bundleStrategy: 'inline'
+        },
+        router: {
+            type: 'hash'
+        },
         adapter: adapter({
             pages: 'build',
             assets: 'build',
-            fallback: 'index.html', // Permite que Spring Boot reasigne las rutas al cliente
+            fallback: 'index.html',
             precompress: false,
             strict: true
         })

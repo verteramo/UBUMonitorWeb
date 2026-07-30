@@ -1,8 +1,6 @@
 package es.ubu.lsi.ubumonitorweb.core.service
 
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.core.MethodParameter
-import java.lang.reflect.Method
 
 /**
  * Propiedades de configuración de los servicios.
@@ -10,8 +8,7 @@ import java.lang.reflect.Method
  * En la versión anterior los servicios se configuraban con anotaciones, dando lugar a
  * configuraciones dispersas en el código fuente, algo con evidentes desventajas en caso de querer
  * realizar refactorizaciones, es por ello que en esta versión los metadatos de los servicios pasan
- * a residir exclusivamente en el fichero de configuración de la aplicación, bien `application.yaml`
- * o bien `application.properties`.
+ * a residir exclusivamente en el fichero de configuración de la aplicación `application.yaml`.
  *
  * De esta manera, los servicios ahora se anotan con:
  *
@@ -55,7 +52,7 @@ data class ServiceProperties(
 
     data class Supplier(
         val location: Location,
-        val bean: Class<out (Method, Map<MethodParameter, Any?>) -> Any?>,
+        val bean: Class<out ServiceParamSupplier<out Any>>,
     ) {
       enum class Location { PARAM, HEADER, COOKIE }
     }
