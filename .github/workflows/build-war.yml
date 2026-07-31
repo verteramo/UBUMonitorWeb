@@ -1,0 +1,30 @@
+name: Build WAR
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '25'
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Build WAR
+        run: ./gradlew :service:bootWar
+
+      - name: Upload WAR artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-war
+          path: service/build/libs/*.war

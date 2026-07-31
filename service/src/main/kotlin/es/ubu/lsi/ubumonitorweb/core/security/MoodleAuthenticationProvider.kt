@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component
 import org.springframework.web.service.registry.ImportHttpServices
 
 @Component
-@ImportHttpServices(MoodleTokenService::class, MoodlePrincipalService::class)
+@ImportHttpServices(MoodleCredentialsService::class, MoodlePrincipalService::class)
 class MoodleAuthenticationProvider(
-    private val tokenService: MoodleTokenService,
+    private val credentialsService: MoodleCredentialsService,
     private val principalService: MoodlePrincipalService,
 ) : AuthenticationProvider {
 
@@ -20,15 +20,17 @@ class MoodleAuthenticationProvider(
   }
 
   override fun authenticate(authentication: Authentication): Authentication? {
-    val token = try {
-      tokenService.getToken(authentication.name, authentication.credentials.toString())
+    val credentials = try {
+      credentialsService.getToken(
+        authentication.name, authentication.credentials.toString(),
+      )
     }
     catch (e: MoodleException) {
       throw BadCredentialsException(e.message, e)
     }
 
-    val principal = principalService.getPrincipal(token.token)
+    val principal = principalService.getPrincipal(credentials.token)
 
-    return MoodleAuthenticationToken(token, principal)
+    return MoodleAuthenticationToken(credentials, principal)
   }
 }

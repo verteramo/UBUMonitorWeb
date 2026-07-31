@@ -31,7 +31,6 @@ dependencies {
 	implementation("com.fasterxml.woodstox:woodstox-core")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.0")
 
-	implementation("com.nimbusds:nimbus-jose-jwt:10.9.1")
 	implementation("io.github.oshai:kotlin-logging-jvm:7.0.3")
 
 	providedRuntime("org.springframework.boot:spring-boot-starter-tomcat-runtime")
@@ -54,8 +53,8 @@ tasks.withType<Test> {
 	useJUnitPlatform()
 }
 
-//tasks.processResources {
-//	from(project(":client").tasks.named("buildFrontend")) {
-//		into("static")
-//	}
-//}
+tasks.processResources {
+	from(project(":client").tasks.named("buildFrontend")) {
+		into("static")
+	}
+}

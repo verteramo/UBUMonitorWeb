@@ -1,7 +1,6 @@
 package es.ubu.lsi.ubumonitorweb.core.exception
 
 import org.springframework.http.HttpStatus
-import org.springframework.web.server.ResponseStatusException
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty
 
 /**
@@ -11,7 +10,10 @@ import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty
  *
  * @author Marcelo Verteramo Pérsico (mvp1011@alu.ubu.es)
  */
-class MoodleException : ResponseStatusException {
+class MoodleException(
+    message: String,
+    val status: HttpStatus,
+) : RuntimeException(message) {
 
   /**
    * Estructura JSON que devuelve el servicio de autenticación de Moodle al no poder generar un
@@ -60,8 +62,9 @@ class MoodleException : ResponseStatusException {
    *
    * @param e Error de autenticación.
    */
-  constructor(e: AuthError) : super(
-    STATUS_CODES.getValue(e.errorcode), e.error,
+  constructor(e: AuthError) : this(
+    message = e.error,
+    status = STATUS_CODES.getValue(e.errorcode),
   )
 
   /**
@@ -69,7 +72,8 @@ class MoodleException : ResponseStatusException {
    *
    * @param e Error del servicio REST.
    */
-  constructor(e: RestError) : super(
-    STATUS_CODES.getValue(e.errorcode), e.message,
+  constructor(e: RestError) : this(
+    message = e.message,
+    status = STATUS_CODES.getValue(e.errorcode),
   )
 }

@@ -5,7 +5,6 @@ spring:
     active: dev
   web:
     locale: en
-    error.include-stacktrace: never
   messages:
     fallback-to-system-locale: false
 
@@ -13,20 +12,30 @@ server:
   servlet:
     session:
       cookie:
+        http-only: true
         same-site: strict
+
 
 logging:
   level:
-    org.springframework.security: trace
+    org.springframework.security: debug
     es.ubu.lsi.ubumonitorweb: debug
 
 security:
   public-routes:
-    - /auth/login
+    # Svelte App
+    - /
+    - /index.html
+    - /favicon.png
+    - /logo1.png
+    - /_app/**
+
     - /actuator**
-    - /swagger-ui**
-    - /v3/api-docs**
-  logout-url: /auth/logout
+    - /swagger-ui/**
+    - /swagger-ui/index.html
+    - /v3/api-docs
+  login-url: /api/login
+  logout-url: /api/logout
 
 service:
   default:
@@ -37,7 +46,7 @@ service:
       Content-Type: application/x-www-form-urlencoded
 
   profiles:
-    token:
+    credentials:
       endpoint: /login/token.php
       params:
         service: moodle_mobile_app
@@ -48,7 +57,7 @@ service:
         moodlewsrestformat: json
         wsfunction: core_webservice_get_site_info
 
-    rest:
+    webservice:
       endpoint: /webservice/rest/server.php
       params:
         moodlewsrestformat: json
@@ -62,9 +71,3 @@ openapi:
     Moodle-Host:
       in: header
       description: URL base del servidor Moodle de destino.
-  security-schemes:
-    cookieAuth:
-      type: apikey
-      in: cookie
-      name: auth-token
-      description: Cookie con token JWE.

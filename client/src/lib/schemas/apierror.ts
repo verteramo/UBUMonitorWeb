@@ -1,11 +1,9 @@
 import { type } from 'arktype';
 
-export const apiErrorSchema = type({
-    timestamp: "string",
+export const problemDetailSchema = type({
+    title: "string",
     status: "number",
-    error: "string",
-    message: "string",
-    path: "string"
+    detail: "string",
 });
 
-export type ApiError = typeof apiErrorSchema.infer;
+export type ProblemDetail = typeof problemDetailSchema.infer;

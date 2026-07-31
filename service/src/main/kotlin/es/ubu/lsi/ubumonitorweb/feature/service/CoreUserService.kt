@@ -9,7 +9,7 @@ data class FindParams(
     @RequestParam("values[0]") val value: String,
 )
 
-@ServiceProfile("rest")
+@ServiceProfile("webservice")
 interface CoreUserService {
 
   @PostExchange

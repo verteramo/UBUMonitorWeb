@@ -17,7 +17,6 @@ tasks.register<NpmTask>("buildFrontend") {
   inputs.dir(layout.projectDirectory.dir("src"))
   inputs.dir(layout.projectDirectory.dir("static"))
   inputs.file(layout.projectDirectory.file("package.json"))
-  inputs.file(layout.projectDirectory.file("svelte.config.js"))
   inputs.file(layout.projectDirectory.file("vite.config.ts"))
 
   outputs.dir(layout.projectDirectory.dir("build"))

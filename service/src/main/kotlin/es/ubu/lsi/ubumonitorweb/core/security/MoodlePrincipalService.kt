@@ -8,5 +8,7 @@ import org.springframework.web.service.annotation.PostExchange
 interface MoodlePrincipalService {
 
   @PostExchange
-  fun getPrincipal(@RequestParam wstoken: String): MoodlePrincipalDto
+  fun getPrincipal(
+      @RequestParam wstoken: String,
+  ): MoodlePrincipalDto
 }

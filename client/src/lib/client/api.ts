@@ -8,7 +8,7 @@ export const api = ky.extend({
                 const language = localStorage.getItem('language') || navigator.language;
 
                 if (host && !request.headers.has('Moodle-Host')) {
-                    request.headers.set('Moodle-Client', host);
+                    request.headers.set('Moodle-Host', host);
                 }
 
                 if (language) {
