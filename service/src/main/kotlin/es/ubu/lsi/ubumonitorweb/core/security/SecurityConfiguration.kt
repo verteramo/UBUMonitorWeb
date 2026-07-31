@@ -24,51 +24,49 @@ import tools.jackson.databind.ObjectMapper
 @Configuration
 @EnableWebSecurity
 @EnableConfigurationProperties(SecurityProperties::class)
-class SecurityConfiguration(private val properties: SecurityProperties) {
-
+class SecurityConfiguration(
+  private val properties: SecurityProperties,
+) {
   @Bean
-  fun authenticationManager(config: AuthenticationConfiguration): AuthenticationManager? {
-    return config.authenticationManager
-  }
+  fun authenticationManager(config: AuthenticationConfiguration): AuthenticationManager? = config.authenticationManager
 
   @Bean
   fun securityFilterChain(
-      security: HttpSecurity,
-      authEntryPoint: AuthenticationEntryPoint,
-      loginSuccessHandler: AuthenticationSuccessHandler,
-      loginFailureHandler: AuthenticationFailureHandler,
-      logoutSuccessHandler: LogoutSuccessHandler,
-  ): SecurityFilterChain {
-    return security.csrf {
-      it.disable()
-    }.authorizeHttpRequests {
-      it.dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
-      it.requestMatchers(*properties.publicRoutes.toTypedArray()).permitAll()
-      it.anyRequest().authenticated()
-    }.exceptionHandling {
-      it.authenticationEntryPoint(authEntryPoint)
-    }.formLogin {
-      it.successHandler(loginSuccessHandler)
-      it.failureHandler(loginFailureHandler)
-      properties.loginUrl?.let(it::loginProcessingUrl)
-    }.logout {
-      it.logoutSuccessHandler(logoutSuccessHandler)
-      properties.logoutUrl?.let(it::logoutUrl)
-    }.build()
-  }
+    security: HttpSecurity,
+    authEntryPoint: AuthenticationEntryPoint,
+    loginSuccessHandler: AuthenticationSuccessHandler,
+    loginFailureHandler: AuthenticationFailureHandler,
+    logoutSuccessHandler: LogoutSuccessHandler,
+  ): SecurityFilterChain =
+    security
+      .csrf {
+        it.disable()
+      }.authorizeHttpRequests {
+        it.dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
+        it.requestMatchers(*properties.publicRoutes.toTypedArray()).permitAll()
+        it.anyRequest().authenticated()
+      }.exceptionHandling {
+        it.authenticationEntryPoint(authEntryPoint)
+      }.formLogin {
+        it.successHandler(loginSuccessHandler)
+        it.failureHandler(loginFailureHandler)
+        properties.loginUrl?.let(it::loginProcessingUrl)
+      }.logout {
+        it.logoutSuccessHandler(logoutSuccessHandler)
+        properties.logoutUrl?.let(it::logoutUrl)
+      }.build()
 
   @Bean
-  fun loginSuccessHandler(mapper: ObjectMapper): AuthenticationSuccessHandler {
-    return AuthenticationSuccessHandler { request, response, authentication ->
+  fun loginSuccessHandler(mapper: ObjectMapper): AuthenticationSuccessHandler =
+    AuthenticationSuccessHandler { request, response, authentication ->
       response.status = HttpStatus.OK.value()
       response.contentType = MediaType.APPLICATION_JSON_VALUE
       mapper.writeValue(response.writer, authentication.principal)
     }
-  }
 
   @Bean
-  fun loginFailureHandler(mapper: ObjectMapper): AuthenticationFailureHandler {
-    return AuthenticationFailureHandler { request, response, exception ->
+  fun loginFailureHandler(mapper: ObjectMapper): AuthenticationFailureHandler =
+    AuthenticationFailureHandler { request, response, exception ->
       response.status = HttpStatus.UNAUTHORIZED.value()
       response.contentType = MediaType.APPLICATION_JSON_VALUE
       (exception.cause as? MoodleException)?.let {
@@ -78,15 +76,10 @@ class SecurityConfiguration(private val properties: SecurityProperties) {
         )
       }
     }
-  }
 
   @Bean
-  fun logoutSuccessHandler(): LogoutSuccessHandler {
-    return HttpStatusReturningLogoutSuccessHandler()
-  }
+  fun logoutSuccessHandler(): LogoutSuccessHandler = HttpStatusReturningLogoutSuccessHandler()
 
   @Bean
-  fun authEntryPoint(): AuthenticationEntryPoint {
-    return HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)
-  }
+  fun authEntryPoint(): AuthenticationEntryPoint = HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)
 }

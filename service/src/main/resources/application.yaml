@@ -1,12 +1,12 @@
 spring:
   application:
     name: ubumonitorweb
-  profiles:
-    active: dev
   web:
     locale: en
   messages:
     fallback-to-system-locale: false
+  profiles:
+    default: dev
 
 server:
   servlet:
@@ -14,28 +14,6 @@ server:
       cookie:
         http-only: true
         same-site: strict
-
-
-logging:
-  level:
-    org.springframework.security: debug
-    es.ubu.lsi.ubumonitorweb: debug
-
-security:
-  public-routes:
-    # Svelte App
-    - /
-    - /index.html
-    - /favicon.png
-    - /logo1.png
-    - /_app/**
-
-    - /actuator**
-    - /swagger-ui/**
-    - /swagger-ui/index.html
-    - /v3/api-docs
-  login-url: /api/login
-  logout-url: /api/logout
 
 service:
   default:
@@ -65,9 +43,3 @@ service:
         wsfunction:
           location: param
           bean: es.ubu.lsi.ubumonitorweb.core.exception.ServiceFunctionParamSupplier
-
-openapi:
-  parameters:
-    Moodle-Host:
-      in: header
-      description: URL base del servidor Moodle de destino.

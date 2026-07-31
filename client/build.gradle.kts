@@ -11,7 +11,7 @@ node {
 }
 
 tasks.register<NpmTask>("buildFrontend") {
-  description = "Construcción del frontend"
+  description = "Construcción del cliente estático."
   dependsOn(tasks.npmInstall)
   args.set(listOf("run", "build"))
   inputs.dir(layout.projectDirectory.dir("src"))

@@ -1,0 +1,24 @@
+logging:
+  level:
+    org.springframework.security: debug
+    es.ubu.lsi.ubumonitorweb: debug
+
+security:
+  public-routes:
+    - /
+    - /index.html
+    - /favicon.png
+    - /logo1.png
+    - /_app/**
+    - /actuator**
+    - /swagger-ui/**
+    - /swagger-ui/index.html
+    - /v3/api-docs
+  login-url: /api/login
+  logout-url: /api/logout
+
+openapi:
+  parameters:
+    Moodle-Host:
+      in: header
+      description: URL base del servidor Moodle de destino.

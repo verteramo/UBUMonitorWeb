@@ -1,0 +1,20 @@
+security:
+  public-routes:
+    - /
+    - /index.html
+    - /favicon.png
+    - /logo1.png
+    - /_app/**
+  login-url: /api/login
+  logout-url: /api/logout
+
+management:
+  endpoints:
+    access:
+      default: none
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false

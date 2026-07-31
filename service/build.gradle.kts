@@ -37,6 +37,7 @@ dependencies {
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testImplementation("org.springframework.security:spring-security-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
@@ -51,10 +52,4 @@ kotlin {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
-}
-
-tasks.processResources {
-	from(project(":client").tasks.named("buildFrontend")) {
-		into("static")
-	}
 }
