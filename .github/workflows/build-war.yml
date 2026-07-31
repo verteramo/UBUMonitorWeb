@@ -20,6 +20,12 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x gradlew
 
+      - name: Check code format (Ktlint)
+        run: ./gradlew ktlintCheck
+
+      - name: Run tests
+        run: ./gradlew test
+
       - name: Build WAR
         run: ./gradlew :service:bootWar
 

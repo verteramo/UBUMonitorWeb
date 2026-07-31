@@ -5,8 +5,7 @@ security:
     - /favicon.png
     - /logo1.png
     - /_app/**
-  login-url: /api/login
-  logout-url: /api/logout
+    - /auth/login
 
 management:
   endpoints:

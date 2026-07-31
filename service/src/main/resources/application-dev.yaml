@@ -14,8 +14,7 @@ security:
     - /swagger-ui/**
     - /swagger-ui/index.html
     - /v3/api-docs
-  login-url: /api/login
-  logout-url: /api/logout
+    - /auth/login
 
 openapi:
   parameters:

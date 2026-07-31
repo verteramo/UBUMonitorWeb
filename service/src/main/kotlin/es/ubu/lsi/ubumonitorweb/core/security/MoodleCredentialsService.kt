@@ -6,10 +6,9 @@ import org.springframework.web.service.annotation.PostExchange
 
 @ServiceProfile("credentials")
 interface MoodleCredentialsService {
-
   @PostExchange
-  fun getToken(
-      @RequestParam username: String,
-      @RequestParam password: String,
+  fun getCredentials(
+    @RequestParam username: String,
+    @RequestParam password: String,
   ): MoodleCredentialsDto
 }
