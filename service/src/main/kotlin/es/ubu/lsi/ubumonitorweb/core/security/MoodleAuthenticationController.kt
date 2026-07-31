@@ -56,7 +56,7 @@ class MoodleAuthenticationController(
   }
 
   @PostMapping("/principal")
-  fun check(
+  fun principal(
     @AuthenticationPrincipal principal: MoodlePrincipalDto,
   ) = principal
 }

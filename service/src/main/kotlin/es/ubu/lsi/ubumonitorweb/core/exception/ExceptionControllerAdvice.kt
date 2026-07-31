@@ -5,7 +5,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
 @RestControllerAdvice
-class MoodleExceptionControllerAdvice {
+class ExceptionControllerAdvice {
   @ExceptionHandler(MoodleException::class)
-  fun handler(e: MoodleException) = ProblemDetail.forStatusAndDetail(e.status, e.message)
+  fun moodleException(e: MoodleException) =
+    ProblemDetail.forStatusAndDetail(
+      e.status,
+      e.message,
+    )
 }
