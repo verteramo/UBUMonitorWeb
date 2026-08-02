@@ -19,7 +19,7 @@
     let isProfileOpen = $state(false);
 
     $effect(() => {
-        if (!session.user) {
+        if (!session.principal) {
             goto("/#/login");
         }
     });
@@ -30,8 +30,8 @@
     }
 </script>
 
-{#if session.user}
-    <Header company="Mi Aplicación" platformName="Dashboard" bind:isSideNavOpen>
+{#if session.principal}
+    <Header company="Mi Aplicación" platformName="UBUMonitorWeb" bind:isSideNavOpen>
         <svelte:fragment slot="skip-to-content">
             <SkipToContent />
         </svelte:fragment>
@@ -40,7 +40,7 @@
             <span
                 style="display: flex; align-items: center; padding: 0 1rem; font-size: 0.875rem;"
             >
-                {session.user?.fullname}
+                {session.principal?.fullname}
             </span>
 
             <HeaderAction bind:isOpen={isProfileOpen} iconDescription="Perfil">
@@ -48,10 +48,10 @@
                     slot="icon"
                     style="display: flex; width: 24px; height: 24px;"
                 >
-                    {#if session.user?.userpictureurl}
+                    {#if session.principal?.userpictureurl}
                         <img
-                            src={session.user.userpictureurl}
-                            alt={session.user.fullname}
+                            src={session.principal.userpictureurl}
+                            alt={session.principal.fullname}
                             style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;"
                         />
                     {:else}
@@ -60,12 +60,12 @@
                 </div>
 
                 <HeaderPanelLinks>
-                    {#if session.user?.siteurl && session.user?.sitename}
+                    {#if session.principal?.siteurl && session.principal?.sitename}
                         <HeaderPanelLink
-                            href={session.user.siteurl}
+                            href={session.principal.siteurl}
                             target="_blank"
                         >
-                            {session.user.sitename}
+                            {session.principal.sitename}
                         </HeaderPanelLink>
                     {/if}
                     <HeaderPanelLink onclick={handleLogout}>
@@ -94,7 +94,7 @@
     <Content>
         <div style="padding: 1rem;">
             <h1>Panel de control</h1>
-            <p>Bienvenido, {session.user?.username || "Usuario"}.</p>
+            <p>Bienvenido, {session.principal?.username || "Usuario"}.</p>
         </div>
     </Content>
 {/if}

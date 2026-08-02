@@ -7,11 +7,13 @@ security:
     - /_app/**
     - /auth/login
 
+# Actuator
 management:
   endpoints:
     access:
       default: none
 
+# SpringDoc Swagger
 springdoc:
   api-docs:
     enabled: false

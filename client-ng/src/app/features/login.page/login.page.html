@@ -1,0 +1,52 @@
+<form (submit)="onSubmit($event)">
+  <div>
+    <img src="logo1.png" alt="Logo" />
+    <h2>Iniciar sesión</h2>
+  </div>
+
+  <mat-form-field>
+    <mat-label>Host</mat-label>
+    <input matInput [formField]="loginForm.host" [matAutocomplete]="auto" />
+    @if (isInsecureHost()) {
+      <mat-icon matSuffix title="Conexión no segura">warning</mat-icon>
+    }
+    <mat-autocomplete #auto="matAutocomplete">
+      @for (host of filteredHosts(); track host) {
+        <mat-option [value]="host">{{ host }}</mat-option>
+      }
+    </mat-autocomplete>
+
+    @if (loginForm.host().errors()[0]; as err) {
+      <mat-error>{{ err.message }}</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Usuario</mat-label>
+    <input matInput [formField]="loginForm.username" />
+    @if (loginForm.username().errors()[0]; as err) {
+      <mat-error>{{ err.message }}</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Contraseña</mat-label>
+    <input matInput type="password" [formField]="loginForm.password" />
+    @if (loginForm.password().errors()[0]; as err) {
+      <mat-error>{{ err.message }}</mat-error>
+    }
+  </mat-form-field>
+
+  <div>
+    <mat-checkbox [formField]="loginForm.rememberHost">Recordar host</mat-checkbox>
+    <mat-checkbox [formField]="loginForm.rememberUser">Recordar usuario</mat-checkbox>
+    <mat-checkbox [formField]="loginForm.offlineMode">Modo sin conexión</mat-checkbox>
+  </div>
+
+  <div>
+    <button matButton="filled" color="primary" type="submit">Conectar</button>
+    <button matIconButton type="button" (click)="onClear()" title="Limpiar">
+      <mat-icon>cleaning_services</mat-icon>
+    </button>
+  </div>
+</form>

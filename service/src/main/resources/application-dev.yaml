@@ -14,10 +14,4 @@ security:
     - /swagger-ui/**
     - /swagger-ui/index.html
     - /v3/api-docs
-    - /auth/login
-
-openapi:
-  parameters:
-    Moodle-Host:
-      in: header
-      description: URL base del servidor Moodle de destino.
+    - /api/auth/login

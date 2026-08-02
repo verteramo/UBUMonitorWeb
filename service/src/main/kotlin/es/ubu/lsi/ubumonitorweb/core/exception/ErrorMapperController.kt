@@ -33,9 +33,9 @@ import java.net.URI
 @RestController
 class ErrorMapperController(
   private val mapper: ObjectMapper,
-  private val attributes: ErrorAttributes,
+  private val errorAttributes: ErrorAttributes,
 ) : ErrorController {
-  data class Attr(
+  data class Attributes(
     val status: Int,
     val error: String?,
     val message: String?,
@@ -44,9 +44,9 @@ class ErrorMapperController(
 
   @RequestMapping("/error")
   fun handleError(request: HttpServletRequest): ProblemDetail {
-    val attr =
-      mapper.convertValue<Attr>(
-        attributes.getErrorAttributes(
+    val attributes =
+      mapper.convertValue<Attributes>(
+        errorAttributes.getErrorAttributes(
           ServletWebRequest(request),
           ErrorAttributeOptions.defaults().including(
             ErrorAttributeOptions.Include.STATUS,
@@ -57,10 +57,10 @@ class ErrorMapperController(
         ),
       )
 
-    return ProblemDetail.forStatus(attr.status).apply {
-      title = attr.error
-      detail = attr.message
-      instance = attr.path
+    return ProblemDetail.forStatus(attributes.status).apply {
+      title = attributes.error
+      detail = attributes.message
+      instance = attributes.path
     }
   }
 }

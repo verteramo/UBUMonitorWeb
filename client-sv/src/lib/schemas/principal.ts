@@ -1,6 +1,6 @@
 import { type } from "arktype";
 
-export const userSchema = type({
+export const principalSchema = type({
     username: "string",
     firstname: "string",
     lastname: "string",
@@ -13,4 +13,4 @@ export const userSchema = type({
     sitename: "string"
 });
 
-export type User = typeof userSchema.infer;
+export type Principal = typeof principalSchema.infer;
