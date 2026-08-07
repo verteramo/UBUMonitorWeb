@@ -1,0 +1,35 @@
+.dashboard-layout {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidenav-container {
+  flex: 1;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-info {
+  padding: 16px;
+  outline: none;
+}
+
+.site-name {
+  font-size: 12px;
+  color: gray;
+  margin-top: 4px;
+}
+
+.content-area {
+  padding: 24px;
+}

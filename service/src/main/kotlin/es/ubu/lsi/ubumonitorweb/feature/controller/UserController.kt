@@ -9,17 +9,16 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/users")
-class UserController(private val coreUserService: CoreUserService) {
-
+@RequestMapping("/api/users")
+class UserController(
+  private val coreUserService: CoreUserService,
+) {
   @GetMapping
   fun hello() = "Hello World"
 
   @GetMapping("/{field}={value}")
   fun getUserById(
-      @PathVariable field: String,
-      @PathVariable value: String,
-  ): Any {
-    return coreUserService.getUsersByField(FindParams(field, value))
-  }
+    @PathVariable field: String,
+    @PathVariable value: String,
+  ): Any = coreUserService.getUsersByField(FindParams(field, value))
 }

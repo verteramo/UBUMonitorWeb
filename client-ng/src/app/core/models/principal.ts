@@ -1,4 +1,4 @@
-export interface MoodlePrincipal {
+export interface Principal {
   username: string;
   firstname: string;
   lastname: string;

@@ -40,6 +40,9 @@ service:
       params:
         moodlewsrestformat: json
       suppliers:
+        wstoken:
+          location: param
+          bean: es.ubu.lsi.ubumonitorweb.core.service.ServiceTokenParamSupplier
         wsfunction:
           location: param
-          bean: es.ubu.lsi.ubumonitorweb.core.exception.ServiceFunctionParamSupplier
+          bean: es.ubu.lsi.ubumonitorweb.core.service.ServiceFunctionParamSupplier

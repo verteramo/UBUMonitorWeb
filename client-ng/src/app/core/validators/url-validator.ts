@@ -9,7 +9,7 @@ export function url(path: SchemaPath<string>, options?: { message?: string }) {
     } catch {
       return {
         kind: 'url',
-        message: options?.message || 'Enter a valid URL',
+        message: options?.message || $localize`Invalid URL`,
       };
     }
   });

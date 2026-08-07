@@ -6,7 +6,7 @@ data class MoodlePrincipalDto(
   val lastname: String,
   val fullname: String,
   val lang: String,
-  val userid: Long,
+  val userid: Int,
   val siteurl: String,
   val userpictureurl: String,
   val userissiteadmin: Boolean,

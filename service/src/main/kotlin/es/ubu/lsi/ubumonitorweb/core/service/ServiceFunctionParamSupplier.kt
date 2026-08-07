@@ -1,6 +1,5 @@
-package es.ubu.lsi.ubumonitorweb.core.exception
+package es.ubu.lsi.ubumonitorweb.core.service
 
-import es.ubu.lsi.ubumonitorweb.core.service.ServiceParamSupplier
 import org.springframework.core.MethodParameter
 import org.springframework.stereotype.Component
 import org.springframework.web.service.annotation.HttpExchange
@@ -27,7 +26,6 @@ import java.lang.reflect.Method
  */
 @Component
 class ServiceFunctionParamSupplier : ServiceParamSupplier<String> {
-
   companion object {
     /** Sufijo del nombre de las interfaces [HttpExchange]. */
     private const val SUFFIX = "Service"
@@ -45,9 +43,7 @@ class ServiceFunctionParamSupplier : ServiceParamSupplier<String> {
    *
    * @return Nombre cualificado del método en formato snake case.
    */
-  private fun Method.toSnakeCase(): String {
-    return "${declaringClass.serviceName}_${name}".replace(regex, "_").lowercase()
-  }
+  private fun Method.toSnakeCase(): String = "${declaringClass.serviceName}_$name".replace(regex, "_").lowercase()
 
   /**
    * Invocador del objeto proveedor que invoca el procesador para resolver
@@ -55,7 +51,8 @@ class ServiceFunctionParamSupplier : ServiceParamSupplier<String> {
    *
    * @return Nombre cualificado del método en formato snake case.
    */
-  override fun invoke(method: Method, params: Map<MethodParameter, Any?>): String {
-    return method.toSnakeCase()
-  }
+  override fun invoke(
+    method: Method,
+    params: Map<MethodParameter, Any?>,
+  ): String = method.toSnakeCase()
 }

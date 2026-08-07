@@ -1,17 +1,17 @@
 <form (submit)="onSubmit($event)">
   <div>
     <img src="logo1.png" alt="Logo" />
-    <h2>Iniciar sesión</h2>
+    <h2>Inicio de sesión</h2>
   </div>
 
   <mat-form-field>
     <mat-label>Host</mat-label>
     <input matInput [formField]="loginForm.host" [matAutocomplete]="auto" />
-    @if (isInsecureHost()) {
+    @if ($insecure()) {
       <mat-icon matSuffix title="Conexión no segura">warning</mat-icon>
     }
     <mat-autocomplete #auto="matAutocomplete">
-      @for (host of filteredHosts(); track host) {
+      @for (host of $hosts(); track host) {
         <mat-option [value]="host">{{ host }}</mat-option>
       }
     </mat-autocomplete>
@@ -39,7 +39,7 @@
 
   <div>
     <mat-checkbox [formField]="loginForm.rememberHost">Recordar host</mat-checkbox>
-    <mat-checkbox [formField]="loginForm.rememberUser">Recordar usuario</mat-checkbox>
+    <mat-checkbox [formField]="loginForm.rememberUsername">Recordar usuario</mat-checkbox>
     <mat-checkbox [formField]="loginForm.offlineMode">Modo sin conexión</mat-checkbox>
   </div>
 

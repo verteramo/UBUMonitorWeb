@@ -11,10 +11,9 @@ import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty
  * @author Marcelo Verteramo Pérsico (mvp1011@alu.ubu.es)
  */
 class MoodleException(
-    message: String,
-    val status: HttpStatus,
+  message: String,
+  val status: HttpStatus,
 ) : RuntimeException(message) {
-
   /**
    * Estructura JSON que devuelve el servicio de autenticación de Moodle al no poder generar un
    * token. El endpoint para obtener el token siempre responde en formato JSON, por ello no hace
@@ -24,13 +23,12 @@ class MoodleException(
    * https://github.com/moodle/moodle/blob/main/public/login/token.php#L106
    */
   data class AuthError(
-      val error: String,
-      val errorcode: String,
-
+    val error: String,
+    val errorcode: String,
     // Opcionales (si el administrador habilita depuración)
-      val stacktrace: String?,
-      val debuginfo: String?,
-      val reproductionlink: String?,
+    val stacktrace: String?,
+    val debuginfo: String?,
+    val reproductionlink: String?,
   )
 
   /**
@@ -44,17 +42,19 @@ class MoodleException(
    * https://github.com/moodle/moodle/blob/main/public/webservice/lib.php
    */
   data class RestError(
-      @JacksonXmlProperty(isAttribute = true, localName = "class") val exception: String,
-      @JacksonXmlProperty(localName = "ERRORCODE") val errorcode: String,
-      @JacksonXmlProperty(localName = "MESSAGE") val message: String,
+    @JacksonXmlProperty(isAttribute = true, localName = "class") val exception: String,
+    @JacksonXmlProperty(localName = "ERRORCODE") val errorcode: String,
+    @JacksonXmlProperty(localName = "MESSAGE") val message: String,
   )
 
   companion object {
     /** Mapeo de códigos de error de Moodle a códigos de estado HTTP. */
-    private val STATUS_CODES = mapOf(
-      "invalidlogin" to HttpStatus.UNAUTHORIZED,
-      "invalidtoken" to HttpStatus.UNAUTHORIZED,
-    )
+    private val STATUS_CODES =
+      mapOf(
+        "invalidlogin" to HttpStatus.UNAUTHORIZED,
+        "invalidtoken" to HttpStatus.UNAUTHORIZED,
+        "nopermissions" to HttpStatus.FORBIDDEN,
+      )
   }
 
   /**

@@ -10,8 +10,8 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
@@ -20,15 +20,21 @@ import org.springframework.web.bind.annotation.RestController
 class MoodleAuthenticationController(
   private val manager: AuthenticationManager,
 ) {
+  data class LoginRequestBody(
+    val username: String,
+    val password: String,
+  )
+
   private val repository = HttpSessionSecurityContextRepository()
 
   @PostMapping("/login")
   fun login(
     request: HttpServletRequest,
     response: HttpServletResponse,
-    @RequestParam username: String,
-    @RequestParam password: String,
+    @RequestBody body: LoginRequestBody,
   ): MoodlePrincipalDto {
+    val (username, password) = body
+
     val authentication =
       manager.authenticate(
         UsernamePasswordAuthenticationToken(username, password),

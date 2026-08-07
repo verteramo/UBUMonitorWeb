@@ -15,3 +15,4 @@ security:
     - /swagger-ui/index.html
     - /v3/api-docs
     - /api/auth/login
+    - /api/auth/logout
