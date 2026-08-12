@@ -23,10 +23,11 @@ import org.springframework.web.server.ResponseStatusException
  *
  * @author Marcelo Verteramo Pérsico (mvp1011@alu.ubu.es)
  */
-enum class Message(private val code: String) {
+enum class Message(
+  private val code: String,
+) {
   ERROR_HTTP_MISSING_HEADER("error.http.missing_header"),
-  ERROR_NET_INVALID_URI("error.net.invalid_uri"),
-  ;
+  ERROR_NET_INVALID_URI("error.net.invalid_uri"), ;
 
   /**
    * Obtiene un mensaje localizado y parametrizado desde el proveedor de mensajes.
@@ -34,9 +35,7 @@ enum class Message(private val code: String) {
    * @param args Argumentos del mensaje.
    * @return Mensaje.
    */
-  operator fun invoke(vararg args: Any): String {
-    return Provider(code, *args)
-  }
+  operator fun invoke(vararg args: Any): String = Provider(code, *args)
 
   /**
    * Obtiene una excepción con estado HTTP y mensaje localizado y parametrizado desde el proveedor
@@ -46,9 +45,10 @@ enum class Message(private val code: String) {
    * @param args Argumentos del mensaje.
    * @return Excepción HTTP.
    */
-  operator fun invoke(status: HttpStatus, vararg args: Any): ResponseStatusException {
-    return ResponseStatusException(status, this(*args))
-  }
+  operator fun invoke(
+    status: HttpStatus,
+    vararg args: Any,
+  ): ResponseStatusException = ResponseStatusException(status, this(*args))
 
   /**
    * Sobrecarga con código de estado como número entero.
@@ -57,9 +57,10 @@ enum class Message(private val code: String) {
    * @param args Argumentos del mensaje.
    * @return Excepción HTTP.
    */
-  operator fun invoke(code: Int, vararg args: Any): ResponseStatusException {
-    return ResponseStatusException(HttpStatusCode.valueOf(code), this(*args))
-  }
+  operator fun invoke(
+    code: Int,
+    vararg args: Any,
+  ): ResponseStatusException = ResponseStatusException(HttpStatusCode.valueOf(code), this(*args))
 
   /**
    * Componente para la obtención de mensajes internacionalizados.
@@ -67,10 +68,11 @@ enum class Message(private val code: String) {
    * @param source Resolutor de mensajes localizados desde los ficheros de mensajes.
    */
   @Component
-  class Provider(private val source: MessageSource) {
-
+  class Provider(
+    private val source: MessageSource,
+  ) {
+    // Inicialización del singleton.
     init {
-      /** Inicialización del singleton. */
       instance = this
     }
 
@@ -85,9 +87,10 @@ enum class Message(private val code: String) {
        * @param args Argumentos del mensaje.
        * @return Mensaje.
        */
-      operator fun invoke(code: String, vararg args: Any): String {
-        return instance.source.getMessage(code, args, LocaleContextHolder.getLocale())
-      }
+      operator fun invoke(
+        code: String,
+        vararg args: Any,
+      ): String = instance.source.getMessage(code, args, LocaleContextHolder.getLocale())
     }
   }
 }

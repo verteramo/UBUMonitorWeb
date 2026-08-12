@@ -23,10 +23,9 @@ import tools.jackson.dataformat.xml.XmlMapper
  */
 @Component
 class MoodleExceptionInterceptor(
-    private val jsonMapper: ObjectMapper,
-    private val xmlMapper: XmlMapper,
+  private val jsonMapper: ObjectMapper,
+  private val xmlMapper: XmlMapper,
 ) : ClientHttpRequestInterceptor {
-
   /**
    * Función de extensión para evitar encadenar llamadas a `has` en verificaciones booleanas; donde
    * se haría: `tree.has("prop1") && tree.has("prop2") && ...`
@@ -36,30 +35,13 @@ class MoodleExceptionInterceptor(
    * @param props Propiedades a verificar.
    * @return `true` si existen todas las propiedades, `false` en caso contrario.
    */
-  private fun JsonNode.has(vararg props: String): Boolean {
-    for (prop in props) {
-      if (!has(prop)) {
-        return false
-      }
-    }
-
-    return true
-  }
+  private fun JsonNode.has(vararg props: String): Boolean = props.all { has(it) }
 
   /**
-   * Función de extensión que obtiene el mapper correspondiente de acuerdo con el [org.springframework.http.MediaType] de la
-   * respuesta.
-   *
-   * @param block Código de usuario con el mapper adecuado.
+   * Propiedad de extensión que indica si el `Content-Type` es de tipo `application/xml`.
    */
-  private fun MediaType?.useMapper(block: (ObjectMapper) -> Unit) {
-    block(
-      if (this?.let {
-            includes(MediaType.TEXT_XML) || includes(MediaType.APPLICATION_XML)
-          } == true) xmlMapper
-      else jsonMapper,
-    )
-  }
+  private val MediaType?.isXml: Boolean
+    get() = this?.includes(MediaType.APPLICATION_XML) == true
 
   /**
    * Método interceptor.
@@ -70,31 +52,37 @@ class MoodleExceptionInterceptor(
    * @return Respuesta para seguir siendo interceptada.
    */
   override fun intercept(
-      request: HttpRequest,
-      body: ByteArray,
-      execution: ClientHttpRequestExecution,
+    request: HttpRequest,
+    body: ByteArray,
+    execution: ClientHttpRequestExecution,
   ): ClientHttpResponse {
-
-    // Obtención de la respuesta, si quedan interceptores,
-    // Spring Boot los llama sucesivamente hasta
-    // obtener la respuesta final del servicio
+    /*
+     * Obtención de la respuesta;
+     * si quedan interceptores, Spring Boot los llama
+     * sucesivamente hasta obtener la respuesta final del servicio
+     */
     val response = execution.execute(request, body)
 
     // Solo se habilita en respuestas con código 200
-    if (response.statusCode.isSameCodeAs(HttpStatus.OK)) {
-      response.headers.contentType.useMapper { mapper ->
-
-        val tree = mapper.readTree(response.body)
-
-        // Error del servicio de autenticación
-        if (tree.has("errorcode", "error")) {
-          throw MoodleException(mapper.treeToValue(tree, MoodleException.AuthError::class.java))
+    if (response.statusCode.isSameCodeAs(HttpStatus.OK)) { // Obtención del mapper correspondiente según el tipo de la respuesta
+      val mapper =
+        if (response.headers.contentType.isXml) {
+          xmlMapper
+        } else {
+          jsonMapper
         }
 
-        // Error de los servicios REST
-        if (tree.has("errorcode", "exception") || tree.has("class", "ERRORCODE")) {
-          throw MoodleException(mapper.treeToValue(tree, MoodleException.RestError::class.java))
-        }
+      // Decodificación del cuerpo de la respuesta
+      val tree = mapper.readTree(response.body)
+
+      // Error del servicio de autenticación
+      if (tree.has("errorcode", "error")) {
+        throw MoodleException(mapper.treeToValue(tree, MoodleException.AuthError::class.java))
+      }
+
+      // Error de los servicios REST
+      if (tree.has("errorcode", "exception") || tree.has("class", "ERRORCODE")) {
+        throw MoodleException(mapper.treeToValue(tree, MoodleException.RestError::class.java))
       }
     }
 

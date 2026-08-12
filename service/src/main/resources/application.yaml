@@ -8,6 +8,7 @@ spring:
   profiles:
     default: dev
 
+# Configuración de la cookie de sesión.
 server:
   servlet:
     session:
@@ -15,34 +16,46 @@ server:
         http-only: true
         same-site: strict
 
-service:
-  default:
-    host-header: Moodle-Host
-    send-headers:
-      - Accept-Language
-    headers:
-      Content-Type: application/x-www-form-urlencoded
 
+
+clients:
+#  argument-resolvers:
+#    data-class: true
   profiles:
+    # Perfil con propiedades por defecto.
+    default:
+      host: es.ubu.lsi.ubumonitorweb.core.client.ClientHostHeaderProvider
+      headers:
+        Content-Type: application/x-www-form-urlencoded
+      forward-headers:
+        - Accept-Language
+
+    # Perfil del servicio de obtención del token.
     credentials:
+      inherit: default
       endpoint: /login/token.php
       params:
         service: moodle_mobile_app
 
+    # Perfil del servicio de obtención de los datos del usuario propietario del token.
     principal:
+      inherit: default
       endpoint: /webservice/rest/server.php
       params:
         moodlewsrestformat: json
         wsfunction: core_webservice_get_site_info
 
+    # Perfil de los servicios REST.
     webservice:
+      host: es.ubu.lsi.ubumonitorweb.core.client.ClientHostSessionProvider
+      inherit: default
       endpoint: /webservice/rest/server.php
       params:
         moodlewsrestformat: json
-      suppliers:
+      providers:
         wstoken:
           location: param
-          bean: es.ubu.lsi.ubumonitorweb.core.service.ServiceTokenParamSupplier
+          bean: es.ubu.lsi.ubumonitorweb.core.client.ClientTokenProvider
         wsfunction:
           location: param
-          bean: es.ubu.lsi.ubumonitorweb.core.service.ServiceFunctionParamSupplier
+          bean: es.ubu.lsi.ubumonitorweb.core.client.ClientFunctionProvider
