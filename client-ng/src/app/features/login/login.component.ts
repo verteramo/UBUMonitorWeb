@@ -32,21 +32,25 @@ export interface LoginForm extends LoginPrefs {
 })
 export class LoginComponent {
   private router = inject(Router);
+  private prefsStore = inject(LoginPrefsStore);
   private authService = inject(AuthService);
-  private prefs = inject(LoginPrefsStore);
   private snackService = inject(SnackService);
 
-  $form = signal<LoginForm>({ ...this.prefs.$value(), password: '' });
+  /** Señal del formulario. */
+  $form = signal<LoginForm>({ ...this.prefsStore.$value(), password: '' });
 
+  /** Señal computada que filtra hosts guardados. */
   $hosts = computed(() => {
     const input = this.$form().host.toLowerCase();
     return this.$form().hosts.filter((host) => host.toLowerCase().includes(input));
   });
 
+  /** Señal computada que verifica el protocolo inseguro. */
   $insecure = computed(() => {
     return this.$form().host.startsWith('http:');
   });
 
+  /** Esquema del formulario. */
   loginForm = form(this.$form, (schema) => {
     url(schema.host, { message: $localize`Invalid URL` });
     required(schema.host, { message: $localize`Host required` });
@@ -54,6 +58,14 @@ export class LoginComponent {
     required(schema.password, { message: $localize`Password required` });
   });
 
+  /**
+   * Evento de envío del formulario.
+   * Se realiza la solicitud de login,
+   * en caso de éxito se loguea el usuario autenticado y,
+   * al completar, se guardan las preferencias según las
+   * casillas habilitadas por el usuario y se redirige al
+   * componente de selección de curso/asignatura.
+   */
   onSubmit(event: Event) {
     event.preventDefault();
 
@@ -67,13 +79,19 @@ export class LoginComponent {
         this.snackService.show(detail);
       },
       complete: () => {
-        this.prefs.set(this.$form());
+        this.prefsStore.set(this.$form());
         this.router.navigate(['/course-selection']);
       },
     });
   }
 
+  /** Reestablece los campos con los valores guardados en las preferencias. */
+  onRefresh() {
+    this.$form.set({ ...this.prefsStore.$value(), password: '' });
+  }
+
+  /** Vacía completamente los campos. */
   onClear() {
-    this.$form.set({ ...this.prefs.initialValue, password: '' });
+    this.$form.set({ ...this.prefsStore.initialValue, password: '' });
   }
 }

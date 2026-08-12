@@ -15,6 +15,8 @@ import { CourseService } from '@core/api/course.service';
 import { Course } from '@core/models/course';
 import { ProblemDetail } from '@core/models/problem-detail';
 import { SnackService } from '@core/services/snack.service';
+import { CourseStore } from '@core/store/course.store';
+import { PrincipalStore } from '@core/store/principal.store';
 
 export interface SyncOptions {
   updateData: boolean;
@@ -51,11 +53,13 @@ export class CourseSelectionComponent implements OnInit {
   private authService = inject(AuthService);
   private courseService = inject(CourseService);
   private snackService = inject(SnackService);
-  private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private principalStore = inject(PrincipalStore);
+  private courseStore = inject(CourseStore);
 
   $title = signal(this.route.snapshot.title || 'Selección de curso/asignatura');
-  $principal = this.authService.getPrincipal();
+  $principal = this.principalStore.$value;
 
   $isLoading = signal(true);
   $activeTab = signal(0);
@@ -69,7 +73,7 @@ export class CourseSelectionComponent implements OnInit {
   $grades = signal(false);
   $completeAct = signal(false);
 
-  displayedColumns: string[] = ['select', 'favorite', 'fullname', 'coursecategory'];
+  displayedColumns: string[] = ['select', 'favorite', 'name', 'category'];
 
   $filteredCourses = computed<Course[]>(() => {
     const category = TAB_ENDPOINTS[this.$activeTab()];
@@ -85,9 +89,9 @@ export class CourseSelectionComponent implements OnInit {
       filtered.sort((a, b) => {
         const isAsc = direction === 'asc';
         switch (active) {
-          case 'fullname':
+          case 'name':
             return compare(a.fullname, b.fullname, isAsc);
-          case 'coursecategory':
+          case 'category':
             return compare(a.category?.name || '', b.category?.name || '', isAsc);
           default:
             return 0;
@@ -129,23 +133,26 @@ export class CourseSelectionComponent implements OnInit {
   }
 
   onSelectCourse(): void {
-    const payload = {
-      course: this.$selectedCourse(),
-      options: {
-        updateData: this.$updateData(),
-        logs: this.$logs(),
-        grades: this.$grades(),
-        completeAct: this.$completeAct(),
-      } as SyncOptions,
-    };
-    console.log('Sincronizando:', payload);
+    const course = this.$selectedCourse();
+    if (course) {
+      this.courseStore.set(course);
+
+      const payload = {
+        course,
+        options: {
+          updateData: this.$updateData(),
+          logs: this.$logs(),
+          grades: this.$grades(),
+          completeAct: this.$completeAct(),
+        } as SyncOptions,
+      };
+      console.log('Sincronizando:', payload);
+
+      this.router.navigate(['/dashboard']);
+    }
   }
 
   logout(): void {
-    this.authService.logout().subscribe({
-      complete: () => {
-        this.router.navigate(['/login']);
-      },
-    });
+    this.authService.logout();
   }
 }

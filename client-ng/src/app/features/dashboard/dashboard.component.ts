@@ -8,8 +8,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '@core/api/auth.service';
-import { ProblemDetail } from '@core/models/problem-detail';
 import { SnackService } from '@core/services/snack.service';
+import { PrincipalStore } from '@core/store/principal.store';
 
 @Component({
   selector: 'app-dashboard',
@@ -29,19 +29,13 @@ import { SnackService } from '@core/services/snack.service';
 })
 export class DashboardComponent {
   private router = inject(Router);
+  private principalStore = inject(PrincipalStore);
   private authService = inject(AuthService);
   private snackService = inject(SnackService);
 
-  $principal = this.authService.getPrincipal();
+  $principal = this.principalStore.$value;
 
   logout() {
-    this.authService.logout().subscribe({
-      error: ({ detail }: ProblemDetail) => {
-        this.snackService.show(detail || $localize`Unknown error`);
-      },
-      complete: () => {
-        this.router.navigate(['/login']);
-      },
-    });
+    this.authService.logout();
   }
 }

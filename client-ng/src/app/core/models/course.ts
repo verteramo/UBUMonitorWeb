@@ -13,7 +13,7 @@ export interface Category {
   path: string;
 }
 
-export interface Course {
+export interface ApiCourse {
   id: number;
   fullname: string;
   summary: string;
@@ -24,3 +24,8 @@ export interface Course {
   enddate: number;
   category: Category;
 }
+
+export type Course = Omit<ApiCourse, 'startdate'  | 'enddate'> & {
+  startdate: Date;
+  enddate: Date;
+};

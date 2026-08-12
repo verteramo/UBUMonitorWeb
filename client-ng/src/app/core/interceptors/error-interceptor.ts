@@ -3,8 +3,8 @@ import { catchError } from 'rxjs';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
-    catchError(({ error }: HttpErrorResponse) => {
-      throw error;
+    catchError((response: HttpErrorResponse) => {
+      throw response.error;
     }),
   );
 };

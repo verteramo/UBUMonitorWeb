@@ -1,14 +1,14 @@
 <form (submit)="onSubmit($event)">
   <div>
-    <img src="logo1.png" alt="Logo" />
-    <h2>Inicio de sesión</h2>
+    <img src="logo1.png" alt="UBUMonitorWeb" />
+    <h2 i18n>Login</h2>
   </div>
 
   <mat-form-field>
-    <mat-label>Host</mat-label>
+    <mat-label i18n>Host</mat-label>
     <input matInput [formField]="loginForm.host" [matAutocomplete]="auto" />
     @if ($insecure()) {
-      <mat-icon matSuffix title="Conexión no segura">warning</mat-icon>
+      <mat-icon matSuffix i18n-title title="Insecure connection">warning</mat-icon>
     }
     <mat-autocomplete #auto="matAutocomplete">
       @for (host of $hosts(); track host) {
@@ -22,7 +22,7 @@
   </mat-form-field>
 
   <mat-form-field>
-    <mat-label>Usuario</mat-label>
+    <mat-label i18n>User</mat-label>
     <input matInput [formField]="loginForm.username" />
     @if (loginForm.username().errors()[0]; as err) {
       <mat-error>{{ err.message }}</mat-error>
@@ -30,7 +30,7 @@
   </mat-form-field>
 
   <mat-form-field>
-    <mat-label>Contraseña</mat-label>
+    <mat-label i18n>Password</mat-label>
     <input matInput type="password" [formField]="loginForm.password" />
     @if (loginForm.password().errors()[0]; as err) {
       <mat-error>{{ err.message }}</mat-error>
@@ -38,15 +38,24 @@
   </mat-form-field>
 
   <div>
-    <mat-checkbox [formField]="loginForm.rememberHost">Recordar host</mat-checkbox>
-    <mat-checkbox [formField]="loginForm.rememberUsername">Recordar usuario</mat-checkbox>
-    <mat-checkbox [formField]="loginForm.offlineMode">Modo sin conexión</mat-checkbox>
+    <mat-checkbox i18n [formField]="loginForm.rememberHost">Remember host</mat-checkbox>
+    <mat-checkbox i18n [formField]="loginForm.rememberUsername">Remember username</mat-checkbox>
+    <mat-checkbox i18n [formField]="loginForm.offlineMode">Offline mode</mat-checkbox>
   </div>
 
   <div>
-    <button matButton="filled" color="primary" type="submit">Conectar</button>
-    <button matIconButton type="button" (click)="onClear()" title="Limpiar">
+    <button i18n matButton="filled" color="primary" type="submit">Connect</button>
+    <button matIconButton type="button" (click)="onClear()" i18n-title title="Clean">
       <mat-icon>cleaning_services</mat-icon>
+    </button>
+    <button
+      matIconButton
+      type="button"
+      (click)="onRefresh()"
+      i18n-title
+      title="Restore preferences"
+    >
+      <mat-icon>settings_backup_restore</mat-icon>
     </button>
   </div>
 </form>

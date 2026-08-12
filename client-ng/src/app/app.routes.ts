@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { courseGuard } from '@core/guards/course-guard';
 import { privateGuard } from '@core/guards/private-guard';
 import { publicGuard } from '@core/guards/public-guard';
 import { CourseSelectionComponent } from '@features/course-selection/course-selection.component';
@@ -27,6 +28,6 @@ export const routes: Routes = [
     path: 'dashboard',
     title: $localize`Dashboard`,
     component: DashboardComponent,
-    canActivate: [privateGuard],
+    canActivate: [privateGuard, courseGuard],
   },
 ];

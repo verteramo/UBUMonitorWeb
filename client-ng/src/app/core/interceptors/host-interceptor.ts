@@ -1,13 +1,12 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { SESSION_STORAGE } from '@core/services/storage.service';
+import { HostStore } from '@core/store/host.store';
 
-export const HOST_KEY = 'host';
 const HOST_HEADER = 'Moodle-Host';
 
 export const hostInterceptor: HttpInterceptorFn = (req, next) => {
-  const storage = inject(SESSION_STORAGE);
-  const host = storage.get<string>(HOST_KEY);
+  const hostStore = inject(HostStore);
+  const host = hostStore.$value();
 
   if (host) {
     return next(

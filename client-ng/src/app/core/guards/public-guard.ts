@@ -1,13 +1,12 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { AuthService } from '@core/api/auth.service';
+import { PrincipalStore } from '@core/store/principal.store';
 
 export const publicGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
-  const authService = inject(AuthService);
-  const $principal = authService.getPrincipal();
+  const principalStore = inject(PrincipalStore);
 
-  if ($principal() != null) {
+  if (principalStore.$value() != null) {
     return router.createUrlTree(['/dashboard']);
   }
 

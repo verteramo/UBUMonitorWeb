@@ -24,17 +24,19 @@ export class LoginPrefsStore extends AbstractStore<LoginPrefs> {
     });
   }
 
-  protected override reduce(oldValue: LoginPrefs, newValue: LoginPrefs): LoginPrefs {
-    const { host } = newValue;
-    const { hosts } = oldValue;
+  override set(newValue: LoginPrefs) {
+    this.update((oldValue) => {
+      const { host } = newValue;
+      const { hosts } = oldValue;
 
-    return {
-      host: newValue.rememberHost ? newValue.host : '',
-      username: newValue.rememberUsername ? newValue.username : '',
-      rememberHost: newValue.rememberHost,
-      rememberUsername: newValue.rememberUsername,
-      offlineMode: newValue.offlineMode,
-      hosts: hosts.includes(host) ? hosts : [...hosts, host],
-    };
+      return {
+        host: newValue.rememberHost ? newValue.host : '',
+        username: newValue.rememberUsername ? newValue.username : '',
+        rememberHost: newValue.rememberHost,
+        rememberUsername: newValue.rememberUsername,
+        offlineMode: newValue.offlineMode,
+        hosts: hosts.includes(host) ? hosts : [...hosts, host],
+      };
+    });
   }
 }

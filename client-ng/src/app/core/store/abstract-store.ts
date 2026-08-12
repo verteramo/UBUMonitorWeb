@@ -2,8 +2,6 @@ import { effect, Signal, signal, WritableSignal } from '@angular/core';
 import { StorageService } from '@core/services/storage.service';
 
 export abstract class AbstractStore<T> {
-  protected abstract reduce(oldValue: T, newValue: T): T;
-
   private signal: WritableSignal<T>;
 
   constructor(
@@ -12,7 +10,15 @@ export abstract class AbstractStore<T> {
     readonly initialValue: T,
   ) {
     this.signal = signal<T>(storage.get<T>(key) ?? initialValue);
-    effect(() => storage.set(key, this.signal()));
+    effect(() => {
+      const value = this.signal();
+
+      if (value == null) {
+        storage.remove(key);
+      } else {
+        storage.set(key, value);
+      }
+    });
   }
 
   get $value(): Signal<T> {
@@ -20,7 +26,11 @@ export abstract class AbstractStore<T> {
   }
 
   set(newValue: T): void {
-    this.signal.update((oldValue) => this.reduce(oldValue, newValue));
+    this.signal.set(newValue);
+  }
+
+  update(updater: (oldValue: T) => T): void {
+    this.signal.update(updater);
   }
 
   clear() {
