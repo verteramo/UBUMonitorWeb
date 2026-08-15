@@ -75,8 +75,14 @@ export class LoginComponent {
       next: (principal) => {
         console.log($localize`Authenticated`, principal);
       },
-      error: ({ detail }: ProblemDetail) => {
-        this.snackService.show(detail);
+      error: ({ status, detail }: ProblemDetail) => {
+        if (status === 502) {
+          detail = $localize`Server unreachable`;
+        }
+
+        if (detail) {
+          this.snackService.show(detail);
+        }
       },
       complete: () => {
         this.prefsStore.set(this.$form());

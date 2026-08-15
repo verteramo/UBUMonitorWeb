@@ -11,7 +11,10 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '@core/api/auth.service';
-import { CourseService } from '@core/api/course.service';
+import {
+  COURSE_CLASSIFICATION,
+  CourseService
+} from '@core/api/course.service';
 import { Course } from '@core/models/course';
 import { ProblemDetail } from '@core/models/problem-detail';
 import { SnackService } from '@core/services/snack.service';
@@ -25,7 +28,7 @@ export interface SyncOptions {
   completeAct: boolean;
 }
 
-const TAB_ENDPOINTS = ['all', 'starred', 'recent', 'inprogress', 'future', 'past'];
+const TAB_ENDPOINTS = COURSE_CLASSIFICATION;
 
 function compare(a: string, b: string, isAsc: boolean) {
   return (a < b ? -1 : 1) * (isAsc ? 1 : -1);

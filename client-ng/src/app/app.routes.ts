@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
+import { authGuard } from '@core/guards/auth-guard';
 import { courseGuard } from '@core/guards/course-guard';
-import { privateGuard } from '@core/guards/private-guard';
-import { publicGuard } from '@core/guards/public-guard';
 import { CourseSelectionComponent } from '@features/course-selection/course-selection.component';
 import { DashboardComponent } from '@features/dashboard/dashboard.component';
 import { LoginComponent } from '@features/login/login.component';
@@ -16,18 +15,18 @@ export const routes: Routes = [
     path: 'login',
     title: $localize`Login`,
     component: LoginComponent,
-    canActivate: [publicGuard],
+    canActivate: [authGuard(false)],
   },
   {
     path: 'course-selection',
     title: $localize`Course selection`,
     component: CourseSelectionComponent,
-    canActivate: [privateGuard],
+    canActivate: [authGuard(true), courseGuard(false)],
   },
   {
     path: 'dashboard',
     title: $localize`Dashboard`,
     component: DashboardComponent,
-    canActivate: [privateGuard, courseGuard],
+    canActivate: [authGuard(true), courseGuard(true)],
   },
 ];
