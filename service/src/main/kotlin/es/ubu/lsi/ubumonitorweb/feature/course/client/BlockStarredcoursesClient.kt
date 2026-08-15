@@ -7,8 +7,8 @@ import org.springframework.web.service.annotation.PostExchange
 /**
  * Cliente HTTP de obtención de cursos destacados.
  *
- * @author Marcelo Verteramo Pérsico (mvp1011@alu.ubu.es)*/
-@ClientProfile("webservice")
+ * @author Marcelo Verteramo Pérsico*/
+@ClientProfile("webservice-client")
 interface BlockStarredcoursesClient {
   /** Obtiene los curso destacados del usuario autenticado. */
   @PostExchange

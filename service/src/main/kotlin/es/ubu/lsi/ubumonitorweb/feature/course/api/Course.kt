@@ -5,7 +5,7 @@ import es.ubu.lsi.ubumonitorweb.feature.course.dto.MoodleCategory
 /**
  * Objeto de curso normalizado.
  *
- * @author Marcelo Verteramo Pérsico (mvp1011@alu.ubu.es)
+ * @author Marcelo Verteramo Pérsico
  */
 data class Course(
   val id: Int,

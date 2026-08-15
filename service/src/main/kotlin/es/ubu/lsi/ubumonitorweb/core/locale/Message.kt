@@ -21,13 +21,15 @@ import org.springframework.web.server.ResponseStatusException
  *
  * @param code Identificador del mensaje.
  *
- * @author Marcelo Verteramo Pérsico (mvp1011@alu.ubu.es)
+ * @author Marcelo Verteramo Pérsico
  */
 enum class Message(
   private val code: String,
 ) {
   ERROR_HTTP_MISSING_HEADER("error.http.missing_header"),
-  ERROR_NET_INVALID_URI("error.net.invalid_uri"), ;
+  ERROR_PROFILE_INHERIT("error.profile_inherit"),
+  ERROR_PROFILE_NOT_FOUND("error.profile_not_found"),
+  ;
 
   /**
    * Obtiene un mensaje localizado y parametrizado desde el proveedor de mensajes.

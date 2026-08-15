@@ -33,14 +33,10 @@ import java.io.InputStream
  * Inyecta **interceptores**, que se ejecutan justo después de los procesadores, cuando ya se han
  * recopilado los datos de la solicitud, pero aún no se ha enviado al servicio remoto.
  *
- * @param argumentResolvers Resolutores de argumentos.
- * @param serviceInterceptors Interceptores de solicitudes salientes.
- * @param serviceProcessors Procesadores de solicitudes salientes.
- *
- * @author Marcelo Verteramo Pérsico (mvp1011@alu.ubu.es)
+ * @author Marcelo Verteramo Pérsico
  */
 @Configuration
-@EnableConfigurationProperties(ClientProfile.Properties::class)
+@EnableConfigurationProperties(ClientProperties::class)
 class ClientConfigurer(
   private val argumentResolvers: List<HttpServiceArgumentResolver>,
   private val serviceInterceptors: List<ClientHttpRequestInterceptor>,
@@ -49,38 +45,25 @@ class ClientConfigurer(
   /** Logger */
   private val logger = KotlinLogging.logger {}
 
-  /**
-   * Configura los grupos de clientes.
-   *
-   * @param groups Grupos de clientes.
-   */
+  /** Configura los grupos de clientes. */
   override fun configureGroups(groups: HttpServiceGroupConfigurer.Groups<RestClient.Builder>) {
     groups.forEachGroup { _, clientBuilder, factoryBuilder ->
 
-      // Configuración del builder del cliente interno que realiza las solicitudes
       clientBuilder
         .requestFactory(
-          // Permite la lectura múltiple del flujo de respuesta,
-          // útil para logging o interceptores
           BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory()),
         ).requestInterceptors { list ->
-
-          // Registro de interceptores
           serviceInterceptors.forEach { interceptor ->
             list.add(interceptor)
             logger.debug { "Interceptor: ${interceptor.javaClass.simpleName}" }
           }
         }
 
-      // Configuración de la factoría de clientes
-
-      // Registro de resolvers de argumentos
       argumentResolvers.forEach { resolver ->
         factoryBuilder.customArgumentResolver(resolver)
         logger.debug { "ArgumentResolver: ${resolver.javaClass.simpleName}" }
       }
 
-      // Registro de procesadores
       serviceProcessors.forEach { processor ->
         factoryBuilder.httpRequestValuesProcessor(processor)
         logger.debug { "Processor: ${processor.javaClass.simpleName}" }

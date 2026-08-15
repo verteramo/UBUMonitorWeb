@@ -15,7 +15,7 @@ import org.springframework.web.service.registry.ImportHttpServices
  * construyendo los criterios de solicitud y manteniendo un mapa en memoria de las categorías
  * solicitadas al servicio, para evitar la sobrecarga y reducir el tiempo de espera.
  *
- * @author Marcelo Verteramo Pérsico (mvp1011@alu.ubu.es)
+ * @author Marcelo Verteramo Pérsico
  */
 @Service
 @ImportHttpServices(

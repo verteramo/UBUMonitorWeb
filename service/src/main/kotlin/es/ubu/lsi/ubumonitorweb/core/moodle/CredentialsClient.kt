@@ -1,4 +1,4 @@
-package es.ubu.lsi.ubumonitorweb.core.security
+package es.ubu.lsi.ubumonitorweb.core.moodle
 
 import es.ubu.lsi.ubumonitorweb.core.client.ClientProfile
 import org.springframework.web.bind.annotation.RequestParam
@@ -8,14 +8,14 @@ import org.springframework.web.service.annotation.PostExchange
  * Cliente HTTP que obtiene las credenciales, se hidrata desde el perfil `credentials` definido en
  * el fichero de configuración de la aplicación.
  *
- * @author Marcelo Verteramo Pérsico (mvp1011@alu.ubu.es)
+ * @author Marcelo Verteramo Pérsico
  */
-@ClientProfile("credentials")
-interface MoodleCredentialsClient {
-  /** Realiza la solicitud de las credenciales. */
+@ClientProfile
+interface CredentialsClient {
+  /** Solicitud de las credenciales. */
   @PostExchange
   fun getCredentials(
     @RequestParam username: String,
     @RequestParam password: String,
-  ): MoodleCredentials
+  ): Credentials
 }

@@ -13,10 +13,7 @@ import org.springframework.security.web.SecurityFilterChain
 /**
  * Configuración de seguridad.
  *
- * Declara en bean que provee el objeto [AuthenticationManager].
- * Declara el bean que provee la cadena de filtros de seguridad, [SecurityFilterChain].
- *
- * @author Marcelo Verteramo Pérsico (mvp1011@alu.ubu.es)
+ * @author Marcelo Verteramo Pérsico
  */
 @Configuration
 @EnableWebSecurity
@@ -24,11 +21,9 @@ import org.springframework.security.web.SecurityFilterChain
 class SecurityConfiguration(
   private val properties: SecurityProperties,
 ) {
-  /** Obtiene el objeto [AuthenticationManager]. */
   @Bean
   fun authenticationManager(config: AuthenticationConfiguration): AuthenticationManager? = config.authenticationManager
 
-  /** Obtiene el objeto [SecurityFilterChain]. */
   @Bean
   fun securityFilterChain(security: HttpSecurity): SecurityFilterChain =
     security

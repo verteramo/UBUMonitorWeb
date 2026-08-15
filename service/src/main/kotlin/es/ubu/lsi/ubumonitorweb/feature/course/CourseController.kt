@@ -1,6 +1,6 @@
 package es.ubu.lsi.ubumonitorweb.feature.course
 
-import es.ubu.lsi.ubumonitorweb.core.security.MoodlePrincipal
+import es.ubu.lsi.ubumonitorweb.core.moodle.Principal
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RestController
 /**
  * Controlado público que proporciona los cursos del usuario autenticado.
  *
- * @author Marcelo Verteramo Pérsico (mvp1011@alu.ubu.es)
+ * @author Marcelo Verteramo Pérsico
  */
 @RestController
-@RequestMapping("/api/course")
+@RequestMapping("/api/courses")
 class CourseController(
   private val courseService: CourseService,
 ) {
@@ -26,7 +26,7 @@ class CourseController(
    */
   @GetMapping("/{classification:all|recent|starred|past|future|inprogress}")
   fun getCourses(
-    @AuthenticationPrincipal principal: MoodlePrincipal,
+    @AuthenticationPrincipal principal: Principal,
     @PathVariable classification: String,
   ) = when (classification) {
     "all" -> courseService.getCourses(principal.userid)

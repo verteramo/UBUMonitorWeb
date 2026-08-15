@@ -14,7 +14,7 @@ import es.ubu.lsi.ubumonitorweb.feature.course.api.Course
  * - `core_course_get_enrolled_courses_by_timeline_classification`
  * Entregan la categoría como: `coursecategory: String`, que representa su nombre.
  *
- * @author Marcelo Verteramo Pérsico (mvp1011@alu.ubu.es)
+ * @author Marcelo Verteramo Pérsico
  */
 data class MoodleCourse(
   val id: Int,

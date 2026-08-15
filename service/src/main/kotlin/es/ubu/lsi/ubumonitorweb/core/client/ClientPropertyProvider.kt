@@ -6,7 +6,7 @@ import java.lang.reflect.Method
 /**
  * Contrato de los beans que resuelven propiedades de configuración de los clientes.
  *
- * @author Marcelo Verteramo Pérsico (mvp1011@alu.ubu.es)
+ * @author Marcelo Verteramo Pérsico
  */
 fun interface ClientPropertyProvider<out T> {
   /**

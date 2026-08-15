@@ -7,6 +7,9 @@ spring:
     fallback-to-system-locale: false
   profiles:
     default: dev
+  mvc:
+    problemdetails:
+      enabled: true
 
 # Configuración de la cookie de sesión.
 server:
@@ -16,39 +19,42 @@ server:
         http-only: true
         same-site: strict
 
-
-
-clients:
-#  argument-resolvers:
-#    data-class: true
+client:
   profiles:
-    # Perfil con propiedades por defecto.
-    default:
-      host: es.ubu.lsi.ubumonitorweb.core.client.ClientHostHeaderProvider
-      headers:
-        Content-Type: application/x-www-form-urlencoded
+    # Perfil con propiedades globales.
+    default-get:
+      host: es.ubu.lsi.ubumonitorweb.core.client.ClientHostProvider
       forward-headers:
         - Accept-Language
 
-    # Perfil del servicio de obtención del token.
-    credentials:
-      inherit: default
+    default-post:
+      inherit: default-get
+      headers:
+        Content-Type: application/x-www-form-urlencoded
+
+    # Perfil del cliente de obtención del token.
+    credentials-client:
+      inherit: default-post
       endpoint: /login/token.php
       params:
         service: moodle_mobile_app
 
-    # Perfil del servicio de obtención de los datos del usuario propietario del token.
-    principal:
-      inherit: default
+    # Perfil del cliente de obtención de los datos del usuario propietario del token.
+    principal-client:
+      inherit: default-post
       endpoint: /webservice/rest/server.php
       params:
         moodlewsrestformat: json
         wsfunction: core_webservice_get_site_info
 
-    # Perfil de los servicios REST.
-    webservice:
-      host: es.ubu.lsi.ubumonitorweb.core.client.ClientHostSessionProvider
-      inherit: default
+    # Perfil del cliente de recursos que requerirían cookies de sesión (usando token).
+    resource-client:
+      inherit: default-get
+      endpoint: /webservice/pluginfile.php
+
+    # Perfil de los clientes del webservice REST.
+    webservice-client:
+      inherit: default-post
       endpoint: /webservice/rest/server.php
       params:
         moodlewsrestformat: json

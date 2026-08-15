@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties
  *
  * @param publicRoutes Conjunto de rutas públicas.
  *
- * @author Marcelo Verteramo Pérsico (mvp1011@alu.ubu.es)
+ * @author Marcelo Verteramo Pérsico
  */
 @ConfigurationProperties("security")
 data class SecurityProperties(

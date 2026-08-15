@@ -8,9 +8,9 @@ import org.springframework.web.service.annotation.PostExchange
 /**
  * Cliente HTTP de obtención de todos los cursos de un usuario determinado.
  *
- * @author Marcelo Verteramo Pérsico (mvp1011@alu.ubu.es)
+ * @author Marcelo Verteramo Pérsico
  */
-@ClientProfile("webservice")
+@ClientProfile("webservice-client")
 interface CoreEnrolClient {
   /** Obtiene todos los cursos para el identificador de usuario especificado. */
   @PostExchange
