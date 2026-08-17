@@ -1,6 +1,9 @@
-rootProject.name = rootDir.name
+rootProject.name = "UBUMonitorWeb"
+include("api", "app")
 
-val client = "client-ng"
-
-include("service", "client")
-project(":client").projectDir = file(client)
+pluginManagement {
+  repositories {
+    gradlePluginPortal()
+    mavenCentral()
+  }
+}

@@ -1,0 +1,54 @@
+[versions]
+###############################################
+# Versiones API Springboot
+###############################################
+kotlin = "2.3.21"
+ktlint = "14.2.0"
+springBoot = "4.1.0"
+springDependencyManagement = "1.1.7"
+graalvmNative = "1.1.9"
+springdoc = "3.0.0"
+kotlinLogging = "7.0.3"
+###############################################
+# Versiones App Angular
+###############################################
+nodePlugin = "7.1.0"
+nodeVersion = "26.7.0"
+
+
+[plugins]
+###############################################
+# Plugins API Springboot
+###############################################
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
+kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
+spring-boot = { id = "org.springframework.boot", version.ref = "springBoot" }
+spring-dependencyManagement = { id = "io.spring.dependency-management", version.ref = "springDependencyManagement" }
+graalvm-native = { id = "org.graalvm.buildtools.native", version.ref = "graalvmNative" }
+###############################################
+# Plugins App Angular
+###############################################
+node = { id = "com.github.node-gradle.node", version.ref = "nodePlugin" }
+
+[libraries]
+###############################################
+# Librerías API Springboot
+###############################################
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
+kotlin-test-junit5 = { module = "org.jetbrains.kotlin:kotlin-test-junit5" }
+kotlin-logging = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = "kotlinLogging" }
+spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
+spring-boot-starter-webmvc = { module = "org.springframework.boot:spring-boot-starter-webmvc" }
+spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security" }
+spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator" }
+spring-boot-starter-tomcat-runtime = { module = "org.springframework.boot:spring-boot-starter-tomcat-runtime" }
+spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
+spring-boot-starter-webmvc-test = { module = "org.springframework.boot:spring-boot-starter-webmvc-test" }
+spring-boot-devtools = { module = "org.springframework.boot:spring-boot-devtools" }
+spring-security-test = { module = "org.springframework.security:spring-security-test" }
+jackson-module-kotlin = { module = "tools.jackson.module:jackson-module-kotlin" }
+jackson-dataformat-xml = { module = "tools.jackson.dataformat:jackson-dataformat-xml" }
+woodstox-core = { module = "com.fasterxml.woodstox:woodstox-core" }
+springdoc-openapi = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "springdoc" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
