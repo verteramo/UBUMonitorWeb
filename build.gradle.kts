@@ -38,6 +38,10 @@ tasks.register("cleanApi") {
   }
 }
 
+/**
+ * Función para crear la acción de copia y limpieza de recursos estáticos.
+ * Se unifica la lógica, ya que es la misma para la construcción del paquete WAR o nativo.
+ */
 fun Task.configureAngularEmbedding(
   targetProjectName: String,
   targetTaskName: String,
