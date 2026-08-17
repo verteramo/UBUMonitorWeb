@@ -1,0 +1,112 @@
+<div class="page-container">
+  <header class="title-header">
+    <h1 class="main-title">{{ $title() }}</h1>
+  </header>
+
+  <header class="user-control-panel">
+    <div class="user-details">
+      <h2>Bienvenido, {{ $principal()?.fullname }}</h2>
+      <a [href]="$principal()?.siteurl || '#'" target="_blank" class="host-link">
+        {{ $principal()?.sitename || 'Plataforma Virtual' }}
+        <mat-icon inline="true">open_in_new</mat-icon>
+      </a>
+    </div>
+    <div class="panel-actions">
+      <button mat-stroked-button (click)="logout()">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <div class="sync-panel">
+    <span class="sync-label">Opciones de sincronización:</span>
+    <div class="checkbox-group">
+      <mat-checkbox [(ngModel)]="$updateData">Actualizar datos</mat-checkbox>
+      <mat-checkbox [(ngModel)]="$logs">Registros</mat-checkbox>
+      <mat-checkbox [(ngModel)]="$grades">Calificaciones</mat-checkbox>
+      <mat-checkbox [(ngModel)]="$completeAct">Act. Completa</mat-checkbox>
+    </div>
+    <button
+      mat-flat-button
+      color="primary"
+      [disabled]="!$selectedCourse()"
+      (click)="onSelectCourse()"
+    >
+      Seleccionar
+    </button>
+  </div>
+
+  @if ($isLoading() && $filteredCourses().length === 0) {
+    <div class="loading-container">
+      <mat-spinner diameter="48"></mat-spinner>
+      <p>Cargando cursos...</p>
+    </div>
+  } @else {
+    <div class="content-panel">
+      <mat-form-field appearance="outline" class="search-field" subscriptSizing="dynamic">
+        <mat-label>Filtrar cursos...</mat-label>
+        <input matInput [(ngModel)]="$searchTerm" />
+      </mat-form-field>
+
+      <mat-tab-group [selectedIndex]="$activeTab()" (selectedIndexChange)="onTabChange($event)">
+        <mat-tab label="Todos"></mat-tab>
+        <mat-tab label="Destacados"></mat-tab>
+        <mat-tab label="Recientes"></mat-tab>
+        <mat-tab label="En progreso"></mat-tab>
+        <mat-tab label="Futuros"></mat-tab>
+        <mat-tab label="Pasados"></mat-tab>
+      </mat-tab-group>
+
+      <div class="table-container">
+        <table
+          mat-table
+          [dataSource]="$filteredCourses()"
+          matSort
+          (matSortChange)="onSortChange($event)"
+        >
+          <ng-container matColumnDef="select">
+            <th mat-header-cell *matHeaderCellDef class="col-select"></th>
+            <td mat-cell *matCellDef="let course" class="col-select">
+              <mat-radio-button
+                [checked]="$selectedCourse()?.id === course.id"
+                (change)="$selectedCourse.set(course)"
+              >
+              </mat-radio-button>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="favorite">
+            <th mat-header-cell *matHeaderCellDef class="col-favorite"></th>
+            <td mat-cell *matCellDef="let course" class="col-favorite">
+              @if (course.isfavourite) {
+                <mat-icon class="favorite-icon">star</mat-icon>
+              }
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Curso</th>
+            <td mat-cell *matCellDef="let course">{{ course.fullname }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="category">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="col-category">
+              Categoría
+            </th>
+            <td mat-cell *matCellDef="let course">{{ course.category?.name }}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr
+            mat-row
+            *matRowDef="let row; columns: displayedColumns"
+            (click)="$selectedCourse.set(row)"
+            class="clickable-row"
+          ></tr>
+        </table>
+
+        @if ($filteredCourses().length === 0) {
+          <div class="empty-state">No hay cursos disponibles para esta selección.</div>
+        }
+      </div>
+    </div>
+  }
+</div>

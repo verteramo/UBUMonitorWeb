@@ -1,0 +1,61 @@
+<div class="users-panel">
+  <mat-tab-group animationDuration="0ms">
+    <mat-tab label="Matriculados"></mat-tab>
+    <mat-tab label="No matriculados"></mat-tab>
+  </mat-tab-group>
+
+  <div class="filters-section">
+    <div class="filter-row">
+      <div class="count-display">
+        <mat-icon>account_circle</mat-icon>
+        <span>21</span>
+      </div>
+      <div class="select-control">
+        <mat-icon>school</mat-icon>
+        <mat-select multiple [(ngModel)]="$selectedRoles" placeholder="(1/2)">
+          @for (role of roles; track role) {
+            <mat-option [value]="role">{{ role }}</mat-option>
+          }
+        </mat-select>
+      </div>
+    </div>
+
+    <div class="filter-row">
+      <div class="search-control">
+        <input type="text" [(ngModel)]="$searchTerm" placeholder="Buscar..." />
+      </div>
+      <div class="select-control">
+        <mat-icon>group</mat-icon>
+        <mat-select multiple [(ngModel)]="$selectedGroups" placeholder="(0/2)">
+          @for (group of groups; track group) {
+            <mat-option [value]="group">{{ group }}</mat-option>
+          }
+        </mat-select>
+      </div>
+    </div>
+
+    <div class="filter-row">
+      <button class="select-all-btn">Selecc. todos</button>
+      <div class="select-control">
+        <mat-icon>power</mat-icon>
+        <mat-select multiple [(ngModel)]="$selectedConnections" placeholder="(4/4)">
+          @for (conn of connections; track conn) {
+            <mat-option [value]="conn">{{ conn }}</mat-option>
+          }
+        </mat-select>
+      </div>
+    </div>
+  </div>
+
+  <div class="users-list">
+    @for (user of users(); track user.id) {
+      <div class="user-item">
+        <img [src]="user.avatar" [alt]="user.fullname" class="user-avatar" />
+        <div class="user-details">
+          <div class="user-name">{{ user.fullname }}</div>
+          <div class="user-times">Curso: {{ user.courseDays }} | Moodle: {{ user.moodleDays }}</div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

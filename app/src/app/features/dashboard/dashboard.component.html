@@ -1,0 +1,49 @@
+<div class="dashboard-layout">
+  <mat-toolbar color="primary" class="header">
+    <span class="app-title">UBUMonitorWeb</span>
+
+    <button mat-button i18n>File</button>
+    <button mat-button i18n>Edit</button>
+    <button mat-button i18n>View</button>
+    <button mat-button i18n>Help</button>
+
+    <span class="spacer"></span>
+
+    <button mat-icon-button [matMenuTriggerFor]="userMenu">
+      <img [src]="principal.userpictureurl" [alt]="principal.fullname" class="avatar" />
+    </button>
+
+    <mat-menu #userMenu="matMenu" xPosition="before">
+      <div class="user-info">
+        <strong>{{ principal.fullname }}</strong>
+      </div>
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="changeCourse()">
+        <mat-icon>swap_horiz</mat-icon>
+        <span i18n>Change course</span>
+      </button>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span i18n>Logout</span>
+      </button>
+    </mat-menu>
+  </mat-toolbar>
+
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <app-users-list></app-users-list>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="sidebar-bottom">
+      <app-activity-selection></app-activity-selection>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <app-charts-view></app-charts-view>
+  </main>
+
+  <footer class="footer">
+    <app-status-bar [courseName]="course.fullname" [host]="principal.siteurl"> </app-status-bar>
+  </footer>
+</div>

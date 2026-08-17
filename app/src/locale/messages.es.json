@@ -1,0 +1,24 @@
+{
+  "locale": "es",
+  "translations": {
+    "2454050363478003966": "Inicio de sesión",
+    "1822456936446599866": "Selección de asignatura",
+    "6570363013146073520": "Panel de control",
+    "2657043015926552641": "Error desconocido",
+    "5763031177401499381": "URL inválida",
+    "6641024648411549335": "Servidor",
+    "5081075572350754804": "Conexión insegura",
+    "2392488717875840729": "Usuario",
+    "1431416938026210429": "Contraseña",
+    "8139332045475875277": "Recordar servidor",
+    "8692164475706108486": "Recordar usuario",
+    "6855180523286933111": "Modo sin conexión",
+    "813263746069473514": "Conectar",
+    "6352596107300820129": "Limpiar",
+    "1724405629239300003": "Restaurar preferencias",
+    "6459258648542207941": "Host requerido",
+    "1090552674846882629": "Usuario requerido",
+    "3771803775262910212": "Contraseña requerida",
+    "6157280836644057146": "Autenticado"
+  }
+}
