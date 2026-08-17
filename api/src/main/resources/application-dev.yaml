@@ -1,0 +1,24 @@
+logging:
+  level:
+    es.ubu.lsi.ubumonitorweb: debug
+
+security:
+  permit-all:
+    - /api/auth/login
+    - /
+    - /index.html
+    - /*.js
+    - /*.css
+    - /*.ico
+    - /*.svg
+    - /*.gif
+    - /*.png
+    - /*.jpg
+    - /*.jpeg
+
+    # Actuator
+    - /actuator**
+
+    # Springdoc
+    - /v3/api-docs
+    - /swagger-ui/**

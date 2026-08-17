@@ -1,0 +1,26 @@
+security:
+  permit-all:
+    - /api/auth/login
+    - /
+    - /index.html
+    - /*.js
+    - /*.css
+    - /*.ico
+    - /*.svg
+    - /*.gif
+    - /*.png
+    - /*.jpg
+    - /*.jpeg
+
+# Actuator
+management:
+  endpoints:
+    access:
+      default: none
+
+# Springdoc
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
