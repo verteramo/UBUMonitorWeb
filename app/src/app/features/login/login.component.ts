@@ -11,6 +11,7 @@ import { ProblemDetail } from '@core/models/problem-detail';
 import { SnackService } from '@core/services/snack.service';
 import { LoginPrefs, LoginPrefsStore } from '@core/store/login-prefs.store';
 import { url } from '@core/validators/url-validator';
+import { ThemeToggleComponent } from '@shared/components/theme-toggle/theme-toggle.component';
 
 export interface LoginForm extends LoginPrefs {
   password: string;
@@ -26,6 +27,7 @@ export interface LoginForm extends LoginPrefs {
     MatCheckboxModule,
     MatIconModule,
     MatAutocompleteModule,
+    ThemeToggleComponent,
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
@@ -35,6 +37,8 @@ export class LoginComponent {
   private prefsStore = inject(LoginPrefsStore);
   private authService = inject(AuthService);
   private snackService = inject(SnackService);
+
+  $hidePassword = signal(true);
 
   /** Señal del formulario. */
   $form = signal<LoginForm>({ ...this.prefsStore.$value(), password: '' });
@@ -52,7 +56,7 @@ export class LoginComponent {
 
   /** Esquema del formulario. */
   loginForm = form(this.$form, (schema) => {
-    url(schema.host, { message: $localize`Invalid URL` });
+    url(schema.host, { message: $localize`Invalid host` });
     required(schema.host, { message: $localize`Host required` });
     required(schema.username, { message: $localize`Username required` });
     required(schema.password, { message: $localize`Password required` });

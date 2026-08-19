@@ -1,49 +1,26 @@
 <div class="dashboard-layout">
-  <mat-toolbar color="primary" class="header">
-    <span class="app-title">UBUMonitorWeb</span>
+  <app-navbar
+    [principal]="principal"
+    (changeCourse)="changeCourse()"
+    (logout)="logout()"
+    (toggleSidebar)="drawer.toggle()"
+  >
+  </app-navbar>
 
-    <button mat-button i18n>File</button>
-    <button mat-button i18n>Edit</button>
-    <button mat-button i18n>View</button>
-    <button mat-button i18n>Help</button>
+  <mat-sidenav-container class="sidenav-container" autosize>
+    <mat-sidenav #drawer mode="side" opened class="sidenav-panel">
+      <app-sidebar></app-sidebar>
+    </mat-sidenav>
 
-    <span class="spacer"></span>
+    <mat-sidenav-content class="content">
+      <app-workspace></app-workspace>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
 
-    <button mat-icon-button [matMenuTriggerFor]="userMenu">
-      <img [src]="principal.userpictureurl" [alt]="principal.fullname" class="avatar" />
-    </button>
-
-    <mat-menu #userMenu="matMenu" xPosition="before">
-      <div class="user-info">
-        <strong>{{ principal.fullname }}</strong>
-      </div>
-      <mat-divider></mat-divider>
-      <button mat-menu-item (click)="changeCourse()">
-        <mat-icon>swap_horiz</mat-icon>
-        <span i18n>Change course</span>
-      </button>
-      <button mat-menu-item (click)="logout()">
-        <mat-icon>logout</mat-icon>
-        <span i18n>Logout</span>
-      </button>
-    </mat-menu>
-  </mat-toolbar>
-
-  <aside class="sidebar">
-    <div class="sidebar-top">
-      <app-users-list></app-users-list>
-    </div>
-    <mat-divider></mat-divider>
-    <div class="sidebar-bottom">
-      <app-activity-selection></app-activity-selection>
-    </div>
-  </aside>
-
-  <main class="main-content">
-    <app-charts-view></app-charts-view>
-  </main>
-
-  <footer class="footer">
-    <app-status-bar [courseName]="course.fullname" [host]="principal.siteurl"> </app-status-bar>
-  </footer>
+  <app-statusbar
+    [course]="course.fullname"
+    [siteUrl]="principal.siteurl"
+    [siteName]="principal.sitename"
+  >
+  </app-statusbar>
 </div>

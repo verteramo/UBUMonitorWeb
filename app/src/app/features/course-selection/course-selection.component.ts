@@ -11,15 +11,13 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '@core/api/auth.service';
-import {
-  COURSE_CLASSIFICATION,
-  CourseService
-} from '@core/api/course.service';
+import { COURSE_CLASSIFICATION, CourseService } from '@core/api/course.service';
 import { Course } from '@core/models/course';
 import { ProblemDetail } from '@core/models/problem-detail';
 import { SnackService } from '@core/services/snack.service';
 import { CourseStore } from '@core/store/course.store';
-import { PrincipalStore } from '@core/store/principal.store';
+import { Principal, PrincipalStore } from '@core/store/principal.store';
+import { ThemeToggleComponent } from '@shared/components/theme-toggle/theme-toggle.component';
 
 export interface SyncOptions {
   updateData: boolean;
@@ -48,6 +46,7 @@ function compare(a: string, b: string, isAsc: boolean) {
     MatTabsModule,
     MatSortModule,
     MatIconModule,
+    ThemeToggleComponent,
   ],
   templateUrl: './course-selection.component.html',
   styleUrl: './course-selection.component.scss',
@@ -61,8 +60,11 @@ export class CourseSelectionComponent implements OnInit {
   private principalStore = inject(PrincipalStore);
   private courseStore = inject(CourseStore);
 
+  get principal() {
+    return this.principalStore.$value() as Principal;
+  }
+
   $title = signal(this.route.snapshot.title || 'Selección de curso/asignatura');
-  $principal = this.principalStore.$value;
 
   $isLoading = signal(true);
   $activeTab = signal(0);

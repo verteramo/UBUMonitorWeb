@@ -1,0 +1,44 @@
+<div class="users-panel">
+  <div class="header-controls">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="search-field">
+      <mat-label>Buscar...</mat-label>
+      <input matInput [(ngModel)]="$searchTerm" />
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+    <button mat-icon-button [matMenuTriggerFor]="filtersMenu">
+      <mat-icon>filter_list</mat-icon>
+    </button>
+  </div>
+
+  <!-- Menú de filtros (mismo contenido, estructura de mat-form-field) -->
+  <mat-menu #filtersMenu="matMenu" xPosition="before">
+    <div class="filters-section" (click)="$event.stopPropagation()">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Matrícula</mat-label>
+        <mat-select [(ngModel)]="$selectedEnrollment">
+          <mat-option value="all">Todos</mat-option>
+          <mat-option value="enrolled">Matriculados</mat-option>
+          <mat-option value="not_enrolled">No matriculados</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <!-- Repetir estructura para Roles, Grupos, Conexiones... -->
+    </div>
+  </mat-menu>
+
+  <div class="user-list-scrollable">
+    @for (user of filteredUsers(); track user.id) {
+      <div class="user-item" (dblclick)="openProfile(user)">
+        <img [src]="user.profileimageurl || 'user_blank.png'" [alt]="user.fullname" class="user-avatar" />
+        <div class="user-details">
+          <div class="user-name">{{ user.fullname }}</div>
+          <div class="user-times">Curso: {{ user.lastcourseaccess | timeAgo }}</div>
+          <div class="user-times">Moodle: {{ user.lastaccess | timeAgo }}</div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="users-footer">
+    <span>Total: {{ filteredUsers().length }}</span>
+  </div>
+</div>

@@ -1,0 +1,39 @@
+<div class="status-container">
+  <div class="status-left">
+    <span class="host-name">
+      <a target="_blank" [href]="siteUrl()">{{ siteName() }}</a>
+    </span>
+    <span class="separator">|</span>
+    <span class="course-name">{{ course() }}</span>
+  </div>
+
+  <div class="status-right">
+    <span>Last update: {{ lastUpdate() | timeAgo }}</span>
+
+    <button mat-icon-button (click)="refresh.emit()" i18n-title title="Update">
+      <mat-icon>sync</mat-icon>
+    </button>
+
+    <span class="separator">|</span>
+
+    <a
+      href="https://ubumonitordocs.readthedocs.io/es/latest/"
+      target="_blank"
+      class="action-link"
+      i18n-title
+      title="User manual"
+    >
+      <mat-icon>menu_book</mat-icon>
+    </a>
+
+    <a
+      href="https://github.com/verteramo/UBUMonitorWeb"
+      target="_blank"
+      class="action-link"
+      i18n-title
+      title="Repository"
+    >
+      <mat-icon>code</mat-icon>
+    </a>
+  </div>
+</div>

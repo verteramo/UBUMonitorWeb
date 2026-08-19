@@ -1,32 +1,24 @@
 import { Component, inject } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { Router } from '@angular/router';
 import { AuthService } from '@core/api/auth.service';
 import { Course } from '@core/models/course';
 import { CourseStore } from '@core/store/course.store';
 import { Principal, PrincipalStore } from '@core/store/principal.store';
-import { ActivitySelectionComponent } from './components/activity-selection/activity-selection.component';
-import { ChartsViewComponent } from './components/charts-view/charts-view.component';
-import { StatusBarComponent } from './components/status-bar/status-bar.component';
-import { UsersListComponent } from './components/users-list/users-list.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { StatusbarComponent } from './components/statusbar/statusbar.component';
+import { WorkspaceComponent } from './components/workspace/workspace.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [
-    MatToolbarModule,
-    MatIconModule,
-    MatButtonModule,
-    MatMenuModule,
-    MatDividerModule,
-    UsersListComponent,
-    ActivitySelectionComponent,
-    ChartsViewComponent,
-    StatusBarComponent,
+    MatSidenavModule,
+    NavbarComponent,
+    SidebarComponent,
+    StatusbarComponent,
+    WorkspaceComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
