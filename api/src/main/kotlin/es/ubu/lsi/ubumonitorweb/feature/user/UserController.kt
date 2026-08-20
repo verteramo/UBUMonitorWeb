@@ -1,6 +1,6 @@
 package es.ubu.lsi.ubumonitorweb.feature.user
 
-import es.ubu.lsi.ubumonitorweb.feature.user.dto.MoodleUser
+import es.ubu.lsi.ubumonitorweb.feature.user.api.User
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -16,7 +16,7 @@ class UserController(
   @GetMapping
   fun getUsersByCourseId(
     @RequestParam courseId: Int,
-  ): List<MoodleUser> = userService.getUsersByCourseId(courseId)
+  ): List<User> = userService.getUsersByCourseId(courseId)
 
   @GetMapping("/icon/{id}/{size:f1|f2|f3}", produces = [MediaType.IMAGE_PNG_VALUE])
   fun getUserIcon(

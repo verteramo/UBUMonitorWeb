@@ -19,8 +19,8 @@ class ClientException(
    * https://github.com/moodle/moodle/blob/main/public/login/token.php#L106
    */
   data class AuthError(
-    val error: String,
     val errorcode: String,
+    val error: String,
   )
 
   /**
@@ -36,9 +36,10 @@ class ClientException(
     /** Mapeo de códigos de error de Moodle a códigos de estado HTTP. */
     private val STATUS_CODES =
       mapOf(
-        "invalidlogin" to HttpStatus.UNAUTHORIZED,
+        "invalidlogin" to HttpStatus.FORBIDDEN,
         "invalidtoken" to HttpStatus.UNAUTHORIZED,
         "nopermissions" to HttpStatus.FORBIDDEN,
+        "invalid_parameter_exception" to HttpStatus.BAD_REQUEST,
       )
   }
 
