@@ -13,19 +13,17 @@
 }
 
 mat-form-field {
-    width: 100%;
+  width: 100%;
 
-    /* Ocultar el ojo nativo del navegador */
-    input::-ms-reveal,
-    input::-ms-clear {
-      display: none;
-    }
-
-    /* Dar color al botón de Material */
-    button[matSuffix] {
-      color: var(--mat-sys-on-surface-variant);
-    }
+  input::-ms-reveal,
+  input::-ms-clear {
+    display: none;
   }
+
+  button[matSuffix] {
+    color: var(--mat-sys-on-surface-variant);
+  }
+}
 
 form {
   display: flex;
@@ -37,7 +35,7 @@ form {
   background: var(--mat-sys-surface-container);
   border: 1px solid var(--mat-sys-outline-variant);
 
-  div:first-child {
+  header {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -50,12 +48,16 @@ form {
     }
   }
 
-  div:nth-last-child(2) {
+  .checkbox-group {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    border: none;
+    padding: 0;
+    margin: 0;
   }
 
-  div:last-child {
+  .form-actions {
     display: flex;
     gap: 0.75rem;
 

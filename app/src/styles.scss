@@ -4,25 +4,46 @@ html {
   height: 100%;
   color-scheme: light dark;
 
-  @include mat.theme((
-    color: (primary: mat.$azure-palette, tertiary: mat.$blue-palette, theme-type: light),
-    typography: Roboto,
-    density: 0,
-  ));
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+        theme-type: light,
+      ),
+      typography: Roboto,
+      density: 0,
+    )
+  );
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--mat-sys-outline-variant) transparent;
 }
 
 @media (prefers-color-scheme: dark) {
   html:not(.light) {
-    @include mat.theme((
-      color: (primary: mat.$azure-palette, tertiary: mat.$blue-palette, theme-type: dark)
-    ));
+    @include mat.theme(
+      (
+        color: (
+          primary: mat.$azure-palette,
+          tertiary: mat.$blue-palette,
+          theme-type: dark,
+        ),
+      )
+    );
   }
 }
 
 html.dark {
-  @include mat.theme((
-    color: (primary: mat.$azure-palette, tertiary: mat.$blue-palette, theme-type: dark)
-  ));
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+        theme-type: dark,
+      ),
+    )
+  );
 }
 
 body {
@@ -31,4 +52,22 @@ body {
   font: var(--mat-sys-body-medium);
   margin: 0;
   height: 100%;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--mat-sys-outline-variant);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--mat-sys-outline);
 }

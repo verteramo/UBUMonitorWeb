@@ -1,4 +1,5 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -9,29 +10,19 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService } from '@core/api/auth.service';
 import { COURSE_CLASSIFICATION, CourseService } from '@core/api/course.service';
 import { Course } from '@core/models/course';
-import { ProblemDetail } from '@core/models/problem-detail';
-import { SnackService } from '@core/services/snack.service';
 import { CourseStore } from '@core/store/course.store';
 import { Principal, PrincipalStore } from '@core/store/principal.store';
 import { ThemeToggleComponent } from '@shared/components/theme-toggle/theme-toggle.component';
 
-export interface SyncOptions {
-  updateData: boolean;
-  logs: boolean;
-  grades: boolean;
-  completeAct: boolean;
-}
-
-const TAB_ENDPOINTS = COURSE_CLASSIFICATION;
-
-function compare(a: string, b: string, isAsc: boolean) {
-  return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
-}
-
+/**
+ * Componente de selección de cursos.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
 @Component({
   selector: 'app-course-selection',
   standalone: true,
@@ -51,12 +42,10 @@ function compare(a: string, b: string, isAsc: boolean) {
   templateUrl: './course-selection.component.html',
   styleUrl: './course-selection.component.scss',
 })
-export class CourseSelectionComponent implements OnInit {
+export class CourseSelectionComponent {
+  private router = inject(Router);
   private authService = inject(AuthService);
   private courseService = inject(CourseService);
-  private snackService = inject(SnackService);
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
   private principalStore = inject(PrincipalStore);
   private courseStore = inject(CourseStore);
 
@@ -64,97 +53,52 @@ export class CourseSelectionComponent implements OnInit {
     return this.principalStore.$value() as Principal;
   }
 
-  $title = signal(this.route.snapshot.title || 'Selección de curso/asignatura');
+  $term = signal('');
+  $tab = signal(0);
+  $sort = signal<Sort>({ active: '', direction: '' });
+  $course = signal<Course | null>(null);
 
-  $isLoading = signal(true);
-  $activeTab = signal(0);
-  $searchTerm = signal('');
-  $courseCache = signal<Record<string, Course[]>>({});
-  $selectedCourse = signal<Course | null>(null);
-  $sortState = signal<Sort>({ active: '', direction: '' });
+  $courses = rxResource({
+    defaultValue: [],
+    params: () => COURSE_CLASSIFICATION[this.$tab()],
+    stream: ({ params: classification }) => this.courseService.getCourses(classification),
+  });
 
-  $updateData = signal(false);
-  $logs = signal(false);
-  $grades = signal(false);
-  $completeAct = signal(false);
+  columns = ['select', 'name', 'category'];
 
-  displayedColumns: string[] = ['select', 'favorite', 'name', 'category'];
+  $filteredCourses = computed(() => {
+    const term = this.$term().trim().toLowerCase();
+    const courses = this.$courses.value();
 
-  $filteredCourses = computed<Course[]>(() => {
-    const category = TAB_ENDPOINTS[this.$activeTab()];
-    const courses = this.$courseCache()[category] || [];
-    const term = this.$searchTerm().toLowerCase();
+    let filtered = !term
+      ? [...courses]
+      : courses.filter((course) => course.fullname.toLowerCase().includes(term));
 
-    let filtered = term
-      ? courses.filter((c) => c.fullname.toLowerCase().includes(term))
-      : [...courses];
-    const { active, direction } = this.$sortState();
+    const { active, direction } = this.$sort();
 
     if (active && direction) {
       filtered.sort((a, b) => {
-        const isAsc = direction === 'asc';
-        switch (active) {
-          case 'name':
-            return compare(a.fullname, b.fullname, isAsc);
-          case 'category':
-            return compare(a.category?.name || '', b.category?.name || '', isAsc);
-          default:
-            return 0;
-        }
+        const course_a = active === 'name' ? a.fullname : a.category.name;
+        const course_b = active === 'name' ? b.fullname : b.category.name;
+        return course_a.localeCompare(course_b) * (direction === 'asc' ? 1 : -1);
       });
     }
 
     return filtered;
   });
 
-  ngOnInit(): void {
-    this.loadCategory(0);
-  }
+  constructor() {
+    effect(() => {
+      const course = this.$course();
 
-  onTabChange(index: number): void {
-    this.$activeTab.set(index);
-    this.loadCategory(index);
-  }
-
-  onSortChange(sort: Sort): void {
-    this.$sortState.set(sort);
-  }
-
-  private loadCategory(index: number): void {
-    const category = TAB_ENDPOINTS[index];
-    if (this.$courseCache()[category]) return;
-
-    this.$isLoading.set(true);
-    this.courseService.getCourses(category).subscribe({
-      next: (courses) => {
-        this.$courseCache.update((cache) => ({ ...cache, [category]: courses }));
-        this.$isLoading.set(false);
-      },
-      error: ({ detail }: ProblemDetail) => {
-        this.snackService.show(detail);
-        this.$isLoading.set(false);
-      },
+      if (course) {
+        this.courseStore.set(this.$course());
+      }
     });
   }
 
-  onSelectCourse(): void {
-    const course = this.$selectedCourse();
-    if (course) {
-      this.courseStore.set(course);
-
-      const payload = {
-        course,
-        options: {
-          updateData: this.$updateData(),
-          logs: this.$logs(),
-          grades: this.$grades(),
-          completeAct: this.$completeAct(),
-        } as SyncOptions,
-      };
-      console.log('Sincronizando:', payload);
-
-      this.router.navigate(['/dashboard']);
-    }
+  onSelect(): void {
+    this.router.navigate(['/dashboard']);
   }
 
   logout(): void {

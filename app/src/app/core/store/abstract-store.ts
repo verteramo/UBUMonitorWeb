@@ -25,6 +25,10 @@ export abstract class AbstractStore<T> {
     return this.signal.asReadonly();
   }
 
+  get value(): NonNullable<T> {
+    return this.signal() as NonNullable<T>;
+  }
+
   set(newValue: T): void {
     this.signal.set(newValue);
   }

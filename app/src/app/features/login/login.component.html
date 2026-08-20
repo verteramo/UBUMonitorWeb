@@ -1,11 +1,12 @@
-<div class="theme-toggle-wrapper">
+<aside class="theme-toggle-wrapper">
   <app-theme-toggle></app-theme-toggle>
-</div>
+</aside>
+
 <form (submit)="onSubmit($event)">
-  <div>
+  <header>
     <img src="logo1.png" alt="UBUMonitorWeb" />
     <h2 i18n>Login</h2>
-  </div>
+  </header>
 
   <mat-form-field>
     <mat-label i18n>Host</mat-label>
@@ -40,24 +41,23 @@
       [formField]="loginForm.password"
     />
     <button matSuffix matIconButton type="button" (click)="$hidePassword.update((state) => !state)">
-      <mat-icon>{{ $hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
+      <mat-icon [title]="$hidePassword() ? 'Show password' : 'Hide password'">
+        {{ $hidePassword() ? 'visibility' : 'visibility_off' }}
+      </mat-icon>
     </button>
     @if (loginForm.password().errors()[0]; as err) {
       <mat-error>{{ err.message }}</mat-error>
     }
   </mat-form-field>
 
-  <div>
+  <fieldset class="checkbox-group">
     <mat-checkbox [formField]="loginForm.rememberHost" i18n>Remember host</mat-checkbox>
     <mat-checkbox [formField]="loginForm.rememberUsername" i18n>Remember username</mat-checkbox>
     <mat-checkbox [formField]="loginForm.offlineMode" i18n>Offline mode</mat-checkbox>
-  </div>
+  </fieldset>
 
-  <div>
+  <nav class="form-actions">
     <button matButton="filled" color="primary" type="submit" i18n>Connect</button>
-    <button matIconButton type="button" (click)="onClear()" i18n-title title="Clean">
-      <mat-icon>cleaning_services</mat-icon>
-    </button>
     <button
       matIconButton
       type="button"
@@ -67,5 +67,8 @@
     >
       <mat-icon>settings_backup_restore</mat-icon>
     </button>
-  </div>
+    <button matIconButton type="button" (click)="onClear()" i18n-title title="Clean">
+      <mat-icon>cleaning_services</mat-icon>
+    </button>
+  </nav>
 </form>

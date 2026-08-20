@@ -7,16 +7,22 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
 import { AuthService } from '@core/api/auth.service';
-import { ProblemDetail } from '@core/models/problem-detail';
-import { SnackService } from '@core/services/snack.service';
 import { LoginPrefs, LoginPrefsStore } from '@core/store/login-prefs.store';
 import { url } from '@core/validators/url-validator';
 import { ThemeToggleComponent } from '@shared/components/theme-toggle/theme-toggle.component';
 
+/** Interfaz con los campos del formulario de login. */
 export interface LoginForm extends LoginPrefs {
   password: string;
 }
 
+/**
+ * Componente del formulario de login.
+ *
+ * Se guardan sus preferencias en Local Storage.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
 @Component({
   selector: 'app-login-page',
   standalone: true,
@@ -36,8 +42,8 @@ export class LoginComponent {
   private router = inject(Router);
   private prefsStore = inject(LoginPrefsStore);
   private authService = inject(AuthService);
-  private snackService = inject(SnackService);
 
+  /** Señal de visualización del password. */
   $hidePassword = signal(true);
 
   /** Señal del formulario. */
@@ -62,6 +68,7 @@ export class LoginComponent {
     required(schema.password, { message: $localize`Password required` });
   });
 
+
   /**
    * Evento de envío del formulario.
    * Se realiza la solicitud de login,
@@ -77,16 +84,7 @@ export class LoginComponent {
 
     this.authService.login(host, { username, password }).subscribe({
       next: (principal) => {
-        console.log($localize`Authenticated`, principal);
-      },
-      error: ({ status, detail }: ProblemDetail) => {
-        if (status === 502) {
-          detail = $localize`Server unreachable`;
-        }
-
-        if (detail) {
-          this.snackService.show(detail);
-        }
+        console.log($localize`User authenticated`, principal);
       },
       complete: () => {
         this.prefsStore.set(this.$form());

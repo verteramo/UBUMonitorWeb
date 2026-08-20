@@ -1,32 +1,41 @@
-.dashboard-layout {
+:host {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  width: 100vw;
   overflow: hidden;
-}
-
-app-navbar {
-  display: block;
-  flex: 0 0 auto;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-}
-
-app-statusbar {
-  display: block;
-  flex: 0 0 auto;
-  border-top: 1px solid rgba(0, 0, 0, 0.12);
-}
-
-.sidenav-container {
-  flex: 1 1 auto;
-  min-height: 0;
-  background-color: transparent;
-}
-
-.content {
-  padding: 16px;
-  height: 100%;
   box-sizing: border-box;
+}
+
+header,
+footer {
+  flex-shrink: 0;
+}
+
+main {
   display: flex;
   flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+
+  mat-sidenav-container {
+    flex: 1;
+    min-height: 0;
+    background-color: var(--mat-sys-surface);
+  }
+
+  mat-sidenav {
+    width: 320px;
+    border-right: 1px solid var(--mat-sys-outline-variant);
+    background-color: var(--mat-sys-surface-container-low);
+  }
+
+  mat-sidenav-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    background-color: var(--mat-sys-surface);
+  }
 }

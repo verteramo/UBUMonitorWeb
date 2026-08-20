@@ -1,16 +1,10 @@
-<mat-toolbar color="primary" class="header">
-  <button
-    matIconButton
-    (click)="toggleSidebar.emit()"
-    i18n-title
-    title="Open sidebar"
-    class="menu-button"
-  >
+<mat-toolbar color="primary">
+  <button matIconButton (click)="toggleSidebar.emit()" i18n-title title="Open sidebar">
     <mat-icon>menu</mat-icon>
   </button>
 
-  <img src="logo2.png" alt="Logo" class="app-logo" />
-  <span class="app-title">UBUMonitorWeb</span>
+  <img src="logo2.png" alt="UBUMonitorWeb" class="logo" />
+  <span class="title">UBUMonitorWeb</span>
 
   <span class="spacer"></span>
 
@@ -52,14 +46,14 @@
   <button matButton i18n><mat-icon>settings</mat-icon> Settings</button>
 
   <!-- Botón Modo Claro / Oscuro -->
-   <app-theme-toggle></app-theme-toggle>
+  <app-theme-toggle></app-theme-toggle>
 
-  <button matIconButton [matMenuTriggerFor]="userMenu" class="avatar-button">
-    <img [src]="principal().userpictureurl" [alt]="principal()?.fullname" class="avatar" />
+  <button mat-icon-button [matMenuTriggerFor]="userMenu" class="picture-button">
+    <img [src]="principal().userpictureurl" [alt]="principal()?.fullname" class="picture" />
   </button>
 
   <mat-menu #userMenu>
-    <div class="user-info">
+    <div class="user-menu">
       <strong>{{ principal()?.fullname }}</strong>
     </div>
     <mat-divider></mat-divider>

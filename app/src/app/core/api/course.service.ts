@@ -1,8 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { endpoints } from '@core/api/endpoints';
-import { ApiCourse, Course } from '@core/models/course';
-import { map, Observable } from 'rxjs';
+import { Course } from '@core/models/course';
+import { map, Observable, shareReplay } from 'rxjs';
+
+interface ApiCourse extends Omit<Course, 'startdate' | 'enddate'> {
+  startdate: number;
+  enddate: number;
+}
 
 /**
  * Clasificación de cursos.
@@ -10,7 +15,7 @@ import { map, Observable } from 'rxjs';
 export const COURSE_CLASSIFICATION = ['all', 'starred', 'recent', 'inprogress', 'future', 'past'];
 
 /**
- * Tipos para restringir la clasificación solicitada al servicio.
+ * Tipo para restringir la clasificación solicitada al servicio.
  */
 export type CourseClassification = (typeof COURSE_CLASSIFICATION)[number];
 
@@ -21,10 +26,20 @@ export type CourseClassification = (typeof COURSE_CLASSIFICATION)[number];
  */
 @Service()
 export class CourseService {
+  /** Cliente HTTP */
   private http = inject(HttpClient);
 
+  /** Caché de cursos clasificados. */
+  private classifiedCourses = new Map<CourseClassification, Observable<Course[]>>();
+
   getCourses(classification: CourseClassification): Observable<Course[]> {
-    return this.http.get<ApiCourse[]>(`${endpoints.courses}/${classification}`).pipe(
+    if (this.classifiedCourses.has(classification)) {
+      return this.classifiedCourses.get(classification) as Observable<Course[]>;
+    }
+
+    const courses$ = this.http.get<ApiCourse[]>(`${endpoints.courses}/${classification}`).pipe(
+      // Almacena en memoria el último valor emitido
+      shareReplay(1),
       // Mapeo de fechas de long a Date
       map((courses) =>
         courses.map((course) => ({
@@ -34,5 +49,9 @@ export class CourseService {
         })),
       ),
     );
+
+    this.classifiedCourses.set(classification, courses$);
+
+    return courses$;
   }
 }

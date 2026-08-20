@@ -1,44 +1,62 @@
-<div class="users-panel">
-  <div class="header-controls">
-    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="search-field">
-      <mat-label>Buscar...</mat-label>
-      <input matInput [(ngModel)]="$searchTerm" />
+<header>
+  <div class="search-wrapper">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <input matInput i18n-placeholder placeholder="Filter users..." [(ngModel)]="$term" />
       <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>
-    <button mat-icon-button [matMenuTriggerFor]="filtersMenu">
-      <mat-icon>filter_list</mat-icon>
-    </button>
   </div>
+  <button matIconButton [matMenuTriggerFor]="filtersMenu">
+    <mat-icon>filter_list</mat-icon>
+  </button>
+</header>
 
-  <!-- Menú de filtros (mismo contenido, estructura de mat-form-field) -->
-  <mat-menu #filtersMenu="matMenu" xPosition="before">
-    <div class="filters-section" (click)="$event.stopPropagation()">
+<!-- Menú de filtros -->
+<mat-menu #filtersMenu="matMenu" xPosition="before">
+  <div class="filters-menu" (click)="$event.stopPropagation()">
+    <h3 i18n>Filters</h3>
+
+    @if ($roles().length) {
       <mat-form-field appearance="outline" subscriptSizing="dynamic">
-        <mat-label>Matrícula</mat-label>
-        <mat-select [(ngModel)]="$selectedEnrollment">
-          <mat-option value="all">Todos</mat-option>
-          <mat-option value="enrolled">Matriculados</mat-option>
-          <mat-option value="not_enrolled">No matriculados</mat-option>
+        <mat-select [(ngModel)]="$selectedRoles" multiple i18n-placeholder placeholder="Roles">
+          @for (role of $roles(); track role) {
+            <mat-option [value]="role">{{ role }}</mat-option>
+          }
         </mat-select>
       </mat-form-field>
-      <!-- Repetir estructura para Roles, Grupos, Conexiones... -->
-    </div>
-  </mat-menu>
+    }
 
-  <div class="user-list-scrollable">
-    @for (user of filteredUsers(); track user.id) {
-      <div class="user-item" (dblclick)="openProfile(user)">
-        <img [src]="user.profileimageurl || 'user_blank.png'" [alt]="user.fullname" class="user-avatar" />
-        <div class="user-details">
-          <div class="user-name">{{ user.fullname }}</div>
-          <div class="user-times">Curso: {{ user.lastcourseaccess | timeAgo }}</div>
-          <div class="user-times">Moodle: {{ user.lastaccess | timeAgo }}</div>
-        </div>
-      </div>
+    @if ($groups().length) {
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-select [(ngModel)]="$selectedGroups" multiple i18n-placeholder placeholder="Groups">
+          @for (group of $groups(); track group) {
+            <mat-option [value]="group">{{ group }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
     }
   </div>
+</mat-menu>
 
-  <div class="users-footer">
-    <span>Total: {{ filteredUsers().length }}</span>
-  </div>
-</div>
+<main>
+  @if ($users.isLoading()) {
+    <div class="loader">
+      <mat-spinner diameter="48"></mat-spinner>
+      <p i18n>Loading users...</p>
+    </div>
+  } @else {
+    @for (user of $filteredUsers(); track user.id) {
+      <article (dblclick)="openProfile(user)">
+        <img [src]="user.profileimageurl || 'user_blank.png'" [alt]="user.fullname" />
+        <div>
+          <strong>{{ user.fullname }}</strong>
+          <small>Curso: {{ user.lastcourseaccess | timeAgo }}</small>
+          <small>Moodle: {{ user.lastaccess | timeAgo }}</small>
+        </div>
+      </article>
+    }
+  }
+</main>
+
+<footer>
+  <span>Total: {{ $filteredUsers().length }}</span>
+</footer>

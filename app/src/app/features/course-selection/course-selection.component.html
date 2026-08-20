@@ -1,112 +1,98 @@
-<div class="main-panel">
-  <header class="panel-header">
+<div class="main-container">
+  <header>
     <div class="user-info">
-      <h1 class="main-title">{{ $title() }}</h1>
-      <h2 i18n>Welcome, {{ principal?.fullname }}</h2>
-      <a [href]="principal.siteurl || '#'" target="_blank" class="host-link">
-        {{ principal?.sitename || 'Plataforma Virtual' }}
+      <h1>Course selection</h1>
+      <h2>Welcome, {{ principal.fullname }}</h2>
+      <a [href]="principal.siteurl" target="_blank">
+        {{ principal.sitename }}
         <mat-icon inline="true">open_in_new</mat-icon>
       </a>
     </div>
 
-    <div class="header-actions">
+    <nav>
       <button mat-icon-button (click)="logout()" i18n-title title="Logout">
         <mat-icon>logout</mat-icon>
       </button>
       <app-theme-toggle></app-theme-toggle>
-    </div>
+    </nav>
   </header>
 
-  <div class="filters-section">
-    <mat-form-field appearance="outline" class="search-field" subscriptSizing="dynamic">
-      <mat-label>Filtrar cursos...</mat-label>
-      <input matInput [(ngModel)]="$searchTerm" />
-      <mat-icon matSuffix>search</mat-icon>
-    </mat-form-field>
+  <main>
+    <div class="search-wrapper">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <input matInput i18n-placeholder placeholder="Filter courses..." [(ngModel)]="$term" />
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+    </div>
 
-    <mat-tab-group [selectedIndex]="$activeTab()" (selectedIndexChange)="onTabChange($event)">
-      <mat-tab label="Todos"></mat-tab>
-      <mat-tab label="Destacados"></mat-tab>
-      <mat-tab label="Recientes"></mat-tab>
-      <mat-tab label="En progreso"></mat-tab>
-      <mat-tab label="Futuros"></mat-tab>
-      <mat-tab label="Pasados"></mat-tab>
+    <mat-tab-group [(selectedIndex)]="$tab">
+      <mat-tab i18n-label label="All"></mat-tab>
+      <mat-tab i18n-label label="Starred"></mat-tab>
+      <mat-tab i18n-label label="Recents"></mat-tab>
+      <mat-tab i18n-label label="In progress"></mat-tab>
+      <mat-tab i18n-label label="Futures"></mat-tab>
+      <mat-tab i18n-label label="Past"></mat-tab>
     </mat-tab-group>
-  </div>
 
-  @if ($isLoading() && $filteredCourses().length === 0) {
-    <div class="loading-container">
-      <mat-spinner diameter="48"></mat-spinner>
-      <p>Cargando cursos...</p>
-    </div>
-  } @else {
-    <div class="table-container">
-      @if ($filteredCourses().length > 0) {
-        <table
-          mat-table
-          [dataSource]="$filteredCourses()"
-          matSort
-          (matSortChange)="onSortChange($event)"
-        >
-          <!-- Tus ng-container de columnas se mantienen exactamente igual -->
-          <ng-container matColumnDef="select">
-            <th mat-header-cell *matHeaderCellDef class="col-select"></th>
-            <td mat-cell *matCellDef="let course" class="col-select">
-              <mat-radio-button
-                [checked]="$selectedCourse()?.id === course.id"
-                (change)="$selectedCourse.set(course)"
-              ></mat-radio-button>
-            </td>
-          </ng-container>
+    @if ($courses.isLoading()) {
+      <div class="loader">
+        <mat-spinner diameter="48"></mat-spinner>
+        <p i18n>Loading courses...</p>
+      </div>
+    } @else {
+      <div class="table-container">
+        @if ($filteredCourses().length > 0) {
+          <table
+            mat-table
+            [dataSource]="$filteredCourses()"
+            matSort
+            (matSortChange)="$sort.set($event)"
+          >
+            <ng-container matColumnDef="select">
+              <th mat-header-cell *matHeaderCellDef class="col-select"></th>
+              <td mat-cell *matCellDef="let course" class="col-select">
+                <mat-radio-button
+                  [checked]="$course() === course"
+                  (change)="$course.set(course)"
+                ></mat-radio-button>
+              </td>
+            </ng-container>
 
-          <ng-container matColumnDef="favorite">
-            <th mat-header-cell *matHeaderCellDef class="col-favorite"></th>
-            <td mat-cell *matCellDef="let course" class="col-favorite">
-              @if (course.isfavourite) {
-                <mat-icon class="favorite-icon">star</mat-icon>
-              }
-            </td>
-          </ng-container>
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Course</th>
+              <td mat-cell *matCellDef="let course">{{ course.fullname }}</td>
+            </ng-container>
 
-          <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Curso</th>
-            <td mat-cell *matCellDef="let course">{{ course.fullname }}</td>
-          </ng-container>
+            <ng-container matColumnDef="category">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Category</th>
+              <td mat-cell *matCellDef="let course">{{ course.category?.name }}</td>
+            </ng-container>
 
-          <ng-container matColumnDef="category">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Categoría</th>
-            <td mat-cell *matCellDef="let course">{{ course.category?.name }}</td>
-          </ng-container>
+            <tr mat-header-row *matHeaderRowDef="columns"></tr>
+            <tr
+              mat-row
+              *matRowDef="let row; columns: columns"
+              (click)="$course.set(row)"
+              class="clickable-row"
+            ></tr>
+          </table>
+        } @else {
+          <div class="empty-state" i18n>There are no courses available for this selection.</div>
+        }
+      </div>
+    }
+  </main>
 
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr
-            mat-row
-            *matRowDef="let row; columns: displayedColumns"
-            (click)="$selectedCourse.set(row)"
-            class="clickable-row"
-          ></tr>
-        </table>
-      } @else {
-        <div class="empty-state">No hay cursos disponibles para esta selección.</div>
-      }
-    </div>
-  }
-
-  <footer class="panel-footer">
+  <footer>
     <div class="sync-options">
-      <span class="sync-label">Sincronización:</span>
-      <mat-checkbox [(ngModel)]="$updateData">Actualizar datos</mat-checkbox>
-      <mat-checkbox [(ngModel)]="$logs">Registros</mat-checkbox>
-      <mat-checkbox [(ngModel)]="$grades">Calificaciones</mat-checkbox>
-      <mat-checkbox [(ngModel)]="$completeAct">Act. Completa</mat-checkbox>
+      <span class="sync-label" i18n>Synchronization:</span>
+      <mat-checkbox i18n>Update data</mat-checkbox>
+      <mat-checkbox i18n>Logs</mat-checkbox>
+      <mat-checkbox i18n>Grades</mat-checkbox>
+      <mat-checkbox i18n>Activity completion</mat-checkbox>
     </div>
-    <button
-      mat-flat-button
-      color="primary"
-      [disabled]="!$selectedCourse()"
-      (click)="onSelectCourse()"
-    >
-      Seleccionar
+    <button mat-flat-button color="primary" [disabled]="!$course()" (click)="onSelect()">
+      Select
     </button>
   </footer>
 </div>

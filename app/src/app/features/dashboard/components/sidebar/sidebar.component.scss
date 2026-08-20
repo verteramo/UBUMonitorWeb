@@ -3,56 +3,66 @@
   flex-direction: column;
   height: 100%;
   min-height: 0;
+  padding: 12px;
+  box-sizing: border-box;
 }
 
-.vscode-accordion {
+mat-accordion {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  gap: 12px;
+  flex: 1;
+  min-height: 0;
 }
 
-.vscode-panel {
+mat-expansion-panel {
   display: flex;
   flex-direction: column;
-  border-radius: 0 !important;
+  border: 1px solid var(--mat-sys-outline-variant) !important; /* Añade el borde completo */
+  border-radius: 8px !important; /* Suaviza las esquinas */
   box-shadow: none !important;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-  background: transparent;
+  background-color: var(--mat-sys-surface); /* Fondo base limpio para el contenido */
+  overflow: hidden !important;
 
   &.mat-expanded {
-    flex: 1;
-    min-height: 0;
-  }
-
-  ::ng-deep .mat-expansion-panel-content {
     display: flex;
     flex-direction: column;
     flex: 1;
     min-height: 0;
-  }
 
-  ::ng-deep .mat-expansion-panel {
-    /* Evita que aparezca la barra de scroll mientras la animación de apertura/cierre está en curso */
-    overflow: hidden !important;
+    mat-expansion-panel-header {
+      border-bottom: 1px solid var(--mat-sys-outline-variant);
+    }
 
-    &.mat-expanded {
+    ::ng-deep .mat-expansion-panel-content {
       display: flex;
       flex-direction: column;
       flex: 1;
+      height: 100%;
       min-height: 0;
+    }
 
-      /* Una vez expandido por completo, permitimos el scroll solo en el cuerpo interno */
-      ::ng-deep .mat-expansion-panel-body {
-        flex: 1;
-        overflow-y: auto !important;
-        min-height: 0;
-        padding: 0 !important;
-      }
+    ::ng-deep .mat-expansion-panel-body {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center;
+      flex: 1;
+      height: 100%;
+      min-height: 0;
+      overflow: hidden !important;
+      padding: 16px !important; /* Recuperamos el margen interior para que no se pegue al borde */
+      box-sizing: border-box !important;
     }
   }
 }
 
-/* Obliga a que el contenedor interno de Material respete el 100% de la altura y use flexbox */
+mat-expansion-panel-header {
+  background-color: var(
+    --mat-sys-surface-container-high
+  ) !important; /* Diferencia visualmente la cabecera del cuerpo */
+  flex-shrink: 0 !important;
+}
+
 ::ng-deep .mat-drawer-inner-container {
   display: flex !important;
   flex-direction: column !important;

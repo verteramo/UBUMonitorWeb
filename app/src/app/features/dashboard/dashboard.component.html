@@ -1,4 +1,4 @@
-<div class="dashboard-layout">
+<header>
   <app-navbar
     [principal]="principal"
     (changeCourse)="changeCourse()"
@@ -6,21 +6,25 @@
     (toggleSidebar)="drawer.toggle()"
   >
   </app-navbar>
+</header>
 
-  <mat-sidenav-container class="sidenav-container" autosize>
-    <mat-sidenav #drawer mode="side" opened class="sidenav-panel">
+<main>
+  <mat-sidenav-container autosize>
+    <mat-sidenav #drawer mode="side" opened>
       <app-sidebar></app-sidebar>
     </mat-sidenav>
 
-    <mat-sidenav-content class="content">
+    <mat-sidenav-content>
       <app-workspace></app-workspace>
     </mat-sidenav-content>
   </mat-sidenav-container>
+</main>
 
+<footer>
   <app-statusbar
     [course]="course.fullname"
     [siteUrl]="principal.siteurl"
     [siteName]="principal.sitename"
   >
   </app-statusbar>
-</div>
+</footer>
