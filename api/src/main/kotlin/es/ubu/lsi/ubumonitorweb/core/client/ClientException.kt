@@ -40,6 +40,7 @@ class ClientException(
         "invalidtoken" to HttpStatus.UNAUTHORIZED,
         "nopermissions" to HttpStatus.FORBIDDEN,
         "invalid_parameter_exception" to HttpStatus.BAD_REQUEST,
+        "sitepolicynotagreed" to HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS, // 21-08-2026 12:00
       )
   }
 

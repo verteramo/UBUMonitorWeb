@@ -1,5 +1,6 @@
 package es.ubu.lsi.ubumonitorweb.core.security
 
+import es.ubu.lsi.ubumonitorweb.core.moodle.Principal
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpStatus
@@ -39,7 +40,7 @@ class AuthController(
     request: HttpServletRequest,
     response: HttpServletResponse,
     @RequestBody credentials: Credentials,
-  ): Any? =
+  ): Principal =
     manager
       .authenticate(
         UsernamePasswordAuthenticationToken(
@@ -57,7 +58,7 @@ class AuthController(
           response,
         )
 
-        it.principal
+        it.principal as Principal
       }
 
   /** Realiza el cierre de sesión. */

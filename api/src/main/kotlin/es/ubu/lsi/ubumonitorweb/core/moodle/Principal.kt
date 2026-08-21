@@ -16,6 +16,8 @@ data class Principal(
   val lang: String,
   val userid: Int,
   val siteurl: String,
-  @JsonDeserialize(converter = ResourceUrlConverter::class) val userpictureurl: String,
+  @JsonDeserialize(converter = ResourceUrlConverter::class) val userpictureurl: String?,
   val userissiteadmin: Boolean?,
+  val version: String?,
+  val release: String?,
 )
