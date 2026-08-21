@@ -2,7 +2,9 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -34,6 +36,8 @@ export interface Filters {
     MatIconModule,
     MatButtonModule,
     MatMenuModule,
+    MatCheckboxModule,
+    MatDividerModule,
     TimeAgoPipe,
     MatProgressSpinnerModule,
   ],
@@ -97,10 +101,51 @@ export class UsersListComponent {
   });
 
   openProfile(user: User): void {
-    this.dialog.open(UserProfileDialogComponent, {
-      data: user,
-      width: '850px',
-      maxWidth: '95vw',
+    this.dialog.open(UserProfileDialogComponent, { data: user });
+  }
+
+  // Define la señal reactiva almacenando un Set para optimizar las búsquedas
+  readonly selectedUserIds = signal<Set<number>>(new Set());
+
+  // Señal computada que se actualizará automáticamente cuando cambie la selección
+  readonly hasSelection = computed(() => this.selectedUserIds().size > 0);
+
+  isSelected(user: User): boolean {
+    return this.selectedUserIds().has(user.id);
+  }
+
+  toggleSelection(user: User): void {
+    this.selectedUserIds.update((selected) => {
+      // Creamos un nuevo Set para asegurar la inmutabilidad y disparar la reactividad
+      const updatedSelection = new Set(selected);
+
+      if (updatedSelection.has(user.id)) {
+        updatedSelection.delete(user.id);
+      } else {
+        updatedSelection.add(user.id);
+      }
+
+      return updatedSelection;
     });
+  }
+
+  readonly isAllSelected = computed(() => {
+    const users = this.$filteredUsers();
+    return users.length > 0 && users.every((u) => this.selectedUserIds().has(u.id));
+  });
+
+  readonly isPartiallySelected = computed(() => {
+    const selectedCount = this.selectedUserIds().size;
+    return selectedCount > 0 && !this.isAllSelected();
+  });
+
+  toggleAll(): void {
+    if (this.isAllSelected()) {
+      this.selectedUserIds.set(new Set());
+    } else {
+      // Solo seleccionamos los usuarios que están visibles bajo el filtro actual
+      const allFilteredIds = this.$filteredUsers().map((u) => u.id);
+      this.selectedUserIds.set(new Set(allFilteredIds));
+    }
   }
 }

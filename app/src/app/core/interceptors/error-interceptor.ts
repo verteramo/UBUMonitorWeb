@@ -21,6 +21,7 @@ export const SKIP_NOTIFICATION = new HttpContextToken(() => false);
 
 const MESSAGES: { [key: number]: string } = {
   401: $localize`Session has expired`,
+  403: $localize`Invalid login, please try again`,
   502: $localize`Server unreachable`,
 };
 

@@ -8,18 +8,11 @@ import { Principal, PrincipalStore } from '@core/store/principal.store';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { StatusbarComponent } from './components/statusbar/statusbar.component';
-import { WorkspaceComponent } from './components/workspace/workspace.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [
-    MatSidenavModule,
-    NavbarComponent,
-    SidebarComponent,
-    StatusbarComponent,
-    WorkspaceComponent,
-  ],
+  imports: [MatSidenavModule, NavbarComponent, SidebarComponent, StatusbarComponent],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })

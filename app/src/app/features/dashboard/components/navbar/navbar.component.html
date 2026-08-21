@@ -49,13 +49,15 @@
   <app-theme-toggle></app-theme-toggle>
 
   <button mat-icon-button [matMenuTriggerFor]="userMenu" class="picture-button">
-    <img [src]="principal().userpictureurl" [alt]="principal()?.fullname" class="picture" />
+    <img
+      [src]="principal().userpictureurl ?? 'user_blank.png'"
+      [alt]="principal()?.fullname"
+      class="picture"
+    />
   </button>
 
   <mat-menu #userMenu>
-    <div class="user-menu">
-      <strong>{{ principal()?.fullname }}</strong>
-    </div>
+    <h3>{{ principal()?.fullname }}</h3>
     <mat-divider></mat-divider>
     <button mat-menu-item (click)="changeCourse.emit()">
       <mat-icon>swap_horiz</mat-icon>

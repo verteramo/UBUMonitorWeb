@@ -13,6 +13,8 @@ export interface Principal {
   userpictureurl: string;
   userissiteadmin: boolean;
   sitename: string;
+  version: string;
+  release: string;
 }
 
 @Service()

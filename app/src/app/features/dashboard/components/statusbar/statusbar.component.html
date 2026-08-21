@@ -1,9 +1,9 @@
 <div class="status-left">
   <span class="host-name">
-    <a matButton target="_blank" [href]="siteUrl()">{{ siteName() }}</a>
+    <a matButton target="_blank" [href]="principal().siteurl" [title]="principal().release">{{ principal().sitename }}</a>
   </span>
   <span class="separator">|</span>
-  <span class="course-name">{{ course() }}</span>
+  <span class="course-name">{{ course().fullname }}</span>
 </div>
 
 <div class="status-right">

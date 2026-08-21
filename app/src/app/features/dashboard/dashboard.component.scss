@@ -22,20 +22,41 @@ main {
   mat-sidenav-container {
     flex: 1;
     min-height: 0;
-    background-color: var(--mat-sys-surface);
   }
 
   mat-sidenav {
-    width: 320px;
+    padding: 5px;
+    width: 300px;
     border-right: 1px solid var(--mat-sys-outline-variant);
     background-color: var(--mat-sys-surface-container-low);
+    border-radius: 0;
+    box-sizing: border-box;
+
+    ::ng-deep .mat-drawer-inner-container {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      height: 100%;
+    }
   }
 
   mat-sidenav-content {
     display: flex;
     flex-direction: column;
     height: 100%;
-    overflow: hidden;
+    padding: 5px;
     background-color: var(--mat-sys-surface);
+    box-sizing: border-box;
   }
+}
+
+.workspace {
+  cursor: pointer;
+  font-weight: bold;
+  color: var(--mat-sys-outline-variant);
+  border: 4px dashed var(--mat-sys-outline-variant);
+  border-radius: 5px;
+  height: 100%;
+  text-align: center;
+  align-content: center;
 }

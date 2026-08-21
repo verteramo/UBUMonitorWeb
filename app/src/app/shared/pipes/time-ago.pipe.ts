@@ -13,24 +13,18 @@ export class TimeAgoPipe implements PipeTransform {
     if (value) {
       const diff = new Date().getTime() - value.getTime();
 
-      const days = Math.floor(diff / DAY_MS);
-      const hours = Math.floor((diff % DAY_MS) / HOUR_MS);
-      const minutes = Math.floor((diff % HOUR_MS) / MINUTE_MS);
-
-      let result = '';
-
-      if (days) {
-        result += `${days}d `;
+      switch (true) {
+        case diff >= DAY_MS:
+          return `${Math.floor(diff / DAY_MS)} days`;
+        case diff >= HOUR_MS:
+          return `${Math.floor(diff / HOUR_MS)} hours`;
+        case diff >= MINUTE_MS:
+          return `${Math.floor(diff / MINUTE_MS)} minutes`;
+        default:
+          return $localize`Just now`;
       }
-      if (hours) {
-        result += `${hours}h `;
-      }
-      if (minutes) {
-        result += `${minutes}m`;
-      }
-
-      return result?.trim() || $localize`Just now`;
     }
+
     return $localize`Never`;
   }
 }

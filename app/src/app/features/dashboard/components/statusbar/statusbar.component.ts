@@ -1,6 +1,8 @@
 import { Component, input, OnDestroy, output, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { Course } from '@core/models/course';
+import { Principal } from '@core/store/principal.store';
 import { TimeAgoPipe } from '../../../../shared/pipes/time-ago.pipe';
 
 @Component({
@@ -11,9 +13,8 @@ import { TimeAgoPipe } from '../../../../shared/pipes/time-ago.pipe';
   styleUrls: ['./statusbar.component.scss'],
 })
 export class StatusbarComponent implements OnDestroy {
-  course = input.required<string>();
-  siteUrl = input.required<string>();
-  siteName = input.required<string>();
+  principal = input.required<Principal>();
+  course = input.required<Course>();
   refresh = output<void>();
 
   isOnline = signal(true);

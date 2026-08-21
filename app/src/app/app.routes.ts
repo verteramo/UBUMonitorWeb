@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
 import { authGuard } from '@core/guards/auth-guard';
 import { courseGuard } from '@core/guards/course-guard';
-import { CourseSelectionComponent } from '@features/course-selection/course-selection.component';
 import { DashboardComponent } from '@features/dashboard/dashboard.component';
 import { LoginComponent } from '@features/login/login.component';
+import { CourseSelectionComponent } from '../../course-selection/course-selection.component';
 
 export const routes: Routes = [
   {

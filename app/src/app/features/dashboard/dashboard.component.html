@@ -15,16 +15,13 @@
     </mat-sidenav>
 
     <mat-sidenav-content>
-      <app-workspace></app-workspace>
+      <div class="workspace">
+        <p>Workspace</p>
+      </div>
     </mat-sidenav-content>
   </mat-sidenav-container>
 </main>
 
 <footer>
-  <app-statusbar
-    [course]="course.fullname"
-    [siteUrl]="principal.siteurl"
-    [siteName]="principal.sitename"
-  >
-  </app-statusbar>
+  <app-statusbar [principal]="principal" [course]="course"> </app-statusbar>
 </footer>
