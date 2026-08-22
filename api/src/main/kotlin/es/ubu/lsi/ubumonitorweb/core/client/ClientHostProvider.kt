@@ -1,7 +1,7 @@
 package es.ubu.lsi.ubumonitorweb.core.client
 
 import es.ubu.lsi.ubumonitorweb.core.locale.Message
-import es.ubu.lsi.ubumonitorweb.core.moodle.Principal
+import es.ubu.lsi.ubumonitorweb.core.moodle.SiteInfo
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.context.SecurityContextHolder
@@ -25,12 +25,12 @@ class ClientHostProvider(
     get() = request.getHeader(header)?.takeIf { it.isNotBlank() }
 
   /** Usuario presente en el contexto de seguridad. */
-  private val principal: Principal?
-    get() = SecurityContextHolder.getContext().authentication?.principal as? Principal
+  private val siteInfo: SiteInfo?
+    get() = SecurityContextHolder.getContext().authentication?.principal as? SiteInfo
 
   /** Invocador del provider */
   override fun invoke(context: ClientPropertyProvider.Context): String? =
-    principal?.siteurl ?: host ?: throw Message.ERROR_HTTP_MISSING_HEADER(
+    siteInfo?.siteurl ?: host ?: throw Message.ERROR_HTTP_MISSING_HEADER(
       HttpStatus.BAD_REQUEST,
       header,
     )

@@ -39,19 +39,19 @@ data class MoodleCourse(
   /**
    * Normaliza un curso para la entrega al cliente.
    *
-   * @param category Objeto de categoría necesario.
+   * @par
+   *
+   * am category Objeto de categoría necesario.
    * @return Objeto normalizado de tipo [Course].
    */
   fun normalize(category: MoodleCategory) =
     Course(
       id = id,
-      fullname = fullname,
-      summary = summary,
-      summaryformat = summaryformat,
-      courseimage = courseimage,
-      isfavourite = isfavourite,
-      startdate = startdate,
-      enddate = enddate,
-      category = category,
+      name = fullname,
+      picture = courseimage,
+      starred = isfavourite ?: false,
+      startDate = startdate,
+      endDate = enddate,
+      category = category.name,
     )
 }

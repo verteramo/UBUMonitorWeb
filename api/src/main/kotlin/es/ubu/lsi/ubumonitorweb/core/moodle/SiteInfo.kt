@@ -3,11 +3,11 @@ package es.ubu.lsi.ubumonitorweb.core.moodle
 import tools.jackson.databind.annotation.JsonDeserialize
 
 /**
- * Objeto usuario de Moodle.
+ * Objeto de información del sitio y usuario del token de Moodle.
  *
  * @author Marcelo Verteramo Pérsico
  */
-data class Principal(
+data class SiteInfo(
   val sitename: String,
   val username: String,
   val firstname: String,

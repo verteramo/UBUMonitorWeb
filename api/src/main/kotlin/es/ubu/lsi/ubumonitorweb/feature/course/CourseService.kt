@@ -23,13 +23,24 @@ import org.springframework.web.service.registry.ImportHttpServices
   CoreCourseClient::class,
   CoreEnrolClient::class,
 )
-class CourseService(
-  private val blockStarredcoursesClient: BlockStarredcoursesClient,
-  private val coreCourseClient: CoreCourseClient,
-  private val coreEnrolClient: CoreEnrolClient,
-) {
+class CourseService {
+  private val blockStarredcoursesClient: BlockStarredcoursesClient
+  private val coreCourseClient: CoreCourseClient
+  private val coreEnrolClient: CoreEnrolClient
+
+  constructor(
+    blockStarredcoursesClient: BlockStarredcoursesClient,
+    coreCourseClient: CoreCourseClient,
+    coreEnrolClient: CoreEnrolClient,
+  ) {
+    this.blockStarredcoursesClient = blockStarredcoursesClient
+    this.coreCourseClient = coreCourseClient
+    this.coreEnrolClient = coreEnrolClient
+    this.categories = mutableMapOf<Any, MoodleCategory>()
+  }
+
   /** Mapa de categorías solicitadas al webservice de Moodle. */
-  private val categories = mutableMapOf<Any, MoodleCategory>()
+  private val categories: MutableMap<Any, MoodleCategory>
 
   /**
    * Precarga de categorías.
@@ -73,8 +84,7 @@ class CourseService(
     courses: List<MoodleCourse>,
     field: String,
     crossinline selector: (MoodleCourse) -> Any?,
-  ): List<Course> {
-    // Precarga de las categorías en memoria
+  ): List<Course> { // Precarga de las categorías en memoria
     prefetchCategories(field, courses.mapNotNull(selector))
 
     // Mapeo de cursos en formato Moodle a formato normalizado.
@@ -131,4 +141,6 @@ class CourseService(
     ) {
       it.coursecategory
     }
+
+  fun getContents(id: Int): Any = coreCourseClient.getContents(id)
 }

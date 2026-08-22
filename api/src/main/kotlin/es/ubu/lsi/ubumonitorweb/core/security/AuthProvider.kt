@@ -1,7 +1,7 @@
 package es.ubu.lsi.ubumonitorweb.core.security
 
 import es.ubu.lsi.ubumonitorweb.core.moodle.CredentialsClient
-import es.ubu.lsi.ubumonitorweb.core.moodle.PrincipalClient
+import es.ubu.lsi.ubumonitorweb.core.moodle.SiteInfoClient
 import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -15,10 +15,10 @@ import org.springframework.web.service.registry.ImportHttpServices
  * @author Marcelo Verteramo Pérsico
  */
 @Component
-@ImportHttpServices(CredentialsClient::class, PrincipalClient::class)
+@ImportHttpServices(CredentialsClient::class, SiteInfoClient::class)
 class AuthProvider(
   private val credentialsClient: CredentialsClient,
-  private val principalClient: PrincipalClient,
+  private val siteInfoClient: SiteInfoClient,
 ) : AuthenticationProvider {
   /** Indica el tipo de token soportado por este [AuthenticationProvider]. */
   override fun supports(authentication: Class<*>): Boolean =
@@ -39,7 +39,7 @@ class AuthProvider(
       )
 
     val principal =
-      principalClient.getPrincipal(
+      siteInfoClient.getPrincipal(
         credentials.token,
       )
 

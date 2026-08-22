@@ -1,6 +1,6 @@
 package es.ubu.lsi.ubumonitorweb.feature.course
 
-import es.ubu.lsi.ubumonitorweb.core.moodle.Principal
+import es.ubu.lsi.ubumonitorweb.core.moodle.SiteInfo
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -20,18 +20,23 @@ class CourseController(
   /**
    * Obtiene los cursos, según clasificación, del usuario autenticado.
    *
-   * @param principal Usuario autenticado.
+   * @param siteInfo Usuario autenticado.
    * @param classification Clasificación de los cursos solicitados.
    * @return Cursos solicitados normalizados.
    */
   @GetMapping("/{classification:all|recent|starred|past|future|inprogress}")
   fun getCourses(
-    @AuthenticationPrincipal principal: Principal,
+    @AuthenticationPrincipal siteInfo: SiteInfo,
     @PathVariable classification: String,
   ) = when (classification) {
-    "all" -> courseService.getCourses(principal.userid)
-    "recent" -> courseService.getRecentCourses(principal.userid)
+    "all" -> courseService.getCourses(siteInfo.userid)
+    "recent" -> courseService.getRecentCourses(siteInfo.userid)
     "starred" -> courseService.getStarredCourses()
     else -> courseService.getByClassification(classification)
   }
+
+  @GetMapping("/contents/{id}")
+  fun getContents(
+    @PathVariable id: Int,
+  ): Any = courseService.getContents(id)
 }

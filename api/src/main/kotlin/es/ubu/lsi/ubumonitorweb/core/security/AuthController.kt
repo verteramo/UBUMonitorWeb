@@ -1,6 +1,6 @@
 package es.ubu.lsi.ubumonitorweb.core.security
 
-import es.ubu.lsi.ubumonitorweb.core.moodle.Principal
+import es.ubu.lsi.ubumonitorweb.core.moodle.SiteInfo
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpStatus
@@ -58,7 +58,25 @@ class AuthController(
           response,
         )
 
-        it.principal as Principal
+        val siteInfo = it.principal as SiteInfo
+
+        Principal(
+          id = siteInfo.userid,
+          username = siteInfo.username,
+          isAdmin = siteInfo.userissiteadmin ?: false,
+          language = siteInfo.lang,
+          firstName = siteInfo.firstname,
+          lastName = siteInfo.lastname,
+          fullName = siteInfo.fullname,
+          picture = siteInfo.userpictureurl,
+          platform =
+            Platform(
+              url = siteInfo.siteurl,
+              name = siteInfo.sitename,
+              version = siteInfo.version,
+              release = siteInfo.release,
+            ),
+        )
       }
 
   /** Realiza el cierre de sesión. */

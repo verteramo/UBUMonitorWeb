@@ -4,6 +4,7 @@ import es.ubu.lsi.ubumonitorweb.core.client.ClientProfile
 import es.ubu.lsi.ubumonitorweb.core.client.PhpCollection
 import es.ubu.lsi.ubumonitorweb.feature.course.dto.MoodleCategory
 import es.ubu.lsi.ubumonitorweb.feature.course.dto.MoodleCourse
+import es.ubu.lsi.ubumonitorweb.feature.course.dto.MoodleSection
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.service.annotation.PostExchange
 
@@ -36,4 +37,9 @@ interface CoreCourseClient {
   fun getCategories(
     @PhpCollection criteria: List<Pair<String, Any>>,
   ): List<MoodleCategory>
+
+  @PostExchange
+  fun getContents(
+    @RequestParam courseid: Int,
+  ): List<MoodleSection>
 }

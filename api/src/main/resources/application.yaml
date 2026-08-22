@@ -40,7 +40,7 @@ client:
         service: moodle_mobile_app
 
     # Perfil del cliente de obtención de los datos del usuario propietario del token.
-    principal-client:
+    site-info-client:
       inherit: default-post
       endpoint: /webservice/rest/server.php
       params:

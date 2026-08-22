@@ -11,10 +11,10 @@ import org.springframework.web.service.annotation.PostExchange
  * @author Marcelo Verteramo Pérsico
  */
 @ClientProfile
-interface PrincipalClient {
+interface SiteInfoClient {
   /** Solicitud de los datos del principal. */
   @PostExchange
   fun getPrincipal(
     @RequestParam wstoken: String,
-  ): Principal
+  ): SiteInfo
 }
