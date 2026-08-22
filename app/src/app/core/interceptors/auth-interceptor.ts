@@ -1,6 +1,6 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { AuthService, LOGIN_REQUEST_TOKEN } from '@core/api/auth.service';
+import { AuthService, LoginRequestToken } from '@core/api/auth.service';
 import { catchError } from 'rxjs';
 
 /**
@@ -16,7 +16,7 @@ import { catchError } from 'rxjs';
  */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
-  const isLoginRequest = req.context.get(LOGIN_REQUEST_TOKEN);
+  const isLoginRequest = req.context.get(LoginRequestToken);
 
   // Códigos de estado de errores de autenticación
   const sessionExpirationStatuses = [401, 403];

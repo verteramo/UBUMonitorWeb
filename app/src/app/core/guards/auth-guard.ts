@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { PrincipalStore } from '@core/store/principal.store';
+import { SessionStore } from '@core/stores/session.store';
 
 /**
  * Guarda que controla el flujo de autenticación, redirigiendo al inicio
@@ -15,7 +15,7 @@ export const authGuard =
   (requiresPrincipal: boolean): CanActivateFn =>
   (route, state) => {
     const router = inject(Router);
-    const principal = inject(PrincipalStore).$value();
+    const principal = inject(SessionStore).principal();
 
     if (requiresPrincipal && !principal) {
       return router.createUrlTree(['/login']);

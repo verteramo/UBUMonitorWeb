@@ -14,8 +14,8 @@ import { Router } from '@angular/router';
 import { AuthService } from '@core/api/auth.service';
 import { COURSE_CLASSIFICATION, CourseService } from '@core/api/course.service';
 import { Course } from '@core/models/course';
-import { CourseStore } from '@core/store/course.store';
-import { Principal, PrincipalStore } from '@core/store/principal.store';
+import { Principal } from '@core/models/principal';
+import { SessionStore } from '@core/stores/session.store';
 import { ThemeToggleComponent } from '@shared/components/theme-toggle/theme-toggle.component';
 
 /**
@@ -46,11 +46,10 @@ export class CourseSelectionComponent {
   private router = inject(Router);
   private authService = inject(AuthService);
   private courseService = inject(CourseService);
-  private principalStore = inject(PrincipalStore);
-  private courseStore = inject(CourseStore);
+  private sessionStore = inject(SessionStore);
 
   get principal() {
-    return this.principalStore.$value() as Principal;
+    return this.sessionStore.principal() as Principal;
   }
 
   $term = signal('');
@@ -92,7 +91,7 @@ export class CourseSelectionComponent {
       const course = this.$course();
 
       if (course) {
-        this.courseStore.set(this.$course());
+        this.sessionStore.setCourse(course);
       }
     });
   }

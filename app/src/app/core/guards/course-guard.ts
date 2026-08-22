@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { CourseStore } from '@core/store/course.store';
+import { SessionStore } from '@core/stores/session.store';
 
 /**
  * Guarda que asegura el flujo de navegación, redirigiendo a la selección
@@ -15,7 +15,7 @@ export const courseGuard =
   (requiresCourse: boolean): CanActivateFn =>
   (route, state) => {
     const router = inject(Router);
-    const course = inject(CourseStore).$value();
+    const course = inject(SessionStore).course();
 
     if (requiresCourse && !course) {
       return router.createUrlTree(['/course-selection']);

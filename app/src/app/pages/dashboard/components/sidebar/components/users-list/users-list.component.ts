@@ -14,7 +14,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { UserService } from '@core/api/user.service';
 import { User } from '@core/models/user';
-import { CourseStore } from '@core/store/course.store';
+import { SessionStore } from '@core/stores/session.store';
 import { TimeAgoPipe } from '@shared/pipes/time-ago.pipe';
 import { UserProfileDialogComponent } from './components/user-profile-dialog/user-profile-dialog.component';
 
@@ -46,7 +46,7 @@ export interface Filters {
 })
 export class UsersListComponent {
   private userService = inject(UserService);
-  private courseStore = inject(CourseStore);
+  private sessionStore = inject(SessionStore);
   dialog = inject(MatDialog);
 
   $term = signal('');
@@ -55,7 +55,7 @@ export class UsersListComponent {
 
   $users = rxResource({
     defaultValue: [],
-    params: () => this.courseStore.value,
+    params: () => this.sessionStore.course()!,
     stream: ({ params: course }) => this.userService.getUsers(course.id),
   });
 

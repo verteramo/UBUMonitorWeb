@@ -1,5 +1,5 @@
 import { HttpInterceptorFn } from '@angular/common/http';
-import { HOST_TOKEN } from '@core/api/auth.service';
+import { HostToken } from '@core/api/auth.service';
 import { environment } from '@env/environment';
 
 /**
@@ -12,7 +12,7 @@ import { environment } from '@env/environment';
  * @author Marcelo Verteramo Pérsico
  */
 export const hostInterceptor: HttpInterceptorFn = (req, next) => {
-  const host = req.context.get(HOST_TOKEN);
+  const host = req.context.get(HostToken);
 
   if (host) {
     return next(

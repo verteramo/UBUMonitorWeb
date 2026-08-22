@@ -7,12 +7,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
 import { AuthService } from '@core/api/auth.service';
-import { LoginPrefs, LoginPrefsStore } from '@core/store/login-prefs.store';
+import { loginInitialState, LoginState, LoginStore } from '@core/stores/login.store';
 import { url } from '@core/validators/url-validator';
+import { getState } from '@ngrx/signals';
 import { ThemeToggleComponent } from '@shared/components/theme-toggle/theme-toggle.component';
 
 /** Interfaz con los campos del formulario de login. */
-export interface LoginForm extends LoginPrefs {
+export interface LoginForm extends LoginState {
   password: string;
 }
 
@@ -40,14 +41,14 @@ export interface LoginForm extends LoginPrefs {
 })
 export class LoginComponent {
   private router = inject(Router);
-  private prefsStore = inject(LoginPrefsStore);
+  private loginStore = inject(LoginStore);
   private authService = inject(AuthService);
 
   /** Señal de visualización del password. */
   $hidePassword = signal(true);
 
   /** Señal del formulario. */
-  $form = signal<LoginForm>({ ...this.prefsStore.$value(), password: '' });
+  $form = signal<LoginForm>({ ...getState(this.loginStore), password: '' });
 
   /** Señal computada que filtra hosts guardados. */
   $hosts = computed(() => {
@@ -68,7 +69,6 @@ export class LoginComponent {
     required(schema.password, { message: $localize`Password required` });
   });
 
-
   /**
    * Evento de envío del formulario.
    * Se realiza la solicitud de login,
@@ -87,19 +87,19 @@ export class LoginComponent {
         console.log($localize`User authenticated`, principal);
       },
       complete: () => {
-        this.prefsStore.set(this.$form());
+        this.loginStore.set(this.$form());
         this.router.navigate(['/course-selection']);
       },
     });
   }
 
   /** Reestablece los campos con los valores guardados en las preferencias. */
-  onRefresh() {
-    this.$form.set({ ...this.prefsStore.$value(), password: '' });
+  onRestore() {
+    this.$form.set({ ...getState(this.loginStore), password: '' });
   }
 
   /** Vacía completamente los campos. */
-  onClear() {
-    this.$form.set({ ...this.prefsStore.initialValue, password: '' });
+  onClean() {
+    this.$form.set({ ...loginInitialState, password: '' });
   }
 }

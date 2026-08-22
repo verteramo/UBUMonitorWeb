@@ -2,29 +2,21 @@ import { HttpClient, HttpContext, HttpContextToken } from '@angular/common/http'
 import { inject, Service } from '@angular/core';
 import { Router } from '@angular/router';
 import { endpoints } from '@core/api/endpoints';
-import { CourseStore } from '@core/store/course.store';
-import { Principal, PrincipalStore } from '@core/store/principal.store';
+import { Principal } from '@core/models/principal';
+import { SessionStore } from '@core/stores/session.store';
 import { catchError, EMPTY, Observable, tap } from 'rxjs';
 
 /**
  * Token para etiquetar solicitudes de login.
  */
-export const LOGIN_REQUEST_TOKEN = new HttpContextToken(() => false);
+export const LoginRequestToken = new HttpContextToken(() => false);
 
 /**
  * Token para añadir el host en solicitudes de login.
  *
  * @see https://angular.dev/api/common/http/HttpContext
  */
-export const HOST_TOKEN = new HttpContextToken(() => '');
-
-/**
- * Contrato para credenciales de autenticación.
- */
-interface Credentials {
-  username: string;
-  password: string;
-}
+export const HostToken = new HttpContextToken(() => '');
 
 /**
  * Servicio de autenticación.
@@ -35,8 +27,7 @@ interface Credentials {
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
-  private principalStore = inject(PrincipalStore);
-  private courseStore = inject(CourseStore);
+  private sessionStore = inject(SessionStore);
 
   /**
    * Realiza el inicio de sesión y guarda el Principal en su store.
@@ -45,12 +36,12 @@ export class AuthService {
    * @param credentials Credenciales de autenticación.
    * @returns Observable con el objeto Principal.
    */
-  login(host: string, credentials: Credentials): Observable<Principal> {
+  login(host: string, credentials: { username: string; password: string }): Observable<Principal> {
     return this.http
       .post<Principal>(endpoints.login, credentials, {
-        context: new HttpContext().set(HOST_TOKEN, host).set(LOGIN_REQUEST_TOKEN, true),
+        context: new HttpContext().set(HostToken, host).set(LoginRequestToken, true),
       })
-      .pipe(tap((principal) => this.principalStore.set(principal)));
+      .pipe(tap((principal) => this.sessionStore.setPrincipal(principal)));
   }
 
   /**
@@ -58,8 +49,7 @@ export class AuthService {
    * login y cierra la sesión en el servidor en segundo plano.
    */
   logout() {
-    this.principalStore.clear();
-    this.courseStore.clear();
+    this.sessionStore.clearSession();
 
     this.router.navigate(['/login']);
 

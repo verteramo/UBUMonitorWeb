@@ -2,7 +2,7 @@ import { Component, input, OnDestroy, output, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Course } from '@core/models/course';
-import { Principal } from '@core/store/principal.store';
+import { Principal } from '@core/models/principal';
 import { TimeAgoPipe } from '../../../../shared/pipes/time-ago.pipe';
 
 @Component({

@@ -3,8 +3,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { Router } from '@angular/router';
 import { AuthService } from '@core/api/auth.service';
 import { Course } from '@core/models/course';
-import { CourseStore } from '@core/store/course.store';
-import { Principal, PrincipalStore } from '@core/store/principal.store';
+import { Principal } from '@core/models/principal';
+import { SessionStore } from '@core/stores/session.store';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { StatusbarComponent } from './components/statusbar/statusbar.component';
@@ -19,19 +19,18 @@ import { StatusbarComponent } from './components/statusbar/statusbar.component';
 export class DashboardComponent {
   private router = inject(Router);
   private authService = inject(AuthService);
-  private principalStore = inject(PrincipalStore);
-  private courseStore = inject(CourseStore);
+  private sessionStore = inject(SessionStore);
 
   get principal() {
-    return this.principalStore.$value() as Principal;
+    return this.sessionStore.principal() as Principal;
   }
 
   get course() {
-    return this.courseStore.$value() as Course;
+    return this.sessionStore.course() as Course;
   }
 
   changeCourse() {
-    this.courseStore.clear();
+    this.sessionStore.clearCourse();
     this.router.navigate(['/course-selection']);
   }
 

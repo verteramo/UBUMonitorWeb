@@ -58,16 +58,10 @@
 
   <nav class="form-actions">
     <button matButton="filled" color="primary" type="submit" i18n>Connect</button>
-    <button
-      matIconButton
-      type="button"
-      (click)="onRefresh()"
-      i18n-title
-      title="Restore preferences"
-    >
+    <button matIconButton type="button" (click)="onRestore()" i18n-title title="Restore">
       <mat-icon>settings_backup_restore</mat-icon>
     </button>
-    <button matIconButton type="button" (click)="onClear()" i18n-title title="Clean">
+    <button matIconButton type="button" (click)="onClean()" i18n-title title="Clean">
       <mat-icon>cleaning_services</mat-icon>
     </button>
   </nav>
