@@ -25,15 +25,11 @@ export const LoginStore = signalStore(
   withStorage(localStorage, 'login-state'),
   withMethods((store) => ({
     set(state: LoginState): void {
-      const hosts = store.hosts();
-
       patchState(store, {
+        ...state,
         host: state.rememberHost ? state.host : '',
         username: state.rememberUsername ? state.username : '',
-        rememberHost: state.rememberHost,
-        rememberUsername: state.rememberUsername,
-        offlineMode: state.offlineMode,
-        hosts: hosts.includes(state.host) ? hosts : [...hosts, state.host],
+        hosts: [...new Set([...state.hosts, state.host])],
       });
     },
 

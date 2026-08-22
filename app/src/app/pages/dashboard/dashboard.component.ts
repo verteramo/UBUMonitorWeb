@@ -1,18 +1,25 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { Router } from '@angular/router';
-import { AuthService } from '@core/api/auth.service';
 import { Course } from '@core/models/course';
 import { Principal } from '@core/models/principal';
+import { AuthService } from '@core/services/auth.service';
 import { SessionStore } from '@core/stores/session.store';
 import { NavbarComponent } from './components/navbar/navbar.component';
-import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { UsersListComponent } from './components/sidenav/users-list/users-list.component';
 import { StatusbarComponent } from './components/statusbar/statusbar.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [MatSidenavModule, NavbarComponent, SidebarComponent, StatusbarComponent],
+  imports: [
+    MatSidenavModule,
+    NavbarComponent,
+    MatExpansionModule,
+    StatusbarComponent,
+    UsersListComponent,
+  ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
@@ -21,13 +28,9 @@ export class DashboardComponent {
   private authService = inject(AuthService);
   private sessionStore = inject(SessionStore);
 
-  get principal() {
-    return this.sessionStore.principal() as Principal;
-  }
+  principal = computed(() => this.sessionStore.principal() as Principal);
 
-  get course() {
-    return this.sessionStore.course() as Course;
-  }
+  course = computed(() => this.sessionStore.course() as Course);
 
   changeCourse() {
     this.sessionStore.clearCourse();

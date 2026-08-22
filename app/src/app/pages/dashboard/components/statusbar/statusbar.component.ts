@@ -3,7 +3,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Course } from '@core/models/course';
 import { Principal } from '@core/models/principal';
-import { TimeAgoPipe } from '../../../../shared/pipes/time-ago.pipe';
+import { TimeAgoPipe } from '../../../../core/pipes/time-ago.pipe';
 
 @Component({
   selector: 'app-statusbar',
@@ -13,17 +13,15 @@ import { TimeAgoPipe } from '../../../../shared/pipes/time-ago.pipe';
   styleUrls: ['./statusbar.component.scss'],
 })
 export class StatusbarComponent implements OnDestroy {
-  principal = input.required<Principal>();
+  platform = input.required<Principal['platform']>();
   course = input.required<Course>();
   refresh = output<void>();
-
-  isOnline = signal(true);
-  lastUpdate = signal(new Date());
+  lastUpdate = signal(new Date().getTime());
   private timer: number;
 
   constructor() {
     this.timer = setInterval(() => {
-      this.lastUpdate.set(new Date());
+      this.lastUpdate.set(new Date().getTime());
     }, 60000);
   }
 

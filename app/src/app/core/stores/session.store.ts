@@ -30,10 +30,6 @@ export const SessionStore = signalStore(
       patchState(store, { course: null });
     },
 
-    clearPrincipal(): void {
-      patchState(store, { principal: null });
-    },
-
     clearSession(): void {
       patchState(store, sessionInitialState);
     },

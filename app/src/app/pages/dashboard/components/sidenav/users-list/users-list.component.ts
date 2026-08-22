@@ -12,10 +12,10 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
-import { UserService } from '@core/api/user.service';
 import { User } from '@core/models/user';
+import { TimeAgoPipe } from '@core/pipes/time-ago.pipe';
+import { UserService } from '@core/services/user.service';
 import { SessionStore } from '@core/stores/session.store';
-import { TimeAgoPipe } from '@shared/pipes/time-ago.pipe';
 import { UserProfileDialogComponent } from './components/user-profile-dialog/user-profile-dialog.component';
 
 export interface Filters {
@@ -83,7 +83,7 @@ export class UsersListComponent {
 
     let filteredUsers = !term
       ? [...users]
-      : users.filter((user) => user.fullname.toLocaleLowerCase().includes(term));
+      : users.filter((user) => user.fullName.toLocaleLowerCase().includes(term));
 
     if (selectedRoles.length) {
       filteredUsers = filteredUsers.filter((user) => {

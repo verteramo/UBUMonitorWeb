@@ -1,8 +1,8 @@
 import { HttpClient, HttpContext, HttpContextToken } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { Router } from '@angular/router';
-import { endpoints } from '@core/api/endpoints';
 import { Principal } from '@core/models/principal';
+import { endpoints } from '@core/services/endpoints';
 import { SessionStore } from '@core/stores/session.store';
 import { catchError, EMPTY, Observable, tap } from 'rxjs';
 

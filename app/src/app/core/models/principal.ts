@@ -1,14 +1,16 @@
 export interface Principal {
+  id: string;
   username: string;
-  firstname: string;
-  lastname: string;
-  fullname: string;
-  lang: string;
-  userid: number;
-  siteurl: string;
-  userpictureurl: string;
-  userissiteadmin: boolean;
-  sitename: string;
-  version: string;
-  release: string;
+  isAdmin: boolean;
+  language: string;
+  firstName: string;
+  lastName: string;
+  fullName: string;
+  picture?: string;
+  platform: {
+    url: string;
+    name: string;
+    version?: string;
+    release?: string;
+  };
 }

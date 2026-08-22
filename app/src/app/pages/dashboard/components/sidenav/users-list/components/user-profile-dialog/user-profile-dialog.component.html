@@ -1,7 +1,7 @@
 <div class="dialog-header">
-  <img [src]="user.profileimageurl" [alt]="user.fullname" class="avatar" />
+  <img [src]="user.picture" [alt]="user.fullName" class="avatar" />
   <div class="header-text">
-    <h2 mat-dialog-title>{{ user.fullname }}</h2>
+    <h2 mat-dialog-title>{{ user.fullName }}</h2>
     <a [href]="'mailto:' + user.email" class="email">{{ user.email }}</a>
   </div>
 </div>
@@ -12,15 +12,15 @@
       <mat-icon color="primary">history</mat-icon>
       <div class="info-text">
         <span class="label" i18n>First access</span>
-        <span class="value">{{ user.firstaccess | timeAgo }}</span>
+        <span class="value">{{ user.firstAccess | timeAgo:'s' }}</span>
       </div>
     </div>
 
     <div class="info-item">
       <mat-icon color="primary">school</mat-icon>
       <div class="info-text">
-        <span class="label"i18n>Last course access</span>
-        <span class="value">{{ user.lastcourseaccess | timeAgo }}</span>
+        <span class="label" i18n>Last course access</span>
+        <span class="value">{{ user.lastCourseAccess | timeAgo:'s' }}</span>
       </div>
     </div>
 
@@ -28,7 +28,7 @@
       <mat-icon color="primary">login</mat-icon>
       <div class="info-text">
         <span class="label" i18n>Last platform access</span>
-        <span class="value">{{ user.lastaccess | timeAgo }}</span>
+        <span class="value">{{ user.lastAccess | timeAgo:'s' }}</span>
       </div>
     </div>
   </div>
@@ -50,20 +50,20 @@
   <mat-divider></mat-divider>
 
   <div class="courses-section">
-    <h3 class="section-title" i18n>Enrollments: {{ user.enrolledcourses?.length || 0 }}</h3>
+    <h3 class="section-title" i18n>Enrollments: {{ user.courses.length || 0 }}</h3>
     <mat-list>
-      @for (course of user.enrolledcourses; track $index) {
+      @for (course of user.courses; track $index) {
         <mat-list-item>
           <mat-icon matListItemIcon>book</mat-icon>
           <div matListItemTitle>{{ course }}</div>
         </mat-list-item>
       } @empty {
-        <p class="empty-state">Not enrollments</p>
+        <p class="empty-state" i18n>Not enrollments</p>
       }
     </mat-list>
   </div>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>Cerrar</button>
+  <button matButton matDialogClose i18n>Close</button>
 </mat-dialog-actions>

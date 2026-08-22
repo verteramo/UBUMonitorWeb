@@ -50,14 +50,14 @@
 
   <button mat-icon-button [matMenuTriggerFor]="userMenu" class="picture-button">
     <img
-      [src]="principal().userpictureurl ?? 'user_blank.png'"
-      [alt]="principal()?.fullname"
+      [src]="principal().picture ?? 'user_blank.png'"
+      [alt]="principal().fullName"
       class="picture"
     />
   </button>
 
   <mat-menu #userMenu>
-    <h3>{{ principal()?.fullname }}</h3>
+    <h3>{{ principal().fullName }}</h3>
     <mat-divider></mat-divider>
     <button mat-menu-item (click)="changeCourse.emit()">
       <mat-icon>swap_horiz</mat-icon>

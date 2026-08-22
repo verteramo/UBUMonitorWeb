@@ -1,6 +1,6 @@
 <header>
   <app-navbar
-    [principal]="principal"
+    [principal]="principal()"
     (changeCourse)="changeCourse()"
     (logout)="logout()"
     (toggleSidebar)="drawer.toggle()"
@@ -11,7 +11,27 @@
 <main>
   <mat-sidenav-container autosize>
     <mat-sidenav #drawer mode="side" opened>
-      <app-sidebar></app-sidebar>
+      <div class="sidebar-component">
+        <mat-accordion multi="true">
+          <mat-expansion-panel expanded>
+            <mat-expansion-panel-header>
+              <mat-panel-title i18n>Users</mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="expansion-panel-body">
+              <app-users-list></app-users-list>
+            </div>
+          </mat-expansion-panel>
+
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title i18n>Activity Selection</mat-panel-title>
+            </mat-expansion-panel-header>
+            <!-- <div class="expansion-panel-body">
+      <app-activity-selection></app-activity-selection>
+    </div> -->
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
     </mat-sidenav>
 
     <mat-sidenav-content>
@@ -23,5 +43,5 @@
 </main>
 
 <footer>
-  <app-statusbar [principal]="principal" [course]="course"> </app-statusbar>
+  <app-statusbar [platform]="principal().platform" [course]="course()"> </app-statusbar>
 </footer>

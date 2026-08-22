@@ -1,29 +1,15 @@
 export interface User {
   id: number;
-  fullname: string;
   username?: string;
-  firstname?: string;
-  lastname?: string;
-  initials?: string;
   email?: string;
-  address?: string;
-  phone1?: string;
-  phone2?: string;
-  department?: string;
-  institution?: string;
-  idnumber?: string;
-  interests?: string;
-  firstaccess?: Date;
-  lastaccess?: Date;
-  lastcourseaccess?: Date;
-  description?: string;
-  descriptionformat?: number;
-  city?: string;
+  fullName: string;
+  picture?: string;
+  firstAccess?: number;
+  lastAccess?: number;
+  lastCourseAccess?: number;
   country?: string;
-  profileimageurl?: string;
-  customfields: Map<string, string>;
+  phones: string[];
   groups: string[];
   roles: string[];
-  preferences: Map<string, string>;
-  enrolledcourses: string[];
+  courses: string[];
 }

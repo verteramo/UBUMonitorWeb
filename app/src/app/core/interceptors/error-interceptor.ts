@@ -1,6 +1,5 @@
 import { HttpContextToken, HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
-import { inject } from '@angular/core';
-import { SnackService } from '@core/services/snack.service';
+import { useSnack } from '@core/composables/snack';
 import { catchError } from 'rxjs';
 
 /**
@@ -36,7 +35,7 @@ const MESSAGES: { [key: number]: string } = {
  */
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   /** Servicio de notificaciones. */
-  const snackService = inject(SnackService);
+  const snack = useSnack();
 
   return next(req).pipe(
     catchError((response: HttpErrorResponse) => {
@@ -64,7 +63,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
       // Notificación del error si no se omite
       if (!req.context.get(SKIP_NOTIFICATION)) {
-        snackService.show(error.message);
+        snack(error.message);
       }
 
       // Relanzamiento de error para los consumidores

@@ -5,7 +5,8 @@ import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
-import { TimeAgoPipe } from '@shared/pipes/time-ago.pipe';
+import { User } from '@core/models/user';
+import { TimeAgoPipe } from '@core/pipes/time-ago.pipe';
 
 @Component({
   selector: 'app-user-profile-dialog',
@@ -23,5 +24,5 @@ import { TimeAgoPipe } from '@shared/pipes/time-ago.pipe';
   styleUrl: './user-profile-dialog.component.scss',
 })
 export class UserProfileDialogComponent {
-  user = inject(MAT_DIALOG_DATA);
+  user = inject<User>(MAT_DIALOG_DATA);
 }

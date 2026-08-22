@@ -1,5 +1,5 @@
 import { HttpInterceptorFn } from '@angular/common/http';
-import { HostToken } from '@core/api/auth.service';
+import { HostToken } from '@core/services/auth.service';
 import { environment } from '@env/environment';
 
 /**

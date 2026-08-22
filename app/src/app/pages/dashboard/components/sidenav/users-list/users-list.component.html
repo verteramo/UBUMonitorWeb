@@ -59,21 +59,17 @@
       @for (user of $filteredUsers(); track user.id) {
         <article [class.selected]="isSelected(user)">
           <div class="avatar-action-container" (click)="toggleSelection(user)">
-            <img [src]="user.profileimageurl || 'user_blank.png'" [alt]="user.fullname" />
+            <img [src]="user.picture || 'user_blank.png'" [alt]="user.fullName" />
             <mat-checkbox [checked]="isSelected(user)" style="pointer-events: none"></mat-checkbox>
           </div>
 
           <div class="user-details">
-            <strong>{{ user.fullname }}</strong>
-            <small i18n>Course: {{ user.lastcourseaccess | timeAgo }}</small>
-            <small i18n>Platform: {{ user.lastaccess | timeAgo }}</small>
+            <strong>{{ user.fullName }}</strong>
+            <small i18n>Course: {{ user.lastCourseAccess | timeAgo:'s' }}</small>
+            <small i18n>Platform: {{ user.lastAccess | timeAgo:'s' }}</small>
           </div>
 
-          <button
-            matIconButton
-            class="profile-btn"
-            (click)="openProfile(user)"
-          >
+          <button matIconButton class="profile-btn" (click)="openProfile(user)">
             <mat-icon>account_circle</mat-icon>
           </button>
         </article>

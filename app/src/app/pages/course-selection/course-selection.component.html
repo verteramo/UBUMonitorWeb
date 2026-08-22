@@ -2,9 +2,9 @@
   <header>
     <div class="user-info">
       <h1>Course selection</h1>
-      <h2>Welcome, {{ principal.fullname }}</h2>
-      <a [href]="principal.siteurl" target="_blank">
-        {{ principal.sitename }}
+      <h2>Welcome, {{ principal().fullName }}</h2>
+      <a [href]="principal().platform.url" target="_blank">
+        {{ principal().platform.name }}
         <mat-icon inline="true">open_in_new</mat-icon>
       </a>
     </div>
@@ -60,12 +60,12 @@
 
             <ng-container matColumnDef="name">
               <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Course</th>
-              <td mat-cell *matCellDef="let course">{{ course.fullname }}</td>
+              <td mat-cell *matCellDef="let course">{{ course.name }}</td>
             </ng-container>
 
             <ng-container matColumnDef="category">
               <th mat-header-cell *matHeaderCellDef mat-sort-header i18n>Category</th>
-              <td mat-cell *matCellDef="let course">{{ course.category?.name }}</td>
+              <td mat-cell *matCellDef="let course">{{ course.category }}</td>
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="columns"></tr>

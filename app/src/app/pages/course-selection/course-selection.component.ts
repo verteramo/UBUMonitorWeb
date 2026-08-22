@@ -11,10 +11,10 @@ import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { Router } from '@angular/router';
-import { AuthService } from '@core/api/auth.service';
-import { COURSE_CLASSIFICATION, CourseService } from '@core/api/course.service';
 import { Course } from '@core/models/course';
 import { Principal } from '@core/models/principal';
+import { AuthService } from '@core/services/auth.service';
+import { CourseClassifications, CourseService } from '@core/services/course.service';
 import { SessionStore } from '@core/stores/session.store';
 import { ThemeToggleComponent } from '@shared/components/theme-toggle/theme-toggle.component';
 
@@ -48,9 +48,7 @@ export class CourseSelectionComponent {
   private courseService = inject(CourseService);
   private sessionStore = inject(SessionStore);
 
-  get principal() {
-    return this.sessionStore.principal() as Principal;
-  }
+  principal = computed(() => this.sessionStore.principal() as Principal);
 
   $term = signal('');
   $tab = signal(0);
@@ -59,7 +57,7 @@ export class CourseSelectionComponent {
 
   $courses = rxResource({
     defaultValue: [],
-    params: () => COURSE_CLASSIFICATION[this.$tab()],
+    params: () => CourseClassifications[this.$tab()],
     stream: ({ params: classification }) => this.courseService.getCourses(classification),
   });
 
@@ -71,14 +69,14 @@ export class CourseSelectionComponent {
 
     let filtered = !term
       ? [...courses]
-      : courses.filter((course) => course.fullname.toLowerCase().includes(term));
+      : courses.filter((course) => course.name.toLowerCase().includes(term));
 
     const { active, direction } = this.$sort();
 
     if (active && direction) {
       filtered.sort((a, b) => {
-        const course_a = active === 'name' ? a.fullname : a.category.name;
-        const course_b = active === 'name' ? b.fullname : b.category.name;
+        const course_a = active === 'name' ? a.name : a.category;
+        const course_b = active === 'name' ? b.name : b.category;
         return course_a.localeCompare(course_b) * (direction === 'asc' ? 1 : -1);
       });
     }
