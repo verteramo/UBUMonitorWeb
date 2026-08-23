@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -10,13 +10,11 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
-import { Router } from '@angular/router';
 import { Course } from '@core/models/course';
-import { Principal } from '@core/models/principal';
-import { AuthService } from '@core/services/auth.service';
 import { CourseClassifications, CourseService } from '@core/services/course.service';
 import { SessionStore } from '@core/stores/session.store';
-import { ThemeToggleComponent } from '@shared/components/theme-toggle/theme-toggle.component';
+import { ProgressSpinnerComponent } from '@shared/components/progress-spinner.component';
+import { ThemeToggleComponent } from '@shared/components/theme-toggle.component';
 
 /**
  * Componente de selección de cursos.
@@ -38,40 +36,39 @@ import { ThemeToggleComponent } from '@shared/components/theme-toggle/theme-togg
     MatSortModule,
     MatIconModule,
     ThemeToggleComponent,
+    ProgressSpinnerComponent,
   ],
   templateUrl: './course-selection.component.html',
   styleUrl: './course-selection.component.scss',
 })
 export class CourseSelectionComponent {
-  private router = inject(Router);
-  private authService = inject(AuthService);
   private courseService = inject(CourseService);
   private sessionStore = inject(SessionStore);
 
-  principal = computed(() => this.sessionStore.principal() as Principal);
+  principal = this.sessionStore.currentPrincipal;
 
-  $term = signal('');
-  $tab = signal(0);
-  $sort = signal<Sort>({ active: '', direction: '' });
-  $course = signal<Course | null>(null);
+  term = signal('');
+  tab = signal(0);
+  sort = signal<Sort>({ active: '', direction: '' });
+  course = signal<Course | null>(null);
 
-  $courses = rxResource({
+  courses = rxResource({
     defaultValue: [],
-    params: () => CourseClassifications[this.$tab()],
+    params: () => CourseClassifications[this.tab()],
     stream: ({ params: classification }) => this.courseService.getCourses(classification),
   });
 
   columns = ['select', 'name', 'category'];
 
-  $filteredCourses = computed(() => {
-    const term = this.$term().trim().toLowerCase();
-    const courses = this.$courses.value();
+  filteredCourses = computed(() => {
+    const term = this.term().trim().toLowerCase();
+    const courses = this.courses.value();
 
     let filtered = !term
       ? [...courses]
       : courses.filter((course) => course.name.toLowerCase().includes(term));
 
-    const { active, direction } = this.$sort();
+    const { active, direction } = this.sort();
 
     if (active && direction) {
       filtered.sort((a, b) => {
@@ -84,21 +81,11 @@ export class CourseSelectionComponent {
     return filtered;
   });
 
-  constructor() {
-    effect(() => {
-      const course = this.$course();
-
-      if (course) {
-        this.sessionStore.setCourse(course);
-      }
-    });
-  }
-
   onSelect(): void {
-    this.router.navigate(['/dashboard']);
+    this.sessionStore.setCourse(this.course() as Course);
   }
 
-  logout(): void {
-    this.authService.logout();
+  onLogout(): void {
+    this.sessionStore.logout();
   }
 }

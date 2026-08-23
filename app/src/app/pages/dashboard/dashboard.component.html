@@ -1,28 +1,40 @@
 <header>
   <app-navbar
-    [principal]="principal()"
-    (changeCourse)="changeCourse()"
-    (logout)="logout()"
+    [principal]="session.currentPrincipal()"
+    (changeCourse)="session.clearCourse()"
+    (logout)="session.logout()"
     (toggleSidebar)="drawer.toggle()"
-  >
-  </app-navbar>
+  />
 </header>
 
 <main>
   <mat-sidenav-container autosize>
-    <mat-sidenav #drawer mode="side" opened>
+    <mat-sidenav
+      #drawer
+      mode="side"
+      [opened]="store.isSidenavOpened()"
+      (openedChange)="store.setSidenavOpened($event)"
+    >
       <div class="sidebar-component">
         <mat-accordion multi="true">
-          <mat-expansion-panel expanded>
+          <mat-expansion-panel
+            [expanded]="store.isPanelExpanded('users')"
+            (opened)="store.setPanelExpanded('users', true)"
+            (closed)="store.setPanelExpanded('users', false)"
+          >
             <mat-expansion-panel-header>
               <mat-panel-title i18n>Users</mat-panel-title>
             </mat-expansion-panel-header>
             <div class="expansion-panel-body">
-              <app-users-list></app-users-list>
+              <app-users-panel />
             </div>
           </mat-expansion-panel>
 
-          <mat-expansion-panel>
+          <mat-expansion-panel
+            [expanded]="store.isPanelExpanded('activity')"
+            (opened)="store.setPanelExpanded('activity', true)"
+            (closed)="store.setPanelExpanded('activity', false)"
+          >
             <mat-expansion-panel-header>
               <mat-panel-title i18n>Activity Selection</mat-panel-title>
             </mat-expansion-panel-header>
@@ -43,5 +55,9 @@
 </main>
 
 <footer>
-  <app-statusbar [platform]="principal().platform" [course]="course()"> </app-statusbar>
+  <app-statusbar
+    [platform]="session.currentPrincipal().platform"
+    [course]="session.currentCourse()"
+    (refresh)="onRefresh()"
+  />
 </footer>

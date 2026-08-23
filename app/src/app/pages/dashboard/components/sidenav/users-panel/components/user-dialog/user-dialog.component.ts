@@ -9,7 +9,7 @@ import { User } from '@core/models/user';
 import { TimeAgoPipe } from '@core/pipes/time-ago.pipe';
 
 @Component({
-  selector: 'app-user-profile-dialog',
+  selector: 'app-user-dialog',
   standalone: true,
   imports: [
     MatDialogModule,
@@ -20,9 +20,9 @@ import { TimeAgoPipe } from '@core/pipes/time-ago.pipe';
     MatDividerModule,
     TimeAgoPipe,
   ],
-  templateUrl: './user-profile-dialog.component.html',
-  styleUrl: './user-profile-dialog.component.scss',
+  templateUrl: './user-dialog.component.html',
+  styleUrl: './user-dialog.component.scss',
 })
-export class UserProfileDialogComponent {
+export class UserDialogComponent {
   user = inject<User>(MAT_DIALOG_DATA);
 }

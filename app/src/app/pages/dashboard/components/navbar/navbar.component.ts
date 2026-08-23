@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Principal } from '@core/models/principal';
-import { ThemeToggleComponent } from '@shared/components/theme-toggle/theme-toggle.component';
+import { ThemeToggleComponent } from '@shared/components/theme-toggle.component';
 
 @Component({
   selector: 'app-navbar',

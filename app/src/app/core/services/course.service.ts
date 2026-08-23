@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { Course } from '@core/models/course';
 import { endpoints } from '@core/services/endpoints';
-import { Observable, shareReplay } from 'rxjs';
+import { Observable, of, shareReplay } from 'rxjs';
 
 /**
  * Clasificación de cursos.
@@ -40,5 +40,9 @@ export class CourseService {
     this.classifiedCourses.set(classification, courses$);
 
     return courses$;
+  }
+
+  getContents(id: number): Observable<any[]> {
+    return of([]);
   }
 }

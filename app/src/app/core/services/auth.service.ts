@@ -1,61 +1,45 @@
 import { HttpClient, HttpContext, HttpContextToken } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
-import { Router } from '@angular/router';
 import { Principal } from '@core/models/principal';
 import { endpoints } from '@core/services/endpoints';
-import { SessionStore } from '@core/stores/session.store';
-import { catchError, EMPTY, Observable, tap } from 'rxjs';
+import { Observable } from 'rxjs';
 
-/**
- * Token para etiquetar solicitudes de login.
- */
-export const LoginRequestToken = new HttpContextToken(() => false);
+/** Parámetros de inicio de sesión. */
+export type LoginParams = {
+  host: string;
+  credentials: {
+    username: string;
+    password: string;
+  };
+};
 
-/**
- * Token para añadir el host en solicitudes de login.
- *
- * @see https://angular.dev/api/common/http/HttpContext
- */
+/** Token para etiquetar solicitudes del AuthService. */
+export const AuthRequestToken = new HttpContextToken(() => false);
+
+/** Token para añadir el host en solicitudes de login. */
 export const HostToken = new HttpContextToken(() => '');
 
 /**
  * Servicio de autenticación.
+ *
+ * @see https://angular.dev/api/common/http/HttpContext
  *
  * @author Marcelo Verteramo Pérsico
  */
 @Service()
 export class AuthService {
   private http = inject(HttpClient);
-  private router = inject(Router);
-  private sessionStore = inject(SessionStore);
+  private context = new HttpContext().set(AuthRequestToken, true);
 
-  /**
-   * Realiza el inicio de sesión y guarda el Principal en su store.
-   *
-   * @param host Servidor Moodle.
-   * @param credentials Credenciales de autenticación.
-   * @returns Observable con el objeto Principal.
-   */
-  login(host: string, credentials: { username: string; password: string }): Observable<Principal> {
-    return this.http
-      .post<Principal>(endpoints.login, credentials, {
-        context: new HttpContext().set(HostToken, host).set(LoginRequestToken, true),
-      })
-      .pipe(tap((principal) => this.sessionStore.setPrincipal(principal)));
+  /** Realiza el inicio de sesión. */
+  login({ host, credentials }: LoginParams): Observable<Principal> {
+    return this.http.post<Principal>(endpoints.login, credentials, {
+      context: this.context.set(HostToken, host),
+    });
   }
 
-  /**
-   * Limpia los stores del Principal y el Course, redirige al
-   * login y cierra la sesión en el servidor en segundo plano.
-   */
+  /** Cierra la sesión en el servidor */
   logout() {
-    this.sessionStore.clearSession();
-
-    this.router.navigate(['/login']);
-
-    this.http
-      .get(endpoints.logout)
-      .pipe(catchError(() => EMPTY))
-      .subscribe();
+    return this.http.get(endpoints.logout, { context: this.context });
   }
 }

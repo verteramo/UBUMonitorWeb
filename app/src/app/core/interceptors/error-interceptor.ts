@@ -27,10 +27,6 @@ const MESSAGES: { [key: number]: string } = {
 /**
  * Interceptor que relanza errores con el objeto ProblemDetail.
  *
- * @param req Solicitud.
- * @param next Siguiente interceptor.
- * @returns El resultado de aplicar el siguiente interceptor sobre la solicitud.
- *
  * @author Marcelo Verteramo Pérsico
  */
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {

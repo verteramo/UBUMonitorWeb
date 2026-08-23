@@ -1,7 +1,7 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { withStorage } from './features/storage.feature';
 
-export type LoginState = {
+export type LoginFormState = {
   host: string;
   username: string;
   rememberHost: boolean;
@@ -10,7 +10,7 @@ export type LoginState = {
   hosts: string[];
 };
 
-export const loginInitialState: LoginState = {
+export const loginFormInitialState: LoginFormState = {
   host: '',
   username: '',
   rememberHost: false,
@@ -19,12 +19,11 @@ export const loginInitialState: LoginState = {
   hosts: [],
 };
 
-export const LoginStore = signalStore(
-  { providedIn: 'root' },
-  withState(loginInitialState),
-  withStorage(localStorage, 'login-state'),
+export const LoginFormStore = signalStore(
+  withState(loginFormInitialState),
+  withStorage(localStorage, 'login'),
   withMethods((store) => ({
-    set(state: LoginState): void {
+    set: (state: LoginFormState) => {
       patchState(store, {
         ...state,
         host: state.rememberHost ? state.host : '',
@@ -33,12 +32,8 @@ export const LoginStore = signalStore(
       });
     },
 
-    update(updater: (state: LoginState) => LoginState): void {
-      patchState(store, updater);
-    },
-
-    clear(): void {
-      patchState(store, loginInitialState);
+    clear: () => {
+      patchState(store, loginFormInitialState);
     },
   })),
 );

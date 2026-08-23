@@ -1,0 +1,66 @@
+@if (store.isLoading()) {
+  <app-progress-spinner i18n>Loading users...</app-progress-spinner>
+} @else {
+  <div class="users-panel-component">
+    <header>
+      <div class="select-all-container">
+        <mat-checkbox
+          i18n-title
+          title="Select all"
+          [checked]="isAllSelected()"
+          [indeterminate]="isPartiallySelected()"
+          (change)="toggleAll()"
+        >
+        </mat-checkbox>
+      </div>
+
+      <div class="search-wrapper">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <input matInput i18n-placeholder placeholder="Filter users..." [(ngModel)]="store.term" />
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+      </div>
+      <button matIconButton [matMenuTriggerFor]="filtersMenu">
+        <mat-icon>filter_list</mat-icon>
+      </button>
+    </header>
+
+    <!-- Menú de filtros -->
+    <mat-menu #filtersMenu="matMenu" xPosition="before">
+      <div class="filters-menu" (click)="$event.stopPropagation()">
+        <h3 i18n>Filters</h3>
+        <mat-divider></mat-divider>
+        @if (store.availableRoles()) {
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-select [(ngModel)]="store.roles" multiple i18n-placeholder placeholder="Roles">
+              @for (role of store.availableRoles(); track role) {
+                <mat-option [value]="role">{{ role }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        }
+
+        @if (store.availableGroups()) {
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-select [(ngModel)]="store.roles" multiple i18n-placeholder placeholder="Groups">
+              @for (group of store.availableGroups(); track group) {
+                <mat-option [value]="group">{{ group }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        }
+      </div>
+    </mat-menu>
+
+    <main>
+      @for (user of store.filteredUsers(); track user.id) {
+        <app-user-article
+          [user]="user"
+          [selected]="store.isSelected(user.id)"
+          (toggle)="store.toggleItem(user.id)"
+          (openProfile)="openProfile(user)"
+        />
+      }
+    </main>
+  </div>
+}

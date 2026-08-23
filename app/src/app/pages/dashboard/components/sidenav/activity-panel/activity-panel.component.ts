@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-activity-selection',
+  selector: 'app-activity-panel',
   standalone: true,
   template: `
     <div>
@@ -10,4 +10,4 @@ import { Component } from '@angular/core';
     </div>
   `,
 })
-export class ActivitySelectionComponent {}
+export class ActivityPanelComponent {}

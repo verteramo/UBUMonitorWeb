@@ -16,10 +16,11 @@ export const SettingsStore = signalStore(
   withState<SettingsState>(settingsInitialState),
   withStorage(localStorage, 'settings'),
   withMethods((store) => ({
-    setTheme(theme: ThemeMode): void {
+    setTheme: (theme: ThemeMode) => {
       patchState(store, { theme });
     },
-    clear(): void {
+
+    clear: () => {
       patchState(store, settingsInitialState);
     },
   })),

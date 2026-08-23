@@ -1,16 +1,13 @@
 <div class="status-left">
   <span class="host-name">
-    <a
-      matButton
-      target="_blank"
-      [href]="platform().url"
-      [title]="platform().release"
-    >
+    <a matButton target="_blank" [href]="platform().url" [title]="platform().release">
       {{ platform().name }}
     </a>
   </span>
   <span class="separator">|</span>
-  <span class="course-name">{{ course().name }}</span>
+  <span>{{ course().category }}</span>
+  <span class="separator">|</span>
+  <span>{{ course().name }}</span>
 </div>
 
 <div class="status-right">
