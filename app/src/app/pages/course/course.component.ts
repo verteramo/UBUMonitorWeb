@@ -1,3 +1,9 @@
+/**
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 import { Component, computed, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -11,18 +17,24 @@ import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { Course } from '@core/models/course';
-import { CourseClassifications, CourseService } from '@core/services/course.service';
+import { CourseClassification, CourseService } from '@core/services/course.service';
 import { SessionStore } from '@core/stores/session.store';
 import { ProgressSpinnerComponent } from '@shared/components/progress-spinner.component';
 import { ThemeToggleComponent } from '@shared/components/theme-toggle.component';
 
-/**
- * Componente de selección de cursos.
- *
- * @author Marcelo Verteramo Pérsico
- */
+/** Clasificaciones de las pestañas del componente. */
+const classifications: CourseClassification[] = [
+  'all',
+  'starred',
+  'recent',
+  'inprogress',
+  'future',
+  'past',
+];
+
+/** Componente de selección de cursos. */
 @Component({
-  selector: 'app-course-selection',
+  selector: 'app-course',
   standalone: true,
   imports: [
     FormsModule,
@@ -38,38 +50,52 @@ import { ThemeToggleComponent } from '@shared/components/theme-toggle.component'
     ThemeToggleComponent,
     ProgressSpinnerComponent,
   ],
-  templateUrl: './course-selection.component.html',
-  styleUrl: './course-selection.component.scss',
+  templateUrl: './course.component.html',
+  styleUrl: './course.component.scss',
 })
-export class CourseSelectionComponent {
-  private courseService = inject(CourseService);
-  private sessionStore = inject(SessionStore);
+export class CourseComponent {
+  #sessionStore = inject(SessionStore);
+  #courseService = inject(CourseService);
 
-  principal = this.sessionStore.currentPrincipal;
-
-  term = signal('');
-  tab = signal(0);
-  sort = signal<Sort>({ active: '', direction: '' });
-  course = signal<Course | null>(null);
-
-  courses = rxResource({
-    defaultValue: [],
-    params: () => CourseClassifications[this.tab()],
-    stream: ({ params: classification }) => this.courseService.getCourses(classification),
-  });
-
+  /** Columnas de la tabla. */
   columns = ['select', 'name', 'category'];
 
-  filteredCourses = computed(() => {
-    const term = this.term().trim().toLowerCase();
-    const courses = this.courses.value();
+  /** Cursos clasificados desde el servicio. */
+  coursesResource = rxResource({
+    defaultValue: [],
+    params: () => classifications[this.tab()],
+    stream: ({ params: classification }) => this.#courseService.getCourses(classification),
+  });
 
+  /** Usuario autenticado. */
+  principal = this.#sessionStore.currentPrincipal;
+
+  /** Término de búsqueda. */
+  term = signal('');
+
+  /** Pestaña seleccionada. */
+  tab = signal(1);
+
+  /** Estado de ordenación. */
+  sort = signal<Sort>({ active: '', direction: '' });
+
+  /** Curso seleccionado. */
+  course = signal<Course | null>(null);
+
+  /** Cursos filtrados y ordenados. */
+  courses = computed(() => {
+    const courses = this.coursesResource.value();
+    const term = this.term().trim().toLowerCase();
+
+    // Filtrado por término de búsqueda
     let filtered = !term
       ? [...courses]
       : courses.filter((course) => course.name.toLowerCase().includes(term));
 
+    // Estado de ordenación
     const { active, direction } = this.sort();
 
+    // Ordenación de los cursos filtrados
     if (active && direction) {
       filtered.sort((a, b) => {
         const course_a = active === 'name' ? a.name : a.category;
@@ -81,11 +107,13 @@ export class CourseSelectionComponent {
     return filtered;
   });
 
+  /** Establece el curso seleccionado en el estado de la sesión. */
   onSelect(): void {
-    this.sessionStore.setCourse(this.course() as Course);
+    this.#sessionStore.setCourse(this.course() as Course);
   }
 
+  /** Finaliza la sesión. */
   onLogout(): void {
-    this.sessionStore.logout();
+    this.#sessionStore.logout();
   }
 }

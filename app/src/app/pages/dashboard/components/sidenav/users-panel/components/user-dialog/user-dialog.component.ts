@@ -1,3 +1,9 @@
+/**
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
@@ -8,6 +14,7 @@ import { MatListModule } from '@angular/material/list';
 import { User } from '@core/models/user';
 import { TimeAgoPipe } from '@core/pipes/time-ago.pipe';
 
+/** Componente de visualización del perfil de los usuarios. */
 @Component({
   selector: 'app-user-dialog',
   standalone: true,

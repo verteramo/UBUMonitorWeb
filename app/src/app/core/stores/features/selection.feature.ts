@@ -1,3 +1,9 @@
+/**
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 import { computed } from '@angular/core';
 import {
   patchState,
@@ -7,6 +13,11 @@ import {
   withState,
 } from '@ngrx/signals';
 
+/**
+ * Feature que añade la funcionalidad de selección de elementos a un store.
+ *
+ * @returns Feature.
+ */
 export function withSelection<T>() {
   return signalStoreFeature(
     withState<{ selection: T[] }>({ selection: [] }),

@@ -12,7 +12,7 @@
     <mat-sidenav
       #drawer
       mode="side"
-      [opened]="store.isSidenavOpened()"
+      [opened]="store.sidenavOpened()"
       (openedChange)="store.setSidenavOpened($event)"
     >
       <div class="sidebar-component">

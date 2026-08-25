@@ -1,6 +1,13 @@
+/**
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 import { Component } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
+/** Progress Spiner con una configuración y estilos normalizados. */
 @Component({
   selector: 'app-progress-spinner',
   standalone: true,

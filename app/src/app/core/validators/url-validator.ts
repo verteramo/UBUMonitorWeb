@@ -1,4 +1,10 @@
-import { SchemaPath, validate } from '@angular/forms/signals';
+/**
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
+import { SchemaPath, validate, ValidationError } from '@angular/forms/signals';
 
 /**
  * Validador del URLs.
@@ -6,9 +12,9 @@ import { SchemaPath, validate } from '@angular/forms/signals';
  * @see https://angular.dev/guide/forms/signals/validation#reusable-validation-rules
  *
  * @param path Campo del formulario a validar
- * @param options Opciones (por ejemplo el mensaje `message`)
+ * @param config Configuración de la validación (por ejemplo el mensaje `message`)
  */
-export function url(path: SchemaPath<string>, options?: { message?: string }) {
+export function url(path: SchemaPath<string>, config?: Partial<ValidationError>) {
   validate(path, ({ value }) => {
     try {
       new URL(value());
@@ -16,7 +22,8 @@ export function url(path: SchemaPath<string>, options?: { message?: string }) {
     } catch {
       return {
         kind: 'url',
-        message: options?.message || $localize`Invalid URL`,
+        message: $localize`Invalid URL`,
+        ...config,
       };
     }
   });

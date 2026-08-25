@@ -1,3 +1,9 @@
+/**
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 import { Component, computed, inject, signal } from '@angular/core';
 import { form, FormField, required } from '@angular/forms/signals';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -5,27 +11,21 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import {
-  loginFormInitialState,
-  LoginFormState,
-  LoginFormStore,
-} from '@core/stores/login-form.store';
+import { initialLoginState, LoginState, LoginStore } from '@core/stores/login.store';
 import { SessionStore } from '@core/stores/session.store';
 import { url } from '@core/validators/url-validator';
 import { getState } from '@ngrx/signals';
 import { ThemeToggleComponent } from '@shared/components/theme-toggle.component';
 
 /** Tipo con los campos del formulario de login. */
-type LoginModel = LoginFormState & {
+type LoginModel = LoginState & {
   password: string;
 };
 
 /**
  * Componente del formulario de login.
- *
- * Se guardan sus preferencias en Local Storage.
- *
- * @author Marcelo Verteramo Pérsico
+ * La gestión de las preferencias se realiza mediante el LoginStore
+ * (persistencia en localStorage).
  */
 @Component({
   selector: 'app-login-page',
@@ -43,11 +43,11 @@ type LoginModel = LoginFormState & {
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
-  private loginStore = inject(LoginFormStore);
-  private sessionStore = inject(SessionStore);
+  #loginStore = inject(LoginStore);
+  #sessionStore = inject(SessionStore);
 
   /** Señal del formulario. */
-  loginModel = signal<LoginModel>({ ...getState(this.loginStore), password: '' });
+  loginModel = signal<LoginModel>({ ...getState(this.#loginStore), password: '' });
 
   /** Esquema del formulario. */
   loginForm = form(this.loginModel, (schema) => {
@@ -84,15 +84,27 @@ export class LoginComponent {
   }
 
   hostErrorMessages = computed(() =>
-    this.loginForm.host().errors().map((error) => error.message).join(', ')
+    this.loginForm
+      .host()
+      .errors()
+      .map((error) => error.message)
+      .join(', '),
   );
 
   usernameErrorMessages = computed(() =>
-    this.loginForm.username().errors().map((error) => error.message).join(', ')
+    this.loginForm
+      .username()
+      .errors()
+      .map((error) => error.message)
+      .join(', '),
   );
 
   passwordErrorMessages = computed(() =>
-    this.loginForm.password().errors().map((error) => error.message).join(', ')
+    this.loginForm
+      .password()
+      .errors()
+      .map((error) => error.message)
+      .join(', '),
   );
 
   /**
@@ -108,21 +120,21 @@ export class LoginComponent {
 
     const { host, username, password, ...options } = this.loginModel();
 
-    this.sessionStore.login({
+    this.#sessionStore.login({
       params: { host, credentials: { username, password } },
       onSuccess: () => {
-        this.loginStore.set({ host, username, ...options });
+        this.#loginStore.set({ host, username, ...options });
       },
     });
   }
 
   /** Reestablece los campos con los valores guardados en las preferencias. */
   onRestore() {
-    this.loginModel.set({ ...getState(this.loginStore), password: '' });
+    this.loginModel.set({ ...getState(this.#loginStore), password: '' });
   }
 
   /** Vacía completamente los campos. */
   onClean() {
-    this.loginModel.set({ ...loginFormInitialState, password: '' });
+    this.loginModel.set({ ...initialLoginState, password: '' });
   }
 }

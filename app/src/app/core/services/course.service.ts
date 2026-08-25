@@ -1,43 +1,51 @@
-import { HttpClient } from '@angular/common/http';
-import { inject, Service } from '@angular/core';
-import { Course } from '@core/models/course';
-import { endpoints } from '@core/services/endpoints';
-import { Observable, of, shareReplay } from 'rxjs';
-
 /**
- * Clasificación de cursos.
- */
-export const CourseClassifications = ['all', 'starred', 'recent', 'inprogress', 'future', 'past'];
-
-/**
- * Tipo para restringir la clasificación solicitada al servicio.
- */
-export type CourseClassification = (typeof CourseClassifications)[number];
-
-/**
- * Servicio de cursos.
+ * Este fichero forma parte de UBUMonitorWeb.
  *
  * @author Marcelo Verteramo Pérsico
  */
+
+import { HttpClient } from '@angular/common/http';
+import { inject, Service } from '@angular/core';
+import { Course } from '@core/models/course';
+import { environment as env } from '@env/environment';
+import { Observable, of, shareReplay } from 'rxjs';
+
+/** Clasificación de cursos. */
+export type CourseClassification = 'all' | 'starred' | 'recent' | 'inprogress' | 'future' | 'past';
+
+/** Servicio de cursos. */
 @Service()
 export class CourseService {
   /** Cliente HTTP */
-  private http = inject(HttpClient);
+  #http = inject(HttpClient);
 
   /** Caché de cursos clasificados. */
-  private classifiedCourses = new Map<CourseClassification, Observable<Course[]>>();
+  #classifiedCourses = new Map<CourseClassification, Observable<Course[]>>();
 
+  /**
+   * Solicita la lista de cursos de una clasificación determinada.
+   *
+   * @param classification Clasificación solicitada.
+   * @returns Lista de cursos de la clasificación solicitada.
+   */
   getCourses(classification: CourseClassification): Observable<Course[]> {
-    if (this.classifiedCourses.has(classification)) {
-      return this.classifiedCourses.get(classification) as Observable<Course[]>;
+    /*
+     * Se almacenan los cursos en memoría para minimizar
+     * solicitudes costosas al servicio de Moodle.
+     */
+    if (this.#classifiedCourses.has(classification)) {
+      return this.#classifiedCourses.get(classification) as Observable<Course[]>;
     }
 
-    const courses$ = this.http.get<Course[]>(`${endpoints.courses}/${classification}`).pipe(
+    // Construcción del endpoint con la clasificación solicitada
+    const endpoint = `${env.endpoints.courses}/${classification}`;
+
+    const courses$ = this.#http.get<Course[]>(endpoint).pipe(
       // Almacena en memoria el último valor emitido
       shareReplay(1),
     );
 
-    this.classifiedCourses.set(classification, courses$);
+    this.#classifiedCourses.set(classification, courses$);
 
     return courses$;
   }

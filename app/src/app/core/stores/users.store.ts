@@ -1,3 +1,9 @@
+/**
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 import { computed, inject } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { UserService } from '@core/services/user.service';
@@ -6,24 +12,31 @@ import { withSelection } from './features/selection.feature';
 import { withStorage } from './features/storage.feature';
 import { SessionStore } from './session.store';
 
+/** Propiedades de estado del panel de usuarios. */
 type UsersState = {
+  courseId?: number;
   term: string;
   roles: string[];
   groups: string[];
 };
 
+/** Estado inicial. */
 const initialState: UsersState = {
   term: '',
   roles: [],
   groups: [],
 };
 
+/** Store de las propiedades de estado del panel de usuarios. */
 export const UsersStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
   withSelection<number>(),
   withStorage(sessionStorage, 'users-store'),
-  withComputed((store, session = inject(SessionStore), service = inject(UserService)) => {
+  withComputed((store) => {
+    const service = inject(UserService);
+    const session = inject(SessionStore);
+
     const resource = rxResource({
       defaultValue: [],
       params: session.currentCourse,
@@ -33,8 +46,8 @@ export const UsersStore = signalStore(
     const users = computed(() => resource.value());
 
     return {
-      hasActiveFilters: computed(() => {
-        return store.term().length > 0 || store.roles().length > 0 || store.groups().length > 0;
+      activeFiltersCount: computed(() => {
+      return store.roles().length + store.groups().length
       }),
 
       isLoading: resource.isLoading,
@@ -75,6 +88,10 @@ export const UsersStore = signalStore(
     };
   }),
   withMethods((store) => ({
+    setCourseId(courseId: number) {
+      patchState(store, { courseId });
+    },
+
     updateTerm(term: string) {
       patchState(store, { term });
     },
@@ -88,7 +105,7 @@ export const UsersStore = signalStore(
     },
 
     clearFilters() {
-      patchState(store, initialState);
+      patchState(store, { term: '', roles: [], groups: [] });
     },
   })),
 );

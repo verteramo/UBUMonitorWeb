@@ -1,7 +1,13 @@
+/**
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 import { HttpClient, HttpContext, HttpContextToken } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { Principal } from '@core/models/principal';
-import { endpoints } from '@core/services/endpoints';
+import { environment as env } from '@env/environment';
 import { Observable } from 'rxjs';
 
 /** Parámetros de inicio de sesión. */
@@ -19,27 +25,21 @@ export const AuthRequestToken = new HttpContextToken(() => false);
 /** Token para añadir el host en solicitudes de login. */
 export const HostToken = new HttpContextToken(() => '');
 
-/**
- * Servicio de autenticación.
- *
- * @see https://angular.dev/api/common/http/HttpContext
- *
- * @author Marcelo Verteramo Pérsico
- */
+/** Servicio de autenticación. */
 @Service()
 export class AuthService {
-  private http = inject(HttpClient);
-  private context = new HttpContext().set(AuthRequestToken, true);
+  #http = inject(HttpClient);
+  #context = new HttpContext().set(AuthRequestToken, true);
 
-  /** Realiza el inicio de sesión. */
+  /** Inicio de sesión en el servicio. */
   login({ host, credentials }: LoginParams): Observable<Principal> {
-    return this.http.post<Principal>(endpoints.login, credentials, {
-      context: this.context.set(HostToken, host),
+    return this.#http.post<Principal>(env.endpoints.login, credentials, {
+      context: this.#context.set(HostToken, host),
     });
   }
 
-  /** Cierra la sesión en el servidor */
+  /** Cierre de sesión en el servicio. */
   logout() {
-    return this.http.get(endpoints.logout, { context: this.context });
+    this.#http.get(env.endpoints.logout, { context: this.#context });
   }
 }

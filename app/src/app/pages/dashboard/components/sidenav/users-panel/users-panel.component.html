@@ -16,12 +16,24 @@
 
       <div class="search-wrapper">
         <mat-form-field appearance="outline" subscriptSizing="dynamic">
-          <input matInput i18n-placeholder placeholder="Filter users..." [(ngModel)]="store.term" />
+          <input
+            matInput
+            i18n-placeholder
+            placeholder="Filter users..."
+            [ngModel]="store.term()"
+            (ngModelChange)="store.updateTerm($event)"
+          />
           <mat-icon matSuffix>search</mat-icon>
         </mat-form-field>
       </div>
       <button matIconButton [matMenuTriggerFor]="filtersMenu">
-        <mat-icon>filter_list</mat-icon>
+        <mat-icon
+        [matBadge]="store.activeFiltersCount()"
+        [matBadgeHidden]="store.activeFiltersCount() === 0"
+        matBadgeSize="medium"
+        matBadgeColor="accent"
+        aria-hidden="false"
+        >filter_list</mat-icon>
       </button>
     </header>
 
@@ -32,7 +44,13 @@
         <mat-divider></mat-divider>
         @if (store.availableRoles()) {
           <mat-form-field appearance="outline" subscriptSizing="dynamic">
-            <mat-select [(ngModel)]="store.roles" multiple i18n-placeholder placeholder="Roles">
+            <mat-select
+              [ngModel]="store.roles()"
+              (ngModelChange)="store.updateRoles($event)"
+              multiple
+              i18n-placeholder
+              placeholder="Roles"
+            >
               @for (role of store.availableRoles(); track role) {
                 <mat-option [value]="role">{{ role }}</mat-option>
               }
@@ -42,7 +60,13 @@
 
         @if (store.availableGroups()) {
           <mat-form-field appearance="outline" subscriptSizing="dynamic">
-            <mat-select [(ngModel)]="store.roles" multiple i18n-placeholder placeholder="Groups">
+            <mat-select
+              [ngModel]="store.groups()"
+              (ngModelChange)="store.updateGroups($event)"
+              multiple
+              i18n-placeholder
+              placeholder="Groups"
+            >
               @for (group of store.availableGroups(); track group) {
                 <mat-option [value]="group">{{ group }}</mat-option>
               }

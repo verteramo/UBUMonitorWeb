@@ -1,27 +1,34 @@
+/**
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { SessionStore } from '@core/stores/session.store';
 
 /**
- * Guarda que controla el flujo de autenticación, redirigiendo al inicio
- * de sesión o al dashboard dependiendo de si existe un usuario activo.
+ * Guarda que asegura el flujo de navegación, redirigiendo al login
+ * o al dashboard, dependiendo de si existe un usuario autenticado.
  *
- * @param requiresPrincipal Indica si la ruta exige que el usuario esté autenticado.
- * @returns Función de guarda que permite el acceso o genera un árbol de redirección.
+ * Está construida como una función que devuelve la guarda para poder
+ * establecer el requerimiento: `authGuard(true)` o `authGuard(false)`.
  *
- * @author Marcelo Verteramo Pérsico
+ * @param authenticated Indica si la ruta exige que el usuario esté autenticado.
+ * @returns Función de guarda.
  */
 export const authGuard =
-  (requiresPrincipal: boolean): CanActivateFn =>
+  (authenticated: boolean): CanActivateFn =>
   (route, state) => {
     const router = inject(Router);
     const principal = inject(SessionStore).principal();
 
-    if (requiresPrincipal && !principal) {
+    if (authenticated && !principal) {
       return router.createUrlTree(['/login']);
     }
 
-    if (!requiresPrincipal && principal) {
+    if (!authenticated && principal) {
       return router.createUrlTree(['/dashboard']);
     }
 

@@ -1,11 +1,23 @@
+/**
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 import { Routes } from '@angular/router';
 import { authGuard } from '@core/guards/auth-guard';
 import { courseGuard } from '@core/guards/course-guard';
-import { LoginFormStore } from '@core/stores/login-form.store';
-import { CourseSelectionComponent } from '@pages/course-selection/course-selection.component';
+import { LoginStore } from '@core/stores/login.store';
+import { CourseComponent } from '@pages/course/course.component';
 import { DashboardComponent } from '@pages/dashboard/dashboard.component';
 import { LoginComponent } from '@pages/login/login.component';
 
+/**
+ * Configuración de las rutas de la aplicación.
+ * Aquí se pueden configurar las rutas, títulos, componentes y guardas.
+ *
+ * @see https://angular.dev/guide/routing
+ */
 export const routes: Routes = [
   {
     path: '',
@@ -15,14 +27,14 @@ export const routes: Routes = [
   {
     path: 'login',
     title: $localize`Login`,
-    providers: [LoginFormStore],
+    providers: [LoginStore],
     component: LoginComponent,
     canActivate: [authGuard(false)],
   },
   {
-    path: 'course-selection',
-    title: $localize`Course selection`,
-    component: CourseSelectionComponent,
+    path: 'course',
+    title: $localize`Course`,
+    component: CourseComponent,
     canActivate: [authGuard(true), courseGuard(false)],
   },
   {

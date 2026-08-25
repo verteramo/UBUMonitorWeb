@@ -1,3 +1,9 @@
+/**
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { AuthRequestToken } from '@core/services/auth.service';
@@ -5,11 +11,8 @@ import { SessionStore } from '@core/stores/session.store';
 import { catchError } from 'rxjs';
 
 /**
- * Interceptor que verifica la presencia de códigos de estado
- * que evidencian la caducidad del token, por lo que en dichos
- * casos se cierra la sesión.
- *
- * @author Marcelo Verteramo Pérsico
+ * Verifica la presencia de códigos de estado que evidencian la
+ * caducidad del token, por lo que en dichos casos se cierra la sesión.
  */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const sessionStore = inject(SessionStore);
@@ -22,7 +25,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((response: HttpErrorResponse) => {
       /*
        * Si es una solicitud proveniente de AuthService no se intercepta,
-       * se lanza el error para que el LoginComponent lo capture y lo pueda mostrar.
+       * se lanza el error para que el LoginComponent lo capture y lo pueda procesar.
        */
       if (!isAuthRequest && sessionExpirationStatuses.includes(response.status)) {
         /*

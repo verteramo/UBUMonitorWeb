@@ -1,30 +1,38 @@
-import { Component, DOCUMENT, effect, inject, Renderer2, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { SettingsStore } from '@core/stores/settings.store';
+/**
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
 
+import { Component, DOCUMENT, effect, inject, Renderer2 } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { AppStore } from '@core/stores/app.store';
+
+/**
+ * Componente principal que inyecta el RouterOutlet.
+ *
+ * @see https://angular.dev/reference/configs/file-structure
+ */
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet],
-  templateUrl: './app.html',
-  styleUrl: './app.scss',
+  template: `<router-outlet />`,
 })
 export class App {
-  protected readonly title = signal('UBUMonitorWeb');
-
-  private renderer = inject(Renderer2);
-  private document = inject(DOCUMENT);
-  private settingsStore = inject(SettingsStore);
+  private readonly store = inject(AppStore);
+  private readonly document = inject(DOCUMENT);
+  private readonly renderer = inject(Renderer2);
 
   constructor() {
+    // Efecto que reacciona a los cambios de Theme.
     effect(() => {
-      const theme = this.settingsStore.theme();
-      const htmlElement = this.document.documentElement;
+      const element = this.document.documentElement;
+      this.renderer.removeClass(element, 'light');
+      this.renderer.removeClass(element, 'dark');
 
-      this.renderer.removeClass(htmlElement, 'light');
-      this.renderer.removeClass(htmlElement, 'dark');
-
+      const theme = this.store.theme();
       if (theme !== 'system') {
-        this.renderer.addClass(htmlElement, theme);
+        this.renderer.addClass(element, theme);
       }
     });
   }
