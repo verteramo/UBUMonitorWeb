@@ -1,3 +1,9 @@
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 package es.ubu.lsi.ubumonitorweb.core.client
 
 import org.springframework.core.MethodParameter
@@ -5,8 +11,6 @@ import java.lang.reflect.Method
 
 /**
  * Contrato de los beans que resuelven propiedades de configuración de los clientes.
- *
- * @author Marcelo Verteramo Pérsico
  */
 fun interface ClientPropertyProvider<out T> {
   /**

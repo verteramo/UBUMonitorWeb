@@ -1,3 +1,9 @@
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 package es.ubu.lsi.ubumonitorweb.feature.resource
 
 import org.springframework.http.MediaType
@@ -7,13 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/users")
-class UserController(
-  private val userService: UserService,
+@RequestMapping("/api/resources")
+class ResourceController(
+  private val resourceService: ResourceService,
 ) {
-  @GetMapping("/icon/{id}/{size:f1|f2|f3}", produces = [MediaType.IMAGE_PNG_VALUE])
+  @GetMapping("/user-icon/{id}/{size:f1|f2|f3}", produces = [MediaType.IMAGE_PNG_VALUE])
   fun getUserIcon(
     @PathVariable id: Int,
     @PathVariable size: String,
-  ): ByteArray? = userService.getUserIcon(id, size)
+  ): ByteArray? = resourceService.getUserIcon(id, size)
 }

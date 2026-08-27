@@ -1,3 +1,9 @@
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 package es.ubu.lsi.ubumonitorweb.core.client
 
 /**
@@ -7,8 +13,6 @@ package es.ubu.lsi.ubumonitorweb.core.client
  * utilizando la notación de corchetes. Esto garantiza la compatibilidad de la petición con
  * el formato de decodificación nativo de PHP para rellenar variables como `$_REQUEST`, `$_GET` o
  * `$_POST`.
- *
- * @author Marcelo Verteramo Pérsico
  */
 @Target(AnnotationTarget.VALUE_PARAMETER)
 annotation class PhpCollection(

@@ -1,4 +1,10 @@
-package es.ubu.lsi.ubumonitorweb.feature.user.api
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
+package es.ubu.lsi.ubumonitorweb.data.api
 
 data class User(
   val id: Int,

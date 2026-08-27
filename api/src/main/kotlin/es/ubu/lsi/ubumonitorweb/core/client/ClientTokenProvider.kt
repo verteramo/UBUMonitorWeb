@@ -1,3 +1,9 @@
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 package es.ubu.lsi.ubumonitorweb.core.client
 
 import es.ubu.lsi.ubumonitorweb.core.moodle.Credentials
@@ -7,8 +13,6 @@ import org.springframework.stereotype.Component
 /**
  * Proveedor que extrae y entrega el token necesario para el parámetro `wstoken` desde el
  * contexto de seguridad.
- *
- * @author Marcelo Verteramo Pérsico
  */
 @Component
 class ClientTokenProvider : ClientPropertyProvider<String?> {

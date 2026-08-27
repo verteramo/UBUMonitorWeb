@@ -1,3 +1,9 @@
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 package es.ubu.lsi.ubumonitorweb.core.client
 
 import es.ubu.lsi.ubumonitorweb.core.client.ClientProperties.Profile.Provider.Location
@@ -15,8 +21,6 @@ import java.lang.reflect.Method
 /**
  * Procesador de la anotación [ClientProfile] que toma los metadatos definidos en las propiedades
  * del cliente y los inyecta en la solicitud saliente.
- *
- * @author Marcelo Verteramo Pérsico
  */
 @Component
 class ClientProfileProcessor(
@@ -86,7 +90,6 @@ class ClientProfileProcessor(
             requestValues.addHeader(name, value)
           }
         }
-      }
-      ?: error(Message.ERROR_PROFILE_NOT_FOUND(method.profile))
+      } ?: error(Message.ERROR_PROFILE_NOT_FOUND(method.profile))
   }
 }

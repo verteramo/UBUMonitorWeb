@@ -1,11 +1,19 @@
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 package es.ubu.lsi.ubumonitorweb.feature.course
 
-import es.ubu.lsi.ubumonitorweb.feature.course.api.Course
+import es.ubu.lsi.ubumonitorweb.data.api.Course
+import es.ubu.lsi.ubumonitorweb.data.api.Section
+import es.ubu.lsi.ubumonitorweb.data.api.User
+import es.ubu.lsi.ubumonitorweb.data.dto.MoodleCategory
+import es.ubu.lsi.ubumonitorweb.data.dto.MoodleCourse
 import es.ubu.lsi.ubumonitorweb.feature.course.client.BlockStarredcoursesClient
 import es.ubu.lsi.ubumonitorweb.feature.course.client.CoreCourseClient
 import es.ubu.lsi.ubumonitorweb.feature.course.client.CoreEnrolClient
-import es.ubu.lsi.ubumonitorweb.feature.course.dto.MoodleCategory
-import es.ubu.lsi.ubumonitorweb.feature.course.dto.MoodleCourse
 import org.springframework.stereotype.Service
 import org.springframework.web.service.registry.ImportHttpServices
 
@@ -14,8 +22,6 @@ import org.springframework.web.service.registry.ImportHttpServices
  * métodos realizan toda la "fontanería" necesaria para unificar cursos con categorías,
  * construyendo los criterios de solicitud y manteniendo un mapa en memoria de las categorías
  * solicitadas al servicio, para evitar la sobrecarga y reducir el tiempo de espera.
- *
- * @author Marcelo Verteramo Pérsico
  */
 @Service
 @ImportHttpServices(
@@ -53,7 +59,7 @@ class CourseService {
     values: List<Any>,
   ) {
     /*
-     * Se selecciona aquellas categorías que no existen previamente
+     * Se seleccionan aquellas categorías que no existen previamente
      * en el mapa de categorías en memoria.
      */
     val missingValues = values.distinct().filter { !categories.containsKey(it) }
@@ -89,7 +95,7 @@ class CourseService {
 
     // Mapeo de cursos en formato Moodle a formato normalizado.
     return courses.mapNotNull { course ->
-      selector(course)?.let { categories[it] }?.let { course.normalize(it) }
+      selector(course)?.let { categories[it] }?.let { course.toCourse(it) }
     }
   }
 
@@ -99,7 +105,7 @@ class CourseService {
    * @param id Identificador de usuario.
    * @return Lista de cursos normalizados.
    */
-  fun getCourses(id: Int): List<Course> =
+  fun getAllCourses(id: Int): List<Course> =
     normalize(coreEnrolClient.getUsersCourses(id), "id") {
       it.category
     }
@@ -134,7 +140,7 @@ class CourseService {
    *
    * @return Lista de cursos normalizados.
    */
-  fun getByClassification(classification: String): List<Course> =
+  fun getClassifiedCourses(classification: String): List<Course> =
     normalize(
       coreCourseClient.getEnrolledCoursesByTimelineClassification(classification).courses,
       "name",
@@ -142,5 +148,7 @@ class CourseService {
       it.coursecategory
     }
 
-  fun getContents(id: Int): Any = coreCourseClient.getContents(id)
+  fun getUsers(id: Int): List<User> = coreEnrolClient.getEnrolledUsers(id).map { it.toUser() }
+
+  fun getSections(id: Int): List<Section> = coreCourseClient.getContents(id).map { it.toSection() }
 }

@@ -1,4 +1,12 @@
-package es.ubu.lsi.ubumonitorweb.feature.course.dto
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
+package es.ubu.lsi.ubumonitorweb.data.dto
+
+import es.ubu.lsi.ubumonitorweb.data.api.Course
 
 /**
  * Curso tal cual lo entrega el webservice de Moodle.
@@ -11,8 +19,6 @@ package es.ubu.lsi.ubumonitorweb.feature.course.dto
  * - `block_starredcourses_get_starred_courses`
  * - `core_course_get_enrolled_courses_by_timeline_classification`
  * Entregan la categoría como: `coursecategory: String`, que representa su nombre.
- *
- * @author Marcelo Verteramo Pérsico
  */
 data class MoodleCourse(
   val id: Int,
@@ -33,4 +39,15 @@ data class MoodleCourse(
    * En progreso, Futuros, Pasados: core_course_get_enrolled_courses_by_timeline_classification
    */
   val coursecategory: String?,
-)
+) {
+  fun toCourse(category: MoodleCategory) =
+    Course(
+      id = id,
+      name = fullname,
+      picture = courseimage,
+      starred = isfavourite ?: false,
+      since = startdate ?: 0,
+      until = enddate ?: 0,
+      category = category.name,
+    )
+}

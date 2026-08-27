@@ -1,4 +1,10 @@
-package es.ubu.lsi.ubumonitorweb.core.moodle
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
+package es.ubu.lsi.ubumonitorweb.feature.resource.client
 
 import es.ubu.lsi.ubumonitorweb.core.client.ClientProfile
 import org.springframework.web.bind.annotation.PathVariable

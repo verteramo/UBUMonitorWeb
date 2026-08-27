@@ -1,3 +1,9 @@
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 package es.ubu.lsi.ubumonitorweb.core.client
 
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -11,8 +17,6 @@ import org.springframework.stereotype.Component
 
 /**
  * Interceptor que loguea el contenido de las solicitudes y respuestas de los clientes HTTP.
- *
- * @author Marcelo Verteramo Pérsico
  */
 @Component
 @Profile("dev")

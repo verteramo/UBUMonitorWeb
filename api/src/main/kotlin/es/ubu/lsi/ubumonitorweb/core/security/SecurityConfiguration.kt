@@ -1,3 +1,9 @@
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 package es.ubu.lsi.ubumonitorweb.core.security
 
 import jakarta.servlet.DispatcherType
@@ -12,8 +18,6 @@ import org.springframework.security.web.SecurityFilterChain
 
 /**
  * Configuración de seguridad.
- *
- * @author Marcelo Verteramo Pérsico
  */
 @Configuration
 @EnableWebSecurity

@@ -1,4 +1,12 @@
-package es.ubu.lsi.ubumonitorweb.feature.course.dto
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
+package es.ubu.lsi.ubumonitorweb.data.dto
+
+import es.ubu.lsi.ubumonitorweb.data.api.Module
 
 data class MoodleModule(
   val id: Int,
@@ -31,4 +39,20 @@ data class MoodleModule(
   val groupmode: Int?,
   val contents: List<MoodleContent>?,
   val contentsinfo: MoodleContentsInfo?,
-)
+) {
+  fun toModule() =
+    Module(
+      id = id,
+      url = url,
+      name = name,
+      visible = visible == 1,
+      userVisible = uservisible == true,
+      type = modname,
+      picture = modicon,
+      purpose = purpose,
+      plural = modplural,
+      completion = completion ?: 0,
+      since = dates.getOrNull(0)?.sumTimestamps() ?: 0,
+      until = dates.getOrNull(1)?.sumTimestamps() ?: 0,
+    )
+}

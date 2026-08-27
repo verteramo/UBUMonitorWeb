@@ -1,12 +1,14 @@
-package es.ubu.lsi.ubumonitorweb.core.moodle
-
-import tools.jackson.databind.annotation.JsonDeserialize
-
-/**
- * Objeto de información del sitio y usuario del token de Moodle.
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
  *
  * @author Marcelo Verteramo Pérsico
  */
+
+package es.ubu.lsi.ubumonitorweb.core.moodle
+
+import es.ubu.lsi.ubumonitorweb.feature.resource.client.ResourceUrlConverter
+import tools.jackson.databind.annotation.JsonDeserialize
+
 data class SiteInfo(
   val sitename: String,
   val username: String,

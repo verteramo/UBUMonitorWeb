@@ -1,3 +1,9 @@
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 package es.ubu.lsi.ubumonitorweb.core.client
 
 /**
@@ -17,8 +23,6 @@ package es.ubu.lsi.ubumonitorweb.core.client
  * ```kotlin
  * @ClientProfile("my-profile")
  * ```
- *
- * @author Marcelo Verteramo Pérsico
  */
 @Target(AnnotationTarget.CLASS)
 annotation class ClientProfile(

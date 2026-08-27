@@ -1,3 +1,9 @@
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 package es.ubu.lsi.ubumonitorweb.core.client
 
 import org.springframework.aot.hint.MemberCategory
@@ -16,8 +22,6 @@ import tools.jackson.dataformat.xml.XmlMapper
 /**
  * Interceptor que lee el cuerpo de la respuesta y, si se trata de alguno de los dos
  * errores de Moodle, lanza una excepción.
- *
- * @author Marcelo Verteramo Pérsico
  */
 @Component
 @RegisterReflection(

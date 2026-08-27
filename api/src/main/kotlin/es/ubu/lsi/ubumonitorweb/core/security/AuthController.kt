@@ -1,3 +1,9 @@
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 package es.ubu.lsi.ubumonitorweb.core.security
 
 import es.ubu.lsi.ubumonitorweb.core.moodle.SiteInfo
@@ -18,8 +24,6 @@ import org.springframework.web.bind.annotation.RestController
 
 /**
  * Controlador de los endpoints relacionados con la autenticación.
- *
- * @author Marcelo Verteramo Pérsico
  */
 @RestController
 @RequestMapping("/api/auth")

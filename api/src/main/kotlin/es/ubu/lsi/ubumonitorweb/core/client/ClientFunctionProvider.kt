@@ -1,3 +1,9 @@
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 package es.ubu.lsi.ubumonitorweb.core.client
 
 import org.springframework.stereotype.Component
@@ -19,8 +25,6 @@ import java.lang.reflect.Method
  * El procesador del cliente utiliza el proveedor para transformar
  * `CoreUserClient.getUserPreferences` en `core_user_get_user_preferences` y, posteriormente,
  * inyecta en la solicitud saliente el parámetro `wsfunction` con el valor obtenido.
- *
- * @author Marcelo Verteramo Pérsico
  */
 @Component
 class ClientFunctionProvider : ClientPropertyProvider<String?> {

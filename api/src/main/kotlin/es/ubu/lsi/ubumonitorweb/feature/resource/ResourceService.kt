@@ -1,7 +1,13 @@
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 package es.ubu.lsi.ubumonitorweb.feature.resource
 
 import es.ubu.lsi.ubumonitorweb.core.moodle.Credentials
-import es.ubu.lsi.ubumonitorweb.core.moodle.ResourceClient
+import es.ubu.lsi.ubumonitorweb.feature.resource.client.ResourceClient
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.web.service.registry.ImportHttpServices
@@ -9,9 +15,8 @@ import org.springframework.web.service.registry.ImportHttpServices
 @Service
 @ImportHttpServices(
   ResourceClient::class,
-  CoreEnrolClient::class,
 )
-class UserService(
+class ResourceService(
   private val resourceClient: ResourceClient,
 ) {
   private val credentials: Credentials?

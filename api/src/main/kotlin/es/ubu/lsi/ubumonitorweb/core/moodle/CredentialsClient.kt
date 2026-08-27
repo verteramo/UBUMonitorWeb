@@ -1,3 +1,9 @@
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 package es.ubu.lsi.ubumonitorweb.core.moodle
 
 import es.ubu.lsi.ubumonitorweb.core.client.ClientProfile
@@ -7,8 +13,6 @@ import org.springframework.web.service.annotation.PostExchange
 /**
  * Cliente HTTP que obtiene las credenciales, se hidrata desde el perfil `credentials` definido en
  * el fichero de configuración de la aplicación.
- *
- * @author Marcelo Verteramo Pérsico
  */
 @ClientProfile
 interface CredentialsClient {

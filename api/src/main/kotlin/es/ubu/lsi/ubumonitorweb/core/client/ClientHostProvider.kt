@@ -1,3 +1,9 @@
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 package es.ubu.lsi.ubumonitorweb.core.client
 
 import es.ubu.lsi.ubumonitorweb.core.locale.Message
@@ -10,8 +16,6 @@ import org.springframework.stereotype.Component
 /**
  * Proveedor que obtiene el host desde la cabecera `Moodle-Host`, si la cabecera está
  * vacía o no existe, busca el host en el usuario autenticado del contexto de seguridad.
- *
- * @author Marcelo Verteramo Pérsico
  */
 @Component
 class ClientHostProvider(

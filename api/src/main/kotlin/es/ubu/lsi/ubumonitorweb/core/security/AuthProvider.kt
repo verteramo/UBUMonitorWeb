@@ -1,3 +1,9 @@
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 package es.ubu.lsi.ubumonitorweb.core.security
 
 import es.ubu.lsi.ubumonitorweb.core.moodle.CredentialsClient
@@ -11,8 +17,6 @@ import org.springframework.web.service.registry.ImportHttpServices
 
 /**
  * Proveedor de autenticación que provee objetos [Authentication].
- *
- * @author Marcelo Verteramo Pérsico
  */
 @Component
 @ImportHttpServices(CredentialsClient::class, SiteInfoClient::class)

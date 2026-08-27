@@ -1,3 +1,9 @@
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 package es.ubu.lsi.ubumonitorweb.core.client
 
 import org.springframework.core.MethodParameter
@@ -6,7 +12,7 @@ import org.springframework.web.service.invoker.HttpRequestValues
 import org.springframework.web.service.invoker.HttpServiceArgumentResolver
 
 /**
- * Resolutor de argumentos HTTP que procesa colecciones anotadas con [PhpCollection].
+ * Resolver de argumentos HTTP que procesa colecciones anotadas con [PhpCollection].
  *
  * Transforma listas de objetos en parámetros de consulta o de formulario
  * utilizando la sintaxis de arrays indexados nativa de PHP. Los datos enviados
@@ -15,8 +21,6 @@ import org.springframework.web.service.invoker.HttpServiceArgumentResolver
  * ```
  * paramName[index][keyName]=keyValue&paramName[index][valueName]=itemValue
  * ```
- *
- * @author Marcelo Verteramo Pérsico
  */
 @Component
 class PhpCollectionArgumentResolver : HttpServiceArgumentResolver {

@@ -1,3 +1,9 @@
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 package es.ubu.lsi.ubumonitorweb.core.locale
 
 import org.springframework.context.MessageSource
@@ -20,16 +26,13 @@ import org.springframework.web.server.ResponseStatusException
  * ```
  *
  * @param code Identificador del mensaje.
- *
- * @author Marcelo Verteramo Pérsico
  */
 enum class Message(
   private val code: String,
 ) {
   ERROR_HTTP_MISSING_HEADER("error.http.missing_header"),
   ERROR_PROFILE_INHERIT("error.profile_inherit"),
-  ERROR_PROFILE_NOT_FOUND("error.profile_not_found"),
-  ;
+  ERROR_PROFILE_NOT_FOUND("error.profile_not_found"), ;
 
   /**
    * Obtiene un mensaje localizado y parametrizado desde el proveedor de mensajes.
@@ -67,7 +70,7 @@ enum class Message(
   /**
    * Componente para la obtención de mensajes internacionalizados.
    *
-   * @param source Resolutor de mensajes localizados desde los ficheros de mensajes.
+   * @param source Proveedor de mensajes localizados desde los ficheros de mensajes.
    */
   @Component
   class Provider(

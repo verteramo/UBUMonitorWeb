@@ -1,3 +1,9 @@
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 package es.ubu.lsi.ubumonitorweb.core.client
 
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -32,8 +38,6 @@ import java.io.InputStream
  *
  * Inyecta **interceptores**, que se ejecutan justo después de los procesadores, cuando ya se han
  * recopilado los datos de la solicitud, pero aún no se ha enviado al servicio remoto.
- *
- * @author Marcelo Verteramo Pérsico
  */
 @Configuration
 @EnableConfigurationProperties(ClientProperties::class)

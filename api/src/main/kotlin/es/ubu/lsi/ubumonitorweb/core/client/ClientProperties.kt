@@ -1,3 +1,9 @@
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 package es.ubu.lsi.ubumonitorweb.core.client
 
 import es.ubu.lsi.ubumonitorweb.core.locale.Message
@@ -5,8 +11,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 
 /**
  * Propiedades de configuración de los clientes.
- *
- * @author Marcelo Verteramo Pérsico
  */
 @ConfigurationProperties("client")
 data class ClientProperties(

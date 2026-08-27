@@ -6,12 +6,11 @@
 
 package es.ubu.lsi.ubumonitorweb.data.api
 
-data class Course(
+data class Section(
   val id: Int,
-  val name: String,
-  val picture: String?,
-  val starred: Boolean,
-  val since: Long,
-  val until: Long,
-  val category: String,
+  val name: String?,
+  val visible: Boolean,
+  val userVisible: Boolean,
+  val order: Int?,
+  val modules: List<Module>,
 )

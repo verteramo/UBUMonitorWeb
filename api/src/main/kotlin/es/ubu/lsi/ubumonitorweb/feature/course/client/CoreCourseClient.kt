@@ -1,18 +1,22 @@
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 package es.ubu.lsi.ubumonitorweb.feature.course.client
 
 import es.ubu.lsi.ubumonitorweb.core.client.ClientProfile
 import es.ubu.lsi.ubumonitorweb.core.client.PhpCollection
-import es.ubu.lsi.ubumonitorweb.feature.course.dto.MoodleCategory
-import es.ubu.lsi.ubumonitorweb.feature.course.dto.MoodleCourse
-import es.ubu.lsi.ubumonitorweb.feature.course.dto.MoodleSection
+import es.ubu.lsi.ubumonitorweb.data.dto.MoodleCategory
+import es.ubu.lsi.ubumonitorweb.data.dto.MoodleCourse
+import es.ubu.lsi.ubumonitorweb.data.dto.MoodleSection
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.service.annotation.PostExchange
 
 /**
  * Cliente HTTP de obtención de cursos, permite obtener categorías,
  * cursos recientes y cursos clasificados (en progreso, pasados y futuros).
- *
- * @author Marcelo Verteramo Pérsico
  */
 @ClientProfile("webservice-client")
 interface CoreCourseClient {
@@ -20,7 +24,7 @@ interface CoreCourseClient {
     val courses: List<MoodleCourse>,
   )
 
-  /** Obtiene los cursos recientes para el identificador de usuario especificado. */
+  /** Obtiene los cursos recientes para el ID de usuario especificado. */
   @PostExchange
   fun getRecentCourses(
     @RequestParam userid: Int,
@@ -38,6 +42,7 @@ interface CoreCourseClient {
     @PhpCollection criteria: List<Pair<String, Any>>,
   ): List<MoodleCategory>
 
+  /** Obtiene los contenidos (lista de secciones) para el ID del curso especificado. */
   @PostExchange
   fun getContents(
     @RequestParam courseid: Int,

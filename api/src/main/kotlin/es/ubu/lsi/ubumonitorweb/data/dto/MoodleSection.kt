@@ -1,4 +1,12 @@
-package es.ubu.lsi.ubumonitorweb.feature.course.dto
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
+package es.ubu.lsi.ubumonitorweb.data.dto
+
+import es.ubu.lsi.ubumonitorweb.data.api.Section
 
 data class MoodleSection(
   val id: Int,
@@ -13,4 +21,14 @@ data class MoodleSection(
   val component: String?,
   val itemid: Int?,
   val modules: List<MoodleModule>,
-)
+) {
+  fun toSection() =
+    Section(
+      id = id,
+      name = name,
+      visible = visible == 1,
+      order = section,
+      userVisible = uservisible == true,
+      modules = modules.map { it.toModule() },
+    )
+}

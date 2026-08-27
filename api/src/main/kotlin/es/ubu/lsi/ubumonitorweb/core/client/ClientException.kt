@@ -1,3 +1,9 @@
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 package es.ubu.lsi.ubumonitorweb.core.client
 
 import org.springframework.http.HttpStatus
@@ -8,8 +14,6 @@ import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty
  * Excepción para el manejo de errores de los servicios de Moodle. Los servicios de Moodle devuelven
  * los errores con código de estado `200 OK`, por lo que al interceptarlos se utiliza esta clase
  * para relanzarlos y manejarlos adecuadamente.
- *
- * @author Marcelo Verteramo Pérsico
  */
 class ClientException(
   status: HttpStatus,
