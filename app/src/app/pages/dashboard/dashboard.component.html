@@ -4,6 +4,7 @@
     (changeCourse)="session.clearCourse()"
     (logout)="session.logout()"
     (toggleSidebar)="drawer.toggle()"
+    (openSettings)="onOpenSettings()"
   />
 </header>
 
@@ -12,13 +13,13 @@
     <mat-sidenav
       #drawer
       mode="side"
-      [opened]="store.sidenavOpened()"
+      [opened]="store.dashboard.sidenavOpened()"
       (openedChange)="store.setSidenavOpened($event)"
     >
       <div class="sidebar-component">
         <mat-accordion multi="true">
           <mat-expansion-panel
-            [expanded]="store.isPanelExpanded('users')"
+            [expanded]="store.isPanelExpanded()('users')"
             (opened)="store.setPanelExpanded('users', true)"
             (closed)="store.setPanelExpanded('users', false)"
           >
@@ -31,16 +32,16 @@
           </mat-expansion-panel>
 
           <mat-expansion-panel
-            [expanded]="store.isPanelExpanded('activity')"
+            [expanded]="store.isPanelExpanded()('activity')"
             (opened)="store.setPanelExpanded('activity', true)"
             (closed)="store.setPanelExpanded('activity', false)"
           >
             <mat-expansion-panel-header>
               <mat-panel-title i18n>Activity Selection</mat-panel-title>
             </mat-expansion-panel-header>
-            <!-- <div class="expansion-panel-body">
-      <app-activity-selection></app-activity-selection>
-    </div> -->
+            <div class="expansion-panel-body">
+              <app-activity-panel></app-activity-panel>
+            </div>
           </mat-expansion-panel>
         </mat-accordion>
       </div>

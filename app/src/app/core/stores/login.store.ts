@@ -4,15 +4,15 @@
  * @author Marcelo Verteramo Pérsico
  */
 
-import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
+import { patchState, signalStore, withMethods, withProps, withState } from '@ngrx/signals';
 import { withStorage } from './features/storage.feature';
 
 /** Propiedades de estado del formulario de login. */
-export type LoginState = {
-  /** Último host Moodle guardado. */
+type LoginState = {
+  /** Host Moodle. */
   host: string;
 
-  /** Último nombre de usuario guardado. */
+  /** Nombre de usuario. */
   username: string;
 
   /** Flag para guardar el host. */
@@ -24,12 +24,12 @@ export type LoginState = {
   /** Flag para modo offline. */
   offlineMode: boolean;
 
-  /** Lista de hosts guardados. */
+  /** Lista de hosts conocidos. */
   hosts: string[];
 };
 
 /** Estado inicial del formulario de login. */
-export const initialLoginState: LoginState = {
+const initialState: LoginState = {
   host: '',
   username: '',
   rememberHost: false,
@@ -40,7 +40,9 @@ export const initialLoginState: LoginState = {
 
 /** Store de propiedades de estado del formulario de login. */
 export const LoginStore = signalStore(
-  withState(initialLoginState),
+  { providedIn: 'root' },
+  withState(initialState),
+  withProps(() => ({ initialState })),
   withStorage(localStorage, 'login-state'),
   withMethods((store) => ({
     /**
@@ -49,17 +51,13 @@ export const LoginStore = signalStore(
      *
      * @param state Preferencias del usuario.
      */
-    set: (state: LoginState) => {
+    set(state: LoginState): void {
       patchState(store, {
         ...state,
         host: state.rememberHost ? state.host : '',
         username: state.rememberUsername ? state.username : '',
         hosts: state.rememberHost ? [...new Set([...state.hosts, state.host])] : state.hosts,
       });
-    },
-
-    clear: () => {
-      patchState(store, initialLoginState);
     },
   })),
 );

@@ -1,0 +1,63 @@
+<h2 mat-dialog-title i18n>Connection Ranges</h2>
+
+<mat-dialog-content>
+  <p class="description" i18n>
+    Configure the color scale based on days since the last connection. Ranges are evaluated from
+    lowest to highest.
+  </p>
+
+  <table mat-table [dataSource]="criteria()" class="mat-elevation-z1 settings-table">
+    <ng-container matColumnDef="days">
+      <th mat-header-cell *matHeaderCellDef i18n>Up to (days)</th>
+      <td mat-cell *matCellDef="let element">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <input matInput type="number" [(ngModel)]="element.days" min="0" placeholder="0" />
+        </mat-form-field>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="color">
+      <th mat-header-cell *matHeaderCellDef i18n>Color</th>
+      <td mat-cell *matCellDef="let element">
+        <div class="color-picker-wrapper" i18n-matTooltip matTooltip="Choose color">
+          <input type="color" [(ngModel)]="element.color" />
+        </div>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let element; let i = index">
+        <button
+          mat-icon-button
+          color="warn"
+          (click)="removeCriterion(i)"
+          i18n-matTooltip
+          matTooltip="Remove"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+
+  <button mat-stroked-button type="button" (click)="addCriterion()" class="add-button">
+    <mat-icon>add</mat-icon>
+    <span i18n>Add range</span>
+  </button>
+
+  <div class="fallback-color-section">
+    <span class="fallback-label" i18n>Remaining days (∞)</span>
+    <div class="color-picker-wrapper" i18n-matTooltip matTooltip="Choose color">
+      <ngx-colors ngxColorsTrigger [ngModel]="fallbackColor()" (ngModelChange)="fallbackColor.set($event)" ></ngx-colors>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close i18n>Cancel</button>
+  <button mat-flat-button color="primary" (click)="save()" i18n>Save Configuration</button>
+</mat-dialog-actions>

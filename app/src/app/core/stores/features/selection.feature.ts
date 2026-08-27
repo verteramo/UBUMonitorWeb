@@ -26,11 +26,11 @@ export function withSelection<T>() {
       selectionLength: computed(() => selection().length),
     })),
     withMethods((store) => ({
-      isSelected(item: T) {
+      isSelected(item: T): boolean {
         return store.selection().includes(item);
       },
 
-      toggleItem(item: T) {
+      toggleItem(item: T): void {
         const items = new Set(store.selection());
 
         if (items.has(item)) {
@@ -42,7 +42,7 @@ export function withSelection<T>() {
         patchState(store, { selection: [...items] });
       },
 
-      toggleItems(items: T[]) {
+      toggleItems(items: T[]): void {
         const selection = store.selection();
         const isAllSelected = items.length > 0 && items.every((item) => selection.includes(item));
 
@@ -53,7 +53,7 @@ export function withSelection<T>() {
         }
       },
 
-      clearSelection() {
+      clearSelection(): void {
         patchState(store, { selection: [] });
       },
     })),

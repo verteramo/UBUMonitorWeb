@@ -1,0 +1,12 @@
+<article>
+  <mat-checkbox [checked]="selected()" (change)="toggle.emit(section().id)" style="pointer-events: none"></mat-checkbox>
+  <span>{{ section().name }} </span>
+
+  @if (section().visible) {
+    <mat-icon>visibility</mat-icon>
+  }
+
+  @if (section().userVisble) {
+    <mat-icon>public</mat-icon>
+  }
+</article>

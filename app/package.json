@@ -22,6 +22,7 @@
     "@ngrx/operators": "^22.0.0-rc.0",
     "@ngrx/signals": "^22.0.0-rc.0",
     "crypto-js": "^4.2.0",
+    "ngx-colors": "^4.0.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },

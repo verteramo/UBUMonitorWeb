@@ -4,8 +4,8 @@
  * @author Marcelo Verteramo Pérsico
  */
 
-import { effect, signal, Signal } from '@angular/core';
-import { getState, patchState, signalStoreFeature, withHooks } from '@ngrx/signals';
+import { signal, Signal } from '@angular/core';
+import { patchState, signalStoreFeature, watchState, withHooks } from '@ngrx/signals';
 
 /**
  * Feature que permite persistir un store completo en un Storage.
@@ -21,7 +21,7 @@ export function withStorage(storage: Storage, key: string | (() => Signal<string
       const keySignal = typeof key === 'function' ? key() : signal(key);
 
       return {
-        onInit: () => {
+        onInit() {
           const key = keySignal();
 
           // Caga inicial del estado de la store desde el storage, si existe
@@ -39,11 +39,11 @@ export function withStorage(storage: Storage, key: string | (() => Signal<string
 
           // Se dispara en cada cambio de clave para almacenar
           // el estado de la store en el storage
-          effect(() => {
+          watchState(store, (state) => {
             const key = keySignal();
 
             if (key) {
-              storage.setItem(key, JSON.stringify(getState(store)));
+              storage.setItem(key, JSON.stringify(state));
             }
           });
         },

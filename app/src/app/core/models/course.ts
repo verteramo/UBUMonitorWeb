@@ -5,12 +5,12 @@
  */
 
 /** Modelo de curso devuelto por el backend. */
-export interface Course {
+export type Course = {
   id: number;
   name: string;
   picture: string;
   starred: boolean;
-  startDate: number;
-  endDate: number;
+  since: number;
+  until: number;
   category: string;
-}
+};

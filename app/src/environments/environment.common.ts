@@ -11,6 +11,7 @@ export const environment = {
     login: '/api/auth/login',
     logout: '/api/auth/logout',
     courses: '/api/courses',
+    sections: '/api/courses/sections',
     users: '/api/users',
   },
 };

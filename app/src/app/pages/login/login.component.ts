@@ -4,23 +4,18 @@
  * @author Marcelo Verteramo Pérsico
  */
 
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, linkedSignal, signal } from '@angular/core';
 import { form, FormField, required } from '@angular/forms/signals';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { initialLoginState, LoginState, LoginStore } from '@core/stores/login.store';
+import { LoginStore } from '@core/stores/login.store';
 import { SessionStore } from '@core/stores/session.store';
 import { url } from '@core/validators/url-validator';
 import { getState } from '@ngrx/signals';
 import { ThemeToggleComponent } from '@shared/components/theme-toggle.component';
-
-/** Tipo con los campos del formulario de login. */
-type LoginModel = LoginState & {
-  password: string;
-};
 
 /**
  * Componente del formulario de login.
@@ -43,45 +38,53 @@ type LoginModel = LoginState & {
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
-  #loginStore = inject(LoginStore);
-  #sessionStore = inject(SessionStore);
+  /** Store del componente. */
+  #store = inject(LoginStore);
+
+  /** Store que expone el método `login`. */
+  #session = inject(SessionStore);
+
+  /** Estado base del store al crear el componente. */
+  #baseState = signal(getState(this.#store));
 
   /** Señal del formulario. */
-  loginModel = signal<LoginModel>({ ...getState(this.#loginStore), password: '' });
+  model = linkedSignal({
+    source: this.#baseState,
+    computation: (state) => ({ ...state, password: '' }),
+  });
 
   /** Esquema del formulario. */
-  loginForm = form(this.loginModel, (schema) => {
+  loginForm = form(this.model, (schema) => {
     url(schema.host, { message: $localize`Invalid host` });
     required(schema.host, { message: $localize`Host required` });
     required(schema.username, { message: $localize`Username required` });
     required(schema.password, { message: $localize`Password required` });
   });
 
-  /** Señal computada que filtra hosts guardados. */
+  /** Señal que filtra hosts guardados. */
   hosts = computed(() => {
-    const input = this.loginModel().host.toLowerCase();
-    return this.loginModel().hosts.filter((host) => host.toLowerCase().includes(input));
+    const { host, hosts } = this.model();
+    const input = host.toLowerCase();
+    return hosts.filter((host) => host.toLowerCase().includes(input));
   });
 
-  /** Señal computada que verifica el protocolo inseguro. */
-  insecure = computed(() => this.loginModel().host.startsWith('http:'));
+  /** Señal que verifica el protocolo inseguro. */
+  insecure = computed(() => {
+    const { host } = this.model();
+    return host.startsWith('http:');
+  });
 
   /** Señal de visibilidad del password. */
   passwordVisibility = signal(false);
 
+  /** Señal las propiedades del campo de password según visibilidad. */
   passwordState = computed(() => {
-    const visibility = this.passwordVisibility();
+    if (this.passwordVisibility()) {
+      return { type: 'text', icon: 'visibility_off', title: $localize`Hide` };
+    }
 
-    return {
-      type: visibility ? 'text' : 'password',
-      title: visibility ? $localize`Hide` : $localize`Show`,
-      icon: visibility ? 'visibility_off' : 'visibility',
-    };
+    return { type: 'password', icon: 'visibility', title: $localize`Show` };
   });
-
-  togglePasswordVisibility() {
-    this.passwordVisibility.update((state) => !state);
-  }
 
   hostErrorMessages = computed(() =>
     this.loginForm
@@ -109,32 +112,32 @@ export class LoginComponent {
 
   /**
    * Evento de envío del formulario.
-   * Se realiza la solicitud de login,
+   * Se realiza la solicitud de login;
    * en caso de éxito se loguea el usuario autenticado y,
    * al completar, se guardan las preferencias según las
-   * casillas habilitadas por el usuario y se redirige al
+   * casillas habilitadas por el usuario, y se redirige al
    * componente de selección de curso/asignatura.
    */
   onSubmit(event: Event) {
     event.preventDefault();
 
-    const { host, username, password, ...options } = this.loginModel();
+    const { host, username, password, ...options } = this.model();
 
-    this.#sessionStore.login({
+    this.#session.login({
       params: { host, credentials: { username, password } },
       onSuccess: () => {
-        this.#loginStore.set({ host, username, ...options });
+        this.#store.set({ host, username, ...options });
       },
     });
   }
 
   /** Reestablece los campos con los valores guardados en las preferencias. */
   onRestore() {
-    this.loginModel.set({ ...getState(this.#loginStore), password: '' });
+    this.#baseState.set({ ...getState(this.#store) });
   }
 
   /** Vacía completamente los campos. */
   onClean() {
-    this.loginModel.set({ ...initialLoginState, password: '' });
+    this.#baseState.set({ ...this.#store.initialState });
   }
 }

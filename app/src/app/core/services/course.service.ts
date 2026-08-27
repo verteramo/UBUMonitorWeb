@@ -7,8 +7,10 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { Course } from '@core/models/course';
+import { Section } from '@core/models/section';
+import { User } from '@core/models/user';
 import { environment as env } from '@env/environment';
-import { Observable, of, shareReplay } from 'rxjs';
+import { Observable, shareReplay } from 'rxjs';
 
 /** Clasificación de cursos. */
 export type CourseClassification = 'all' | 'starred' | 'recent' | 'inprogress' | 'future' | 'past';
@@ -18,39 +20,37 @@ export type CourseClassification = 'all' | 'starred' | 'recent' | 'inprogress' |
 export class CourseService {
   /** Cliente HTTP */
   #http = inject(HttpClient);
-
-  /** Caché de cursos clasificados. */
-  #classifiedCourses = new Map<CourseClassification, Observable<Course[]>>();
+  #cache: Partial<Record<CourseClassification, Observable<Course[]>>> = {};
 
   /**
-   * Solicita la lista de cursos de una clasificación determinada.
+   * Obtiene la lista de cursos de una clasificación determinada.
    *
    * @param classification Clasificación solicitada.
-   * @returns Lista de cursos de la clasificación solicitada.
+   * @returns Lista de cursos.
    */
   getCourses(classification: CourseClassification): Observable<Course[]> {
-    /*
-     * Se almacenan los cursos en memoría para minimizar
-     * solicitudes costosas al servicio de Moodle.
-     */
-    if (this.#classifiedCourses.has(classification)) {
-      return this.#classifiedCourses.get(classification) as Observable<Course[]>;
-    }
-
-    // Construcción del endpoint con la clasificación solicitada
-    const endpoint = `${env.endpoints.courses}/${classification}`;
-
-    const courses$ = this.#http.get<Course[]>(endpoint).pipe(
-      // Almacena en memoria el último valor emitido
-      shareReplay(1),
-    );
-
-    this.#classifiedCourses.set(classification, courses$);
-
-    return courses$;
+    return (this.#cache[classification] ??= this.#http
+      .get<Course[]>(`${env.endpoints.courses}/${classification}`)
+      .pipe(shareReplay(1)));
   }
 
-  getContents(id: number): Observable<any[]> {
-    return of([]);
+  /**
+   * Obtiene la lista de usuarios de un curso determinado.
+   *
+   * @param id ID del curso.
+   * @returns Lista de usuarios del curso.
+   */
+  getUsers(id: number): Observable<User[]> {
+    return this.#http.get<User[]>(env.endpoints.users, { params: { courseId: id } });
+  }
+
+  /**
+   * Obtiene la lista de secciones de un curso determinado.
+   * @param id ID del curso.
+   * @returns Lista de secciones del curso.
+   */
+  getSections(id: number): Observable<Section[]> {
+    const endpoint = `${env.endpoints.sections}/${id}`;
+    return this.#http.get<Section[]>(endpoint);
   }
 }

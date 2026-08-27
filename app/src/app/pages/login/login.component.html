@@ -39,7 +39,12 @@
       [formField]="loginForm.password"
       autocomplete="current-password"
     />
-    <button matSuffix matIconButton type="button" (click)="togglePasswordVisibility()">
+    <button
+      matSuffix
+      matIconButton
+      type="button"
+      (click)="passwordVisibility.set((state) => !state)"
+    >
       <mat-icon [title]="passwordState().title">{{ passwordState().icon }}</mat-icon>
     </button>
     @if (passwordErrorMessages()) {

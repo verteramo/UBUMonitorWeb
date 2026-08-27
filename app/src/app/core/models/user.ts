@@ -5,7 +5,7 @@
  */
 
 /** Modelo de usuario de Moodle devuelto por el backend. */
-export interface User {
+export type User = {
   id: number;
   username?: string;
   email?: string;
@@ -19,4 +19,4 @@ export interface User {
   groups: string[];
   roles: string[];
   courses: string[];
-}
+};

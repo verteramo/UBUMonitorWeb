@@ -17,6 +17,7 @@ import {
   withComputed,
   withHooks,
   withMethods,
+  withProps,
   withState,
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
@@ -48,6 +49,10 @@ const initialState: SessionState = {
 export const SessionStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
+  withProps(() => ({
+    _router: inject(Router),
+    _authService: inject(AuthService),
+  })),
   withStorage(sessionStorage, 'session-state'),
   withComputed((store) => ({
     /** Curso seleccionado. */
@@ -56,12 +61,8 @@ export const SessionStore = signalStore(
     /** Usuario logueado. */
     currentPrincipal: computed(() => store.principal() as Principal),
   })),
-  withMethods((store, authService = inject(AuthService)) => ({
-    /**
-     * Establece el curso.
-     *
-     * @param course Curso.
-     */
+  withMethods((store) => ({
+    /** Establece el curso. */
     setCourse(course: Course): void {
       patchState(store, { course });
     },
@@ -84,7 +85,7 @@ export const SessionStore = signalStore(
     login: rxMethod<LoginPayload>(
       pipe(
         exhaustMap(({ params, onSuccess, onError }) =>
-          authService.login(params).pipe(
+          store._authService.login(params).pipe(
             tapResponse<Principal, HttpErrorResponse>({
               next: (principal) => {
                 patchState(store, { principal });
@@ -105,7 +106,7 @@ export const SessionStore = signalStore(
       pipe(
         tap(() => {
           patchState(store, initialState);
-          authService.logout();
+          store._authService.logout();
         }),
       ),
     ),
@@ -119,17 +120,17 @@ export const SessionStore = signalStore(
      * durante el proceso de enrutamiento; el efecto garantiza que si se cambia
      * el estado del store, el usuario será redirigido automáticamente.
      */
-    onInit: (store, router = inject(Router)) => {
+    onInit(store) {
       effect(() => {
         if (!store.principal()) {
           // Si no hay usuario, solo se puede acceder al login
-          router.navigate(['/login']);
+          store._router.navigate(['/login']);
         } else if (!store.course()) {
           // Si no hay curso, solo se puede puede acceder a la selección de curso
-          router.navigate(['/course']);
+          store._router.navigate(['/course']);
         } else {
           // En caso de que existan ambos, solo se puede acceder al dashboard
-          router.navigate(['/dashboard']);
+          store._router.navigate(['/dashboard']);
         }
       });
     },

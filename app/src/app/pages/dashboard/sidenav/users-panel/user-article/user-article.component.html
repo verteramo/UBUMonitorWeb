@@ -1,0 +1,16 @@
+<article [class.selected]="selected()">
+  <div class="avatar-action-container" (click)="toggle.emit(user().id)">
+    <img [src]="user().picture || 'user_blank.png'" [alt]="user().fullName" />
+    <mat-checkbox [checked]="selected()" style="pointer-events: none"></mat-checkbox>
+  </div>
+
+  <div class="user-details">
+    <strong>{{ user().fullName }}</strong>
+    <small i18n>Course: {{ user().lastCourseAccess | timeAgo: 's' }}</small>
+    <small i18n>Platform: {{ user().lastAccess | timeAgo: 's' }}</small>
+  </div>
+
+  <button matIconButton type="button" (click)="openProfile.emit(user())" i18n-title title="View profile">
+    <mat-icon>account_circle</mat-icon>
+  </button>
+</article>

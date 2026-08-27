@@ -5,7 +5,7 @@
  */
 
 /** Modelo de usuario logueado (principal) devuelto por el backend. */
-export interface Principal {
+export type Principal = {
   id: string;
   username: string;
   isAdmin: boolean;
@@ -20,4 +20,4 @@ export interface Principal {
     version?: string;
     release?: string;
   };
-}
+};

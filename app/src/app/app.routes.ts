@@ -8,7 +8,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from '@core/guards/auth-guard';
 import { courseGuard } from '@core/guards/course-guard';
 import { LoginStore } from '@core/stores/login.store';
-import { CourseComponent } from '@pages/course/course.component';
+import { CourseSelectionComponent } from '@pages/course-selection/course-selection.component';
 import { DashboardComponent } from '@pages/dashboard/dashboard.component';
 import { LoginComponent } from '@pages/login/login.component';
 
@@ -33,8 +33,8 @@ export const routes: Routes = [
   },
   {
     path: 'course',
-    title: $localize`Course`,
-    component: CourseComponent,
+    title: $localize`Course selection`,
+    component: CourseSelectionComponent,
     canActivate: [authGuard(true), courseGuard(false)],
   },
   {

@@ -14,7 +14,6 @@ import { SessionStore } from './session.store';
 
 /** Propiedades de estado del panel de usuarios. */
 type UsersState = {
-  courseId?: number;
   term: string;
   roles: string[];
   groups: string[];
@@ -32,7 +31,7 @@ export const UsersStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
   withSelection<number>(),
-  withStorage(sessionStorage, 'users-store'),
+  withStorage(sessionStorage, 'users-state'),
   withComputed((store) => {
     const service = inject(UserService);
     const session = inject(SessionStore);
@@ -47,7 +46,7 @@ export const UsersStore = signalStore(
 
     return {
       activeFiltersCount: computed(() => {
-      return store.roles().length + store.groups().length
+        return store.roles().length + store.groups().length;
       }),
 
       isLoading: resource.isLoading,
@@ -68,8 +67,7 @@ export const UsersStore = signalStore(
       }),
 
       selectedUsers: computed(() => {
-        const selection = store.selectionSet();
-        return users().filter(({ id }) => selection.has(id));
+        return users().filter(({ id }) => store.selectionSet().has(id));
       }),
 
       availableRoles: computed(() => {
@@ -88,23 +86,19 @@ export const UsersStore = signalStore(
     };
   }),
   withMethods((store) => ({
-    setCourseId(courseId: number) {
-      patchState(store, { courseId });
-    },
-
-    updateTerm(term: string) {
+    updateTerm(term: string): void {
       patchState(store, { term });
     },
 
-    updateRoles(roles: string[]) {
+    updateRoles(roles: string[]): void {
       patchState(store, { roles });
     },
 
-    updateGroups(groups: string[]) {
+    updateGroups(groups: string[]): void {
       patchState(store, { groups });
     },
 
-    clearFilters() {
+    clearFilters(): void {
       patchState(store, { term: '', roles: [], groups: [] });
     },
   })),

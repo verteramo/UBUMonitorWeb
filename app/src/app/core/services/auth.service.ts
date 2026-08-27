@@ -19,7 +19,7 @@ export type LoginParams = {
   };
 };
 
-/** Token para etiquetar solicitudes del AuthService. */
+/** Token para etiquetar solicitudes de este AuthService. */
 export const AuthRequestToken = new HttpContextToken(() => false);
 
 /** Token para añadir el host en solicitudes de login. */
@@ -31,14 +31,14 @@ export class AuthService {
   #http = inject(HttpClient);
   #context = new HttpContext().set(AuthRequestToken, true);
 
-  /** Inicio de sesión en el servicio. */
+  /** Inicio de sesión en el backend. */
   login({ host, credentials }: LoginParams): Observable<Principal> {
     return this.#http.post<Principal>(env.endpoints.login, credentials, {
       context: this.#context.set(HostToken, host),
     });
   }
 
-  /** Cierre de sesión en el servicio. */
+  /** Cierre de sesión en el backend. */
   logout() {
     this.#http.get(env.endpoints.logout, { context: this.#context });
   }

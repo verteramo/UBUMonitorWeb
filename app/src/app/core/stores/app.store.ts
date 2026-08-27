@@ -11,7 +11,7 @@ import { withStorage } from './features/storage.feature';
 /** Themes disponibles. */
 type Theme = 'system' | 'light' | 'dark';
 
-/** Ciclo de themes para saber cuál es el siguiente. */
+/** Ciclo de themes que indica cuál es el siguiente. */
 const nextTheme: Record<Theme, Theme> = {
   system: 'light',
   light: 'dark',
@@ -20,7 +20,6 @@ const nextTheme: Record<Theme, Theme> = {
 
 /** Propiedades de estado de la aplicación. */
 type AppState = {
-  /** Theme de la aplicación. */
   theme: Theme;
 };
 
@@ -40,7 +39,7 @@ export const AppStore = signalStore(
   })),
   withMethods((store) => ({
     /** Cambia los themes en ciclo. */
-    toggleTheme() {
+    toggleTheme(): void {
       patchState(store, { theme: store.nextTheme() });
     },
   })),
