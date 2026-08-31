@@ -37,7 +37,7 @@
             (closed)="store.setPanelExpanded('activity', false)"
           >
             <mat-expansion-panel-header>
-              <mat-panel-title i18n>Activity Selection</mat-panel-title>
+              <mat-panel-title i18n>Activities</mat-panel-title>
             </mat-expansion-panel-header>
             <div class="expansion-panel-body">
               <app-activity-panel></app-activity-panel>
@@ -57,7 +57,7 @@
 
 <footer>
   <app-statusbar
-    [platform]="session.currentPrincipal().platform"
+    [principal]="session.currentPrincipal()"
     [course]="session.currentCourse()"
     (refresh)="onRefresh()"
   />

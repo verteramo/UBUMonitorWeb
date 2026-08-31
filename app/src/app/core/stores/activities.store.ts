@@ -55,7 +55,7 @@ export const ActivitiesStore = signalStore(
       }),
 
       selectedSections: computed(() => {
-        return sections().filter(({ id }) => store.selectionSet().has(id));
+        return sections().filter(({ id }) => store.selection().includes(id));
       }),
 
       modules: computed(() => {

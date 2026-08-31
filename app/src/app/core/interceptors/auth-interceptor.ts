@@ -6,34 +6,31 @@
 
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { AuthRequestToken } from '@core/services/auth.service';
+import { AuthToken } from '@core/services/auth.service';
 import { SessionStore } from '@core/stores/session.store';
+import { environment as env } from '@env/environment';
 import { catchError } from 'rxjs';
 
 /**
- * Verifica la presencia de códigos de estado que evidencian la
- * caducidad del token, por lo que en dichos casos se cierra la sesión.
+ * Realiza un pre y post procesamiento de las solicitudes de autenticación.
+ * - Pre: Añade el host en la cabecera correspondiente cuando está disponible.
+ * - Post: Verifica la presencia de código de estado que evidencian la caducidad
+ * del token para limpiar el store de la sesión local.
  */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const sessionStore = inject(SessionStore);
-  const isAuthRequest = req.context.get(AuthRequestToken);
+  const session = inject(SessionStore);
+  const token = req.context.get(AuthToken);
 
-  // Códigos de estado de errores de autenticación
-  const sessionExpirationStatuses = [401, 403];
+  const request = token ? req.clone({ setHeaders: { [env.hostHeader]: token } }) : req;
 
-  return next(req).pipe(
+  return next(request).pipe(
     catchError((response: HttpErrorResponse) => {
       /*
        * Si es una solicitud proveniente de AuthService no se intercepta,
        * se lanza el error para que el LoginComponent lo capture y lo pueda procesar.
        */
-      if (!isAuthRequest && sessionExpirationStatuses.includes(response.status)) {
-        /*
-         * El servidor ha devuelto un código de estado 401/403,
-         * por lo que la sesión ya está muerta en el servidor,
-         * solo queda limpiar el estado local.
-         */
-        sessionStore.clear();
+      if (!token && [401, 403].includes(response.status)) {
+        session.clear();
       }
 
       throw response;

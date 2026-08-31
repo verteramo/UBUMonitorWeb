@@ -14,7 +14,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { ActivitiesStore } from '@core/stores/activities.store';
 import { ProgressSpinnerComponent } from '@shared/components/progress-spinner.component';
-import SectionArticleComponent from './section-article/section-article.component';
+import { FilterControlComponent } from '../components/filter-control.component';
+import SectionArticleComponent from './section-article.component';
 
 /** Componente del panel de actividades. */
 @Component({
@@ -29,10 +30,40 @@ import SectionArticleComponent from './section-article/section-article.component
     MatMenuModule,
     MatDividerModule,
     MatSelectModule,
-    SectionArticleComponent
+    SectionArticleComponent,
+    FilterControlComponent,
   ],
-  templateUrl: './activity-panel.component.html',
-  styleUrl: './activity-panel.component.scss',
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    main {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+    }
+  `,
+  template: `
+    @if (store.isLoading()) {
+      <app-progress-spinner i18n>Loading sections...</app-progress-spinner>
+    } @else {
+      <header>
+        <app-filter-control i18n-placeholder placeholder="Filter..."> </app-filter-control>
+      </header>
+
+      <main>
+        @for (section of store.filteredSections(); track section.id) {
+          <app-section-article [section]="section" />
+        }
+      </main>
+    }
+  `,
 })
 export class ActivityPanelComponent {
   readonly store = inject(ActivitiesStore);

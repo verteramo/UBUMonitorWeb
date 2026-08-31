@@ -9,7 +9,6 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/
 import { provideRouter, TitleStrategy, withHashLocation } from '@angular/router';
 import { authInterceptor } from '@core/interceptors/auth-interceptor';
 import { errorInterceptor } from '@core/interceptors/error-interceptor';
-import { hostInterceptor } from '@core/interceptors/host-interceptor';
 import { AppTitleStrategy } from '@core/strategies/app-title.strategy';
 import { routes } from './app.routes';
 
@@ -24,6 +23,6 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withHashLocation()),
     { provide: TitleStrategy, useClass: AppTitleStrategy },
-    provideHttpClient(withInterceptors([authInterceptor, errorInterceptor, hostInterceptor])),
+    provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
   ],
 };

@@ -5,12 +5,11 @@
  */
 
 import { Routes } from '@angular/router';
-import { authGuard } from '@core/guards/auth-guard';
-import { courseGuard } from '@core/guards/course-guard';
-import { LoginStore } from '@core/stores/login.store';
+import { sessionGuard } from '@core/guards/session-guard';
 import { CourseSelectionComponent } from '@pages/course-selection/course-selection.component';
 import { DashboardComponent } from '@pages/dashboard/dashboard.component';
 import { LoginComponent } from '@pages/login/login.component';
+import { LoginStore } from '@pages/login/login.store';
 
 /**
  * Configuración de las rutas de la aplicación.
@@ -29,18 +28,18 @@ export const routes: Routes = [
     title: $localize`Login`,
     providers: [LoginStore],
     component: LoginComponent,
-    canActivate: [authGuard(false)],
+    canActivate: [sessionGuard],
   },
   {
     path: 'course',
     title: $localize`Course selection`,
     component: CourseSelectionComponent,
-    canActivate: [authGuard(true), courseGuard(false)],
+    canActivate: [sessionGuard],
   },
   {
     path: 'dashboard',
     title: $localize`Dashboard`,
     component: DashboardComponent,
-    canActivate: [authGuard(true), courseGuard(true)],
+    canActivate: [sessionGuard],
   },
 ];

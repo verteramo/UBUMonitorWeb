@@ -11,11 +11,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { SessionStore } from '@core/stores/session.store';
 import { SettingsStore } from '@core/stores/settings.store';
-import { SettingsComponent } from '@pages/dashboard/settings/settings.component';
-import { NavbarComponent } from './navbar/navbar.component';
-import { ActivityPanelComponent } from "./sidenav/activity-panel/activity-panel.component";
-import { UsersPanelComponent } from './sidenav/users-panel/users-panel.component';
-import { StatusbarComponent } from './statusbar/statusbar.component';
+import { NavbarComponent } from './navbar.component';
+import { ActivityPanelComponent } from './sidenav/panel-activities/activity-panel.component';
+import { UserPanelComponent } from './sidenav/panel-users/user-panel.component';
+import { StatusbarComponent } from './statusbar.component';
 
 /**
  * Componente del dashboard.
@@ -31,9 +30,9 @@ import { StatusbarComponent } from './statusbar/statusbar.component';
     MatSidenavModule,
     MatExpansionModule,
     MatProgressSpinnerModule,
-    UsersPanelComponent,
-    ActivityPanelComponent
-],
+    UserPanelComponent,
+    ActivityPanelComponent,
+  ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
@@ -47,9 +46,9 @@ export class DashboardComponent {
   }
 
   onOpenSettings(): void {
-    this.#dialog.open(SettingsComponent, {
-      width: '1200px',
-      height: '90vh',
-    })
+    // this.#dialog.open(SettingsComponent, {
+    //   width: '1200px',
+    //   height: '90vh',
+    // })
   }
 }

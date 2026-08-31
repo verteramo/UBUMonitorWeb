@@ -22,35 +22,36 @@ export function withSelection<T>() {
   return signalStoreFeature(
     withState<{ selection: T[] }>({ selection: [] }),
     withComputed(({ selection }) => ({
-      selectionSet: computed(() => new Set(selection())),
-      selectionLength: computed(() => selection().length),
+      _selectionSet: computed(() => new Set(selection())),
     })),
     withMethods((store) => ({
       isSelected(item: T): boolean {
-        return store.selection().includes(item);
+        return store._selectionSet().has(item);
       },
 
       toggleItem(item: T): void {
-        const items = new Set(store.selection());
+        const set = new Set(store._selectionSet());
 
-        if (items.has(item)) {
-          items.delete(item);
+        if (set.has(item)) {
+          set.delete(item);
         } else {
-          items.add(item);
+          set.add(item);
         }
 
-        patchState(store, { selection: [...items] });
+        patchState(store, { selection: [...set] });
       },
 
       toggleItems(items: T[]): void {
-        const selection = store.selection();
-        const isAllSelected = items.length > 0 && items.every((item) => selection.includes(item));
+        const set = new Set(store._selectionSet());
+        const isAllSelected = items.length > 0 && items.every((item) => set.has(item));
 
         if (isAllSelected) {
-          patchState(store, { selection: [] });
+          items.forEach((item) => set.delete(item));
         } else {
-          patchState(store, { selection: [...new Set(items)] });
+          items.forEach((item) => set.add(item));
         }
+
+        patchState(store, { selection: [...set] });
       },
 
       clearSelection(): void {

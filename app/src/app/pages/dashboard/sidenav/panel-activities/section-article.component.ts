@@ -13,8 +13,24 @@ import { Section } from '@core/models/section';
 @Component({
   selector: 'app-section-article',
   imports: [MatIcon, MatCheckbox],
-  templateUrl: './section-article.component.html',
-  styleUrl: './section-article.component.scss',
+  template: `
+    <article>
+      <mat-checkbox
+        [checked]="selected()"
+        (change)="toggle.emit(section().id)"
+        style="pointer-events: none"
+      ></mat-checkbox>
+      <span>{{ section().name }} </span>
+
+      @if (section().visible) {
+        <mat-icon>visibility</mat-icon>
+      }
+
+      @if (section().userVisble) {
+        <mat-icon>public</mat-icon>
+      }
+    </article>
+  `,
 })
 export default class SectionArticleComponent {
   section = input.required<Section>();

@@ -6,8 +6,8 @@
 
 import { computed, inject } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { UserService } from '@core/services/user.service';
-import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
+import { CourseService } from '@core/services/course.service';
+import { signalStore, withComputed, withMethods, withProps, withState } from '@ngrx/signals';
 import { withSelection } from './features/selection.feature';
 import { withStorage } from './features/storage.feature';
 import { SessionStore } from './session.store';
@@ -32,74 +32,62 @@ export const UsersStore = signalStore(
   withState(initialState),
   withSelection<number>(),
   withStorage(sessionStorage, 'users-state'),
-  withComputed((store) => {
-    const service = inject(UserService);
-    const session = inject(SessionStore);
-
-    const resource = rxResource({
+  withProps((_, session = inject(SessionStore), service = inject(CourseService)) => ({
+    _resource: rxResource({
       defaultValue: [],
       params: session.currentCourse,
-      stream: ({ params }) => service.getUsers(params.id),
-    });
+      stream: ({ params: { id } }) => service.getUsers(id),
+    }),
+  })),
+  withComputed(({ _resource: { value, isLoading } }) => ({ users: value, isLoading })),
+  withComputed(({ users, term, roles, groups }) => ({
+    filteredUsers: computed(() => {
+      const value = term().trim().toLowerCase();
 
-    const users = computed(() => resource.value());
+      return users().filter((user) => {
+        const matchesTerm = !value || user.fullName.toLowerCase().includes(value);
+        const matchesRoles = !roles().length || user.roles.some((e) => roles().includes(e));
+        const matchesGroups = !groups().length || user.groups.some((e) => groups().includes(e));
 
-    return {
-      activeFiltersCount: computed(() => {
-        return store.roles().length + store.groups().length;
-      }),
+        return matchesTerm && matchesRoles && matchesGroups;
+      });
+    }),
 
-      isLoading: resource.isLoading,
-      users,
+    availableRoles: computed(() => {
+      const values = users()
+        .flatMap((user) => user.roles)
+        .filter(Boolean);
+      return [...new Set(values)];
+    }),
 
-      filteredUsers: computed(() => {
-        const term = store.term().trim().toLowerCase();
-        const roles = store.roles();
-        const groups = store.groups();
+    availableGroups: computed(() => {
+      const values = users()
+        .flatMap((user) => user.groups)
+        .filter(Boolean);
+      return [...new Set(values)];
+    }),
 
-        return users().filter((user) => {
-          const matchesTerm = !term || user.fullName.toLowerCase().includes(term);
-          const matchesRoles = !roles.length || user.roles.some((e) => roles.includes(e));
-          const matchesGroups = !groups.length || user.groups.some((e) => groups.includes(e));
+    activeFiltersLength: computed(() => {
+      return roles().length + groups().length;
+    }),
+  })),
+  withComputed(({ filteredUsers, _selectionSet }) => ({
+    /** Determina si están todos los usuarios seleccionados. */
+    isAllSelected: computed(() => {
+      return (
+        filteredUsers().length > 0 && filteredUsers().every(({ id }) => _selectionSet().has(id))
+      );
+    }),
 
-          return matchesTerm && matchesRoles && matchesGroups;
-        });
-      }),
-
-      selectedUsers: computed(() => {
-        return users().filter(({ id }) => store.selectionSet().has(id));
-      }),
-
-      availableRoles: computed(() => {
-        const values = users()
-          .flatMap((user) => user.roles)
-          .filter(Boolean);
-        return [...new Set(values)];
-      }),
-
-      availableGroups: computed(() => {
-        const values = users()
-          .flatMap((user) => user.groups)
-          .filter(Boolean);
-        return [...new Set(values)];
-      }),
-    };
-  }),
+    /** Determina si se trata de una selección parcial. */
+    isSomeSelected: computed(() => {
+      const visible = filteredUsers().filter(({ id }) => _selectionSet().has(id));
+      return visible.length > 0 && visible.length < filteredUsers().length;
+    }),
+  })),
   withMethods((store) => ({
-    updateTerm(term: string): void {
-      patchState(store, { term });
-    },
-
-    updateRoles(roles: string[]): void {
-      patchState(store, { roles });
-    },
-
-    updateGroups(groups: string[]): void {
-      patchState(store, { groups });
-    },
-
-    clearFilters(): void {
-      patchState(store, { term: '', roles: [], groups: [] });
+    toggleAll(): void {
+      store.toggleItems(store.filteredUsers().map(({ id }) => id));
     },
   })),
 );

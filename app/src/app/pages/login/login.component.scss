@@ -12,19 +12,6 @@ app-theme-toggle {
   right: 1rem;
 }
 
-mat-form-field {
-  width: 100%;
-
-  input::-ms-reveal,
-  input::-ms-clear {
-    display: none;
-  }
-
-  button[matSuffix] {
-    color: var(--mat-sys-on-surface-variant);
-  }
-}
-
 form {
   display: flex;
   flex-direction: column;
