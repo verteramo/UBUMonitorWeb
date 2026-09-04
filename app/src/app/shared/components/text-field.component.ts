@@ -1,5 +1,5 @@
-import { Component, input, model } from '@angular/core';
-import { FormValueControl } from '@angular/forms/signals';
+import { Component, input, model, output } from '@angular/core';
+import { FormValueControl, ValidationError, WithOptionalFieldTree } from '@angular/forms/signals';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -28,6 +28,7 @@ import { MatInputModule } from '@angular/material/input';
         type="text"
         [value]="value()"
         (input)="value.set($event.target.value)"
+        (blur)="touch.emit()"
         [autocomplete]="autocomplete()"
         [matAutocomplete]="auto"
       />
@@ -41,6 +42,9 @@ import { MatInputModule } from '@angular/material/input';
           <mat-option [value]="value">{{ value }}</mat-option>
         }
       </mat-autocomplete>
+      @if (invalid() && touched()) {
+        <mat-error>{{ errors()[0].message }}</mat-error>
+      }
     </mat-form-field>
   `,
 })
@@ -52,4 +56,10 @@ export class InputFieldComponent implements FormValueControl<string> {
   readonly suffix = input<boolean>(false);
   readonly suffixIcon = input<string>();
   readonly suffixTitle = input<string>();
+
+    /* Gestión de errores */
+  readonly touch = output<void>();
+  readonly invalid = input<boolean>(false);
+  readonly touched = input<boolean>(false);
+  readonly errors = input<readonly WithOptionalFieldTree<ValidationError>[]>([]);
 }

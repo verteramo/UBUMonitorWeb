@@ -48,10 +48,10 @@ export class LoginComponent {
 
   /** Esquema del formulario. */
   protected readonly loginForm = form(this.store.model, (schema) => {
-    required(schema.host, { message: $localize`Host required` });
-    required(schema.username, { message: $localize`Username required` });
-    required(schema.password, { message: $localize`Password required` });
-    url(schema.host, { message: $localize`Invalid host` });
+    required(schema.host);
+    required(schema.username);
+    required(schema.password);
+    url(schema.host);
   });
 
   /** Procesamiento del formulario. */

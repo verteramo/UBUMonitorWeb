@@ -34,13 +34,7 @@
   </fieldset>
 
   <nav class="form-actions">
-    <button
-      matButton="filled"
-      color="primary"
-      type="submit"
-      [disabled]="!loginForm().valid()"
-      i18n
-    >
+    <button matButton="filled" color="primary" type="submit" [disabled]="!loginForm().valid()" i18n>
       Connect
     </button>
     <button matIconButton type="button" (click)="store.restore()" i18n-title title="Restore">
