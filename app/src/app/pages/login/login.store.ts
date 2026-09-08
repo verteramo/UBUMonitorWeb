@@ -50,14 +50,20 @@ export const LoginStore = signalStore(
       model.set(initialState());
     },
   })),
-  withMethods(({ model }, session = inject(SessionStore), appStore = inject(AppStore)) => ({
-    /** Realiza el login y, en caso de éxito, salva las preferencias seleccionadas. */
-    login(): Observable<Principal> {
-      const { host, username, password, ...options } = model();
+  withMethods(
+    ({ model }, { login } = inject(SessionStore), { setLoginState } = inject(AppStore)) => ({
+      /** Realiza el login y, en caso de éxito, salva las preferencias seleccionadas. */
+      login(): Observable<Principal> {
+        const { host, username, password, ...options } = model();
 
-      return session
-        .login({ host, credentials: { username, password } })
-        .pipe(tap({ next: () => appStore.setLoginState({ host, username, ...options }) }));
-    },
-  })),
+        return login({ host, credentials: { username, password } }).pipe(
+          tap({
+            next(): void {
+              setLoginState({ host, username, ...options });
+            },
+          }),
+        );
+      },
+    }),
+  ),
 );
