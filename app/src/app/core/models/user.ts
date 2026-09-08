@@ -11,9 +11,9 @@ export type User = {
   email?: string;
   fullName: string;
   picture?: string;
-  firstAccess?: number;
-  lastAccess?: number;
-  lastCourseAccess?: number;
+  firstAccessMs?: number;
+  lastAccessMs?: number;
+  lastCourseAccessMs?: number;
   country?: string;
   phones: string[];
   groups: string[];

@@ -16,6 +16,6 @@ export type Module = {
   purpose: string;
   plural: string;
   completion: 0 | 1 | 2;
-  since?: number;
-  until?: number;
+  sinceMs?: number;
+  untilMs?: number;
 };

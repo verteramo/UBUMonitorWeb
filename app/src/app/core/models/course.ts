@@ -10,7 +10,7 @@ export type Course = {
   name: string;
   picture: string;
   starred: boolean;
-  since: number;
-  until: number;
+  sinceMs?: number;
+  untilMs?: number;
   category: string;
 };
