@@ -4,99 +4,113 @@
  * @author Marcelo Verteramo Pérsico
  */
 
-import { computed, effect, inject } from '@angular/core';
+import { computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Course } from '@core/models/course';
 import { Principal } from '@core/models/principal';
 import { AuthService, LoginParams } from '@core/services/auth.service';
-import {
-  patchState,
-  signalStore,
-  withComputed,
-  withHooks,
-  withMethods,
-  withState,
-} from '@ngrx/signals';
+import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { Observable, tap } from 'rxjs';
 import { withStorage } from './features/storage.feature';
 
-/** Propiedades de estado de la sesión. */
+/**
+ * Propiedades de estado de la sesión.
+ */
 type SessionState = {
-  /** Curso actual. */
-  course: Course | null;
-
-  /** Usuario autenticado. */
   principal: Principal | null;
+  course: Course | null;
 };
 
-/** Estado inicial. */
+/**
+ * Estado inicial.
+ */
 const initialState: SessionState = {
-  course: null,
   principal: null,
+  course: null,
 };
 
-/** Store de propiedades de estado de la sesión: Usuario autenticado (principal) y Curso. */
+/**
+ * Store de propiedades de estado de la sesión: Usuario autenticado (principal) y Curso.
+ */
 export const SessionStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
-  withStorage(sessionStorage, 'session-state'),
   withComputed(({ principal, course }) => ({
-    /** Usuario logueado. */
+    /**
+     * Usuario logueado.
+     */
     currentPrincipal: computed(() => principal()!),
 
-    /** Curso seleccionado. */
+    /**
+     * Curso seleccionado.
+     */
     currentCourse: computed(() => course()!),
 
-    /** Ubicación según el estado de la sesión. */
-    targetRoute: computed(() => (!principal() ? '/login' : !course() ? '/course' : '/dashboard')),
+    /**
+     * Ubicación según el estado de la sesión.
+     */
+    location: computed(() => (!principal() ? '/login' : !course() ? '/course' : '/dashboard')),
   })),
-  withMethods((store) => ({
-    _setPrincipal(principal: Principal) {
+  withMethods((store, router = inject(Router)) => ({
+    /**
+     * Establece el principal.
+     */
+    setPrincipal(principal: Principal): void {
       patchState(store, { principal });
+      router.navigate(['/course']);
     },
 
-    /** Establece el curso. */
+    /**
+     * Establece el curso.
+     */
     setCourse(course: Course): void {
       patchState(store, { course });
+      router.navigate(['/dashboard']);
     },
 
-    /** Limpia el curso. */
+    /**
+     * Limpia el curso.
+     */
     clearCourse(): void {
       patchState(store, { course: null });
+      router.navigate(['/course']);
     },
 
-    /** Limpia la sesión completa. */
+    /**
+     * Limpia la sesión completa.
+     */
     clear(): void {
       patchState(store, initialState);
+      router.navigate(['/login']);
     },
   })),
-  withMethods(({ _setPrincipal, clear }, service = inject(AuthService)) => ({
+  withMethods((store, service = inject(AuthService)) => ({
     /**
      * Inicio de sesión e hidratación del principal del store.
      *
      * @param params Datos de inicio de sesión.
      */
     login(params: LoginParams): Observable<Principal> {
-      return service.login(params).pipe(tap({ next: _setPrincipal, error: console.error }));
+      return service.login(params).pipe(
+        tap({
+          next(principal): void {
+            store.setPrincipal(principal);
+          },
+
+          error(e): void {
+            console.error(e);
+          },
+        }),
+      );
     },
 
-    /** Cierre de sesión. */
+    /**
+     * Cierre de sesión.
+     */
     logout(): void {
-      clear();
+      store.clear();
       service.logout();
     },
   })),
-  withHooks(({ targetRoute }, router = inject(Router)) => ({
-    /*
-     * Hook que, de acuerdo con la existencia del principal y del curso,
-     * sitúa al usuario inmediatamente en la ruta en la que debe estar.
-     *
-     * Este efecto no sustituye a las guardas, ya que estas actúan mucho antes
-     * durante el proceso de enrutamiento; el efecto garantiza que si se cambia
-     * el estado del store, el usuario será redirigido automáticamente.
-     */
-    onInit(): void {
-      effect(() => router.navigate([targetRoute()]));
-    },
-  })),
+  withStorage(sessionStorage, 'session'),
 );

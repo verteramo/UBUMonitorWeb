@@ -15,7 +15,9 @@ import { withStorage } from './features/storage.feature';
  * formulario de logín o el theme global.
  */
 
-/** Propiedades de estado de la aplicación. */
+/**
+ * Propiedades de estado de la aplicación.
+ */
 type AppState = {
   theme: 'system' | 'light' | 'dark';
   login: {
@@ -28,7 +30,9 @@ type AppState = {
   };
 };
 
-/** Estado inicial. */
+/**
+ * Estado inicial.
+ */
 const initialState: AppState = {
   theme: 'system',
   login: {
@@ -41,26 +45,33 @@ const initialState: AppState = {
   },
 };
 
-/** Ciclo de themes que indica cuál es el siguiente. */
+/**
+ * Ciclo de themes que indica cuál es el siguiente.
+ */
 const nextTheme: Record<AppState['theme'], AppState['theme']> = {
   system: 'light',
   light: 'dark',
   dark: 'system',
 };
 
-/** Store de propiedades de estado de la aplicación (no ligadas a sesión). */
+/**
+ * Store de propiedades de estado de la aplicación (no ligadas a sesión).
+ */
 export const AppStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
-  withStorage(localStorage, 'app-state'),
   withComputed(({ theme }) => ({
-    /** Theme siguiente. */
+    /**
+     * Theme siguiente.
+     */
     nextTheme: computed(() => nextTheme[theme()]),
   })),
   withMethods((store) => ({
-    /** Cambia los themes en ciclo. */
+    /**
+     * Cambia los themes en ciclo.
+     */
     toggleTheme(): void {
-      patchState(store, { theme: store.nextTheme() });
+      patchState(store, ({ theme }) => ({ theme: nextTheme[theme] }));
     },
 
     /**
@@ -80,6 +91,7 @@ export const AppStore = signalStore(
       });
     },
   })),
+  withStorage(localStorage, 'app'),
 );
 
 export const initialLoginState = initialState.login;

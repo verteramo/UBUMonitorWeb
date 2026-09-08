@@ -10,13 +10,16 @@ import { patchState, signalStoreFeature, watchState, withHooks } from '@ngrx/sig
 /**
  * Feature que permite persistir un store completo en un Storage.
  *
- * @param storage Instancia del Storage (sessionStorage, localStorage, ...).
+ * @param storage Instancia del Storage (sessionStorage, localStorage).
  * @param keySignal Señal que computa la clave de almacenamiento.
- * @returns Feature.
  */
 export function withSignalStorage(storage: Storage, keySignal: Signal<string | null>) {
   return signalStoreFeature(
     withHooks((store) => ({
+      /**
+       * Realiza la hidratación si hay datos compatibles en el storage
+       * durante el montaje del store, normalmente a la vez que su componente.
+       */
       onInit() {
         const key = keySignal();
         const item = key && storage.getItem(key);
@@ -29,6 +32,8 @@ export function withSignalStorage(storage: Storage, keySignal: Signal<string | n
           }
         }
 
+        // Watcher que almacena los cambios en el storage,
+        // reacciona también con claves de almacenamiento dinámicas
         watchState(store, (state) => {
           const key = keySignal();
 
@@ -46,7 +51,6 @@ export function withSignalStorage(storage: Storage, keySignal: Signal<string | n
  *
  * @param storage Instancia del Storage (sessionStorage, localStorage, ...).
  * @param key Clave de almacenamiento.
- * @returns Feature.
  */
 export function withStorage(storage: Storage, key: string) {
   return withSignalStorage(storage, signal(key));

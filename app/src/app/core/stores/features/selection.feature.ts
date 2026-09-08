@@ -4,7 +4,7 @@
  * @author Marcelo Verteramo Pérsico
  */
 
-import { computed } from '@angular/core';
+import { computed, Signal } from '@angular/core';
 import {
   patchState,
   signalStoreFeature,
@@ -14,46 +14,97 @@ import {
 } from '@ngrx/signals';
 
 /**
+ * Propiedades de estado de la selección.
+ */
+type SelectionState<T> = {
+  selection: T[];
+};
+
+/**
  * Feature que añade la funcionalidad de selección de elementos a un store.
  *
- * @returns Feature.
+ * @param items Colección de ítems que gestionará la selección.
  */
-export function withSelection<T>() {
+export function withSelection<T>(items: Signal<T[]>) {
+  /**
+   * Estado inicial.
+   */
+  const initialState: SelectionState<T> = {
+    selection: [],
+  };
+
   return signalStoreFeature(
-    withState<{ selection: T[] }>({ selection: [] }),
+    withState(initialState),
     withComputed(({ selection }) => ({
-      _selectionSet: computed(() => new Set(selection())),
+      /**
+       * Conjunto de la selección.
+       * Proporciona el método `Set.prototype.has` con acceso directo O(1),
+       * en lugar del método `Array.prototype.includes` con acceso lineal O(n).
+       */
+      _set: computed(() => new Set(selection())),
+    })),
+    withComputed(({ _set }) => ({
+      /**
+       * Determina si todos los ítems están seleccionados.
+       */
+      isCompleteSelection: computed(() => {
+        return items().length > 0 && items().every((e) => _set().has(e));
+      }),
+    })),
+    withComputed(({ _set, isCompleteSelection }) => ({
+      /**
+       * Determina si alguno de los ítems está seleccionado, pero no todos.
+       */
+      isPartialSelection: computed(() => {
+        return !isCompleteSelection() && items().length > 0 && items().some((e) => _set().has(e));
+      }),
+    })),
+    withMethods(({ _set }) => ({
+      /**
+       * Determina si un ítem particular está seleccionado.
+       */
+      isSelected(item: T): boolean {
+        return _set().has(item);
+      },
     })),
     withMethods((store) => ({
-      isSelected(item: T): boolean {
-        return store._selectionSet().has(item);
-      },
-
+      /**
+       * Cambia el estado de selección de un ítem particular.
+       */
       toggleItem(item: T): void {
-        const set = new Set(store._selectionSet());
-
-        if (set.has(item)) {
-          set.delete(item);
+        if (store.isSelected(item)) {
+          patchState(store, ({ selection }) => ({
+            selection: selection.filter((current) => current !== item),
+          }));
         } else {
-          set.add(item);
+          patchState(store, ({ selection }) => ({
+            selection: [...selection, item],
+          }));
         }
-
-        patchState(store, { selection: [...set] });
       },
 
-      toggleItems(items: T[]): void {
-        const set = new Set(store._selectionSet());
-        const isAllSelected = items.length > 0 && items.every((item) => set.has(item));
+      /**
+       * Cambia el estado del selección de todos los ítems.
+       */
+      toggleItems(): void {
+        if (items().length > 0) {
+          if (store.isCompleteSelection()) {
+            const itemsSet = new Set(items());
 
-        if (isAllSelected) {
-          items.forEach((item) => set.delete(item));
-        } else {
-          items.forEach((item) => set.add(item));
+            patchState(store, ({ selection }) => ({
+              selection: selection.filter((current) => !itemsSet.has(current)),
+            }));
+          } else {
+            patchState(store, ({ selection }) => ({
+              selection: [...selection, ...items().filter((current) => !store._set().has(current))],
+            }));
+          }
         }
-
-        patchState(store, { selection: [...set] });
       },
 
+      /**
+       * Reinicializa la selección.
+       */
       clearSelection(): void {
         patchState(store, { selection: [] });
       },

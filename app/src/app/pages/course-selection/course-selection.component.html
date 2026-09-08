@@ -46,7 +46,7 @@ Este fichero forma parte de UBUMonitorWeb.
         <mat-tab i18n-label label="Past"></mat-tab>
       </mat-tab-group>
 
-      @if (store.resource.isLoading()) {
+      @if (store.courses.isLoading()) {
         <app-progress-spinner i18n>Loading courses...</app-progress-spinner>
       } @else {
         <div class="table-container">
