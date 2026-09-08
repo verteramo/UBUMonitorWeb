@@ -7,10 +7,12 @@
 package es.ubu.lsi.ubumonitorweb.feature.course
 
 import es.ubu.lsi.ubumonitorweb.core.moodle.SiteInfo
+import es.ubu.lsi.ubumonitorweb.data.api.Completion
 import es.ubu.lsi.ubumonitorweb.data.api.Course
+import es.ubu.lsi.ubumonitorweb.data.api.Event
+import es.ubu.lsi.ubumonitorweb.data.api.Grade
 import es.ubu.lsi.ubumonitorweb.data.api.Section
 import es.ubu.lsi.ubumonitorweb.data.api.User
-import es.ubu.lsi.ubumonitorweb.data.api.UserGrade
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -44,18 +46,29 @@ class CourseController(
       else -> courseService.getClassifiedCourses(classification)
     }
 
-  @GetMapping("/users/{id}")
+  @GetMapping("/{id}/users")
   fun getUsers(
     @PathVariable id: Int,
   ): List<User> = courseService.getUsers(id)
 
-  @GetMapping("/sections/{id}")
+  @GetMapping("/{id}/sections")
   fun getSections(
     @PathVariable id: Int,
   ): List<Section> = courseService.getSections(id)
 
-  @GetMapping("/grades/{id}")
+  @GetMapping("/{id}/grades")
   fun getGrades(
     @PathVariable id: Int,
-  ): List<UserGrade> = courseService.getGradeItems(id)
+  ): List<Grade> = courseService.getGrades(id)
+
+  @GetMapping("/{id}/events")
+  fun getEvents(
+    @PathVariable id: Int,
+  ): List<Event> = courseService.getEvents(id)
+
+  @GetMapping("{courseId}/completion/{userId}")
+  fun getCompletion(
+    @PathVariable courseId: Int,
+    @PathVariable userId: Int,
+  ): List<Completion> = courseService.getCompletion(courseId, userId)
 }

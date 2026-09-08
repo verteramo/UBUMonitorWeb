@@ -43,7 +43,7 @@ export class CourseService {
    * @returns Lista de usuarios del curso.
    */
   getUsers(id: number): Observable<User[]> {
-    const endpoint = `${env.endpoints.users}/${id}`;
+    const endpoint = `${env.endpoints.courses}/${id}/users`;
     return this.http.get<User[]>(endpoint);
   }
 
@@ -53,7 +53,7 @@ export class CourseService {
    * @returns Lista de secciones del curso.
    */
   getSections(id: number): Observable<Section[]> {
-    const endpoint = `${env.endpoints.sections}/${id}`;
+    const endpoint = `${env.endpoints.courses}/${id}/sections`;
     return this.http.get<Section[]>(endpoint);
   }
 }

@@ -12,6 +12,13 @@ security:
     - /*.jpg
     - /*.jpeg
 
+# Jackson no lanza excepción y convierte los valores null
+# en ceros para los tipos numéricos primitivos
+spring:
+  jackson:
+    deserialization:
+      fail-on-null-for-primitives: false
+
 # Actuator
 management:
   endpoints:

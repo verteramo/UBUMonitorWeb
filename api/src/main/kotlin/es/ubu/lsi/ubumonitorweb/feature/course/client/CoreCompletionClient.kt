@@ -1,18 +1,19 @@
 package es.ubu.lsi.ubumonitorweb.feature.course.client
 
 import es.ubu.lsi.ubumonitorweb.core.client.ClientProfile
-import es.ubu.lsi.ubumonitorweb.data.dto.MoodleUserGrade
+import es.ubu.lsi.ubumonitorweb.data.dto.MoodleActivityCompletion
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.service.annotation.PostExchange
 
 @ClientProfile("webservice-client")
-interface GradereportUserClient {
-  data class GradeItemsResponse(
-    val usergrades: List<MoodleUserGrade>,
+interface CoreCompletionClient {
+  data class ActivitiesCompletionStatusResponse(
+    val statuses: List<MoodleActivityCompletion>,
   )
 
   @PostExchange
-  fun getGradeItems(
+  fun getActivitiesCompletionStatus(
     @RequestParam courseid: Int,
-  ): GradeItemsResponse
+    @RequestParam userid: Int,
+  ): ActivitiesCompletionStatusResponse
 }

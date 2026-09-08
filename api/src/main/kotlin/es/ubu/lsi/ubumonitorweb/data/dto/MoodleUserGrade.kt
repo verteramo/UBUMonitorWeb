@@ -1,6 +1,6 @@
 package es.ubu.lsi.ubumonitorweb.data.dto
 
-import es.ubu.lsi.ubumonitorweb.data.api.UserGrade
+import es.ubu.lsi.ubumonitorweb.data.api.Grade
 
 data class MoodleUserGrade(
   val courseid: Long,
@@ -11,8 +11,8 @@ data class MoodleUserGrade(
   val maxdepth: Int,
   val gradeitems: List<MoodleGradeItem>,
 ) {
-  fun toUserGrade() =
-    UserGrade(
+  fun toGrade() =
+    Grade(
       userId = userid,
       courseId = courseid,
       grades = gradeitems.map { it.toGradeItem() },
