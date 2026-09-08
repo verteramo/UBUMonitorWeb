@@ -13,15 +13,15 @@
     <mat-sidenav
       #drawer
       mode="side"
-      [opened]="store.dashboard.sidenavOpened()"
-      (openedChange)="store.setSidenavOpened($event)"
+      [opened]="store.sidenav()"
+      (openedChange)="store.setSidenav($event)"
     >
       <div class="sidebar-component">
         <mat-accordion multi="true">
           <mat-expansion-panel
-            [expanded]="store.isPanelExpanded()('users')"
-            (opened)="store.setPanelExpanded('users', true)"
-            (closed)="store.setPanelExpanded('users', false)"
+            [expanded]="store.expanded()('users')"
+            (opened)="store.expand('users', true)"
+            (closed)="store.expand('users', false)"
           >
             <mat-expansion-panel-header>
               <mat-panel-title i18n>Users</mat-panel-title>
@@ -32,15 +32,15 @@
           </mat-expansion-panel>
 
           <mat-expansion-panel
-            [expanded]="store.isPanelExpanded()('activity')"
-            (opened)="store.setPanelExpanded('activity', true)"
-            (closed)="store.setPanelExpanded('activity', false)"
+            [expanded]="store.expanded()('activities')"
+            (opened)="store.expand('activities', true)"
+            (closed)="store.expand('activities', false)"
           >
             <mat-expansion-panel-header>
               <mat-panel-title i18n>Activities</mat-panel-title>
             </mat-expansion-panel-header>
             <div class="expansion-panel-body">
-              <app-activity-panel></app-activity-panel>
+              <app-activity-panel />
             </div>
           </mat-expansion-panel>
         </mat-accordion>

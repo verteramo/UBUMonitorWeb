@@ -5,12 +5,11 @@
  */
 
 import { Component, inject } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { SessionStore } from '@core/stores/session.store';
-import { SettingsStore } from '@core/stores/settings.store';
+import { DashboardStore } from './dashboard.store';
 import { NavbarComponent } from './navbar.component';
 import { ActivityPanelComponent } from './sidenav/panel-activities/activity-panel.component';
 import { UserPanelComponent } from './sidenav/panel-users/user-panel.component';
@@ -35,10 +34,10 @@ import { StatusbarComponent } from './statusbar.component';
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
+  providers: [DashboardStore],
 })
 export class DashboardComponent {
-  #dialog = inject(MatDialog);
-  readonly store = inject(SettingsStore);
+  readonly store = inject(DashboardStore);
   readonly session = inject(SessionStore);
 
   onRefresh(): void {
