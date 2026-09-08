@@ -47,9 +47,9 @@ data class MoodleUser(
       email = email,
       fullName = fullname,
       picture = profileimageurl,
-      firstAccess = firstaccess,
-      lastAccess = lastaccess,
-      lastCourseAccess = lastcourseaccess,
+      firstAccessMs = firstaccess?.times(1000),
+      lastAccessMs = lastaccess?.times(1000),
+      lastCourseAccessMs = lastcourseaccess?.times(1000),
       country = country,
       // Transformaciones de colecciones
       phones = setOfNotNull(phone1, phone2),

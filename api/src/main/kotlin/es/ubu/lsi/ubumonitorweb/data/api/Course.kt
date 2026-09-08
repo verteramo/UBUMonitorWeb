@@ -11,7 +11,7 @@ data class Course(
   val name: String,
   val picture: String?,
   val starred: Boolean,
-  val since: Long,
-  val until: Long,
+  val sinceMs: Long?,
+  val untilMs: Long?,
   val category: String,
 )

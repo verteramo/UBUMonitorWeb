@@ -52,7 +52,7 @@ data class MoodleModule(
       purpose = purpose,
       plural = modplural,
       completion = completion ?: 0,
-      since = dates.getOrNull(0)?.sumTimestamps() ?: 0,
-      until = dates.getOrNull(1)?.sumTimestamps() ?: 0,
+      sinceMs = dates.getOrNull(0)?.sumTimestamps()?.times(1000),
+      untilMs = dates.getOrNull(1)?.sumTimestamps()?.times(1000),
     )
 }

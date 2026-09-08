@@ -10,6 +10,7 @@ import es.ubu.lsi.ubumonitorweb.core.moodle.SiteInfo
 import es.ubu.lsi.ubumonitorweb.data.api.Course
 import es.ubu.lsi.ubumonitorweb.data.api.Section
 import es.ubu.lsi.ubumonitorweb.data.api.User
+import es.ubu.lsi.ubumonitorweb.data.api.UserGrade
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -52,4 +53,9 @@ class CourseController(
   fun getSections(
     @PathVariable id: Int,
   ): List<Section> = courseService.getSections(id)
+
+  @GetMapping("/grades/{id}")
+  fun getGrades(
+    @PathVariable id: Int,
+  ): List<UserGrade> = courseService.getGradeItems(id)
 }

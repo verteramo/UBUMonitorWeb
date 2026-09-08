@@ -9,11 +9,13 @@ package es.ubu.lsi.ubumonitorweb.feature.course
 import es.ubu.lsi.ubumonitorweb.data.api.Course
 import es.ubu.lsi.ubumonitorweb.data.api.Section
 import es.ubu.lsi.ubumonitorweb.data.api.User
+import es.ubu.lsi.ubumonitorweb.data.api.UserGrade
 import es.ubu.lsi.ubumonitorweb.data.dto.MoodleCategory
 import es.ubu.lsi.ubumonitorweb.data.dto.MoodleCourse
 import es.ubu.lsi.ubumonitorweb.feature.course.client.BlockStarredcoursesClient
 import es.ubu.lsi.ubumonitorweb.feature.course.client.CoreCourseClient
 import es.ubu.lsi.ubumonitorweb.feature.course.client.CoreEnrolClient
+import es.ubu.lsi.ubumonitorweb.feature.course.client.GradereportUserClient
 import org.springframework.stereotype.Service
 import org.springframework.web.service.registry.ImportHttpServices
 
@@ -28,25 +30,16 @@ import org.springframework.web.service.registry.ImportHttpServices
   BlockStarredcoursesClient::class,
   CoreCourseClient::class,
   CoreEnrolClient::class,
+  GradereportUserClient::class,
 )
-class CourseService {
-  private val blockStarredcoursesClient: BlockStarredcoursesClient
-  private val coreCourseClient: CoreCourseClient
-  private val coreEnrolClient: CoreEnrolClient
-
-  constructor(
-    blockStarredcoursesClient: BlockStarredcoursesClient,
-    coreCourseClient: CoreCourseClient,
-    coreEnrolClient: CoreEnrolClient,
-  ) {
-    this.blockStarredcoursesClient = blockStarredcoursesClient
-    this.coreCourseClient = coreCourseClient
-    this.coreEnrolClient = coreEnrolClient
-    this.categories = mutableMapOf<Any, MoodleCategory>()
-  }
-
+class CourseService(
+  private val blockStarredcoursesClient: BlockStarredcoursesClient,
+  private val coreCourseClient: CoreCourseClient,
+  private val coreEnrolClient: CoreEnrolClient,
+  private val gradereportUserClient: GradereportUserClient,
+) {
   /** Mapa de categorías solicitadas al webservice de Moodle. */
-  private val categories: MutableMap<Any, MoodleCategory>
+  private val categories: MutableMap<Any, MoodleCategory> = mutableMapOf()
 
   /**
    * Precarga de categorías.
@@ -151,4 +144,6 @@ class CourseService {
   fun getUsers(id: Int): List<User> = coreEnrolClient.getEnrolledUsers(id).map { it.toUser() }
 
   fun getSections(id: Int): List<Section> = coreCourseClient.getContents(id).map { it.toSection() }
+
+  fun getGradeItems(id: Int): List<UserGrade> = gradereportUserClient.getGradeItems(id).toUserGrades()
 }

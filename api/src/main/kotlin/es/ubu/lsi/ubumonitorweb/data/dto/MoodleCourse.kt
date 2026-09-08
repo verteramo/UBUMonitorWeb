@@ -46,8 +46,8 @@ data class MoodleCourse(
       name = fullname,
       picture = courseimage,
       starred = isfavourite ?: false,
-      since = startdate ?: 0,
-      until = enddate ?: 0,
+      sinceMs = startdate?.times(1000),
+      untilMs = enddate?.times(1000),
       category = category.name,
     )
 }

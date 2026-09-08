@@ -17,6 +17,6 @@ data class Module(
   val purpose: String,
   val plural: String,
   val completion: Int,
-  val since: Long,
-  val until: Long,
+  val sinceMs: Long?,
+  val untilMs: Long?,
 )

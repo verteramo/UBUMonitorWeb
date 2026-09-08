@@ -1,0 +1,26 @@
+package es.ubu.lsi.ubumonitorweb.data.api
+
+data class GradeItem(
+  val id: Int,
+  val cmid: Int?,
+  val name: String?,
+  val type: String,
+  val module: String?,
+  val instance: Int,
+  val number: Int?,
+  val category: Int?,
+  val locked: Boolean,
+  val weight: Double?,
+  val gradeRaw: Double?,
+  val gradeMin: Double?,
+  val gradeMax: Double?,
+  val gradeLocked: Boolean,
+  val gradeHidden: Boolean,
+  val gradeOverridden: Boolean,
+  val gradeNeedsUpdate: Boolean,
+  val gradeHiddenByDate: Boolean,
+  val submittedMs: Long?,
+  val gradedMs: Long?,
+  val status: String?,
+  val feedback: String?,
+)
