@@ -18,39 +18,41 @@
     >
       <div class="sidebar-component">
         <mat-accordion multi="true">
-          <mat-expansion-panel
-            [expanded]="store.expanded()('users')"
-            (opened)="store.expand('users', true)"
-            (closed)="store.expand('users', false)"
-          >
-            <mat-expansion-panel-header>
-              <mat-panel-title i18n>Users</mat-panel-title>
-            </mat-expansion-panel-header>
-            <div class="expansion-panel-body">
-              <app-users-panel />
-            </div>
-          </mat-expansion-panel>
+          @if (!['events'].includes(tabStore.tab())) {
+            <mat-expansion-panel
+              [expanded]="store.expanded()('users')"
+              (opened)="store.expand('users', true)"
+              (closed)="store.expand('users', false)"
+            >
+              <mat-expansion-panel-header>
+                <mat-panel-title i18n>Users</mat-panel-title>
+              </mat-expansion-panel-header>
+              <div class="expansion-panel-body">
+                <app-users-panel />
+              </div>
+            </mat-expansion-panel>
+          }
 
-          <mat-expansion-panel
-            [expanded]="store.expanded()('activities')"
-            (opened)="store.expand('activities', true)"
-            (closed)="store.expand('activities', false)"
-          >
-            <mat-expansion-panel-header>
-              <mat-panel-title i18n>Activities</mat-panel-title>
-            </mat-expansion-panel-header>
-            <div class="expansion-panel-body">
-              <app-activity-panel />
-            </div>
-          </mat-expansion-panel>
+          @if (!['risk', 'enrollment'].includes(tabStore.tab())) {
+            <mat-expansion-panel
+              [expanded]="store.expanded()('activities')"
+              (opened)="store.expand('activities', true)"
+              (closed)="store.expand('activities', false)"
+            >
+              <mat-expansion-panel-header>
+                <mat-panel-title i18n>Activities</mat-panel-title>
+              </mat-expansion-panel-header>
+              <div class="expansion-panel-body">
+                <app-activity-panel />
+              </div>
+            </mat-expansion-panel>
+          }
         </mat-accordion>
       </div>
     </mat-sidenav>
 
     <mat-sidenav-content>
-      <div class="workspace">
-        <p>Workspace</p>
-      </div>
+      <app-workspace />
     </mat-sidenav-content>
   </mat-sidenav-container>
 </main>

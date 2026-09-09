@@ -50,17 +50,6 @@ main {
   }
 }
 
-.workspace {
-  cursor: pointer;
-  font-weight: bold;
-  color: var(--mat-sys-outline-variant);
-  border: 4px dashed var(--mat-sys-outline-variant);
-  border-radius: 5px;
-  height: 100%;
-  text-align: center;
-  align-content: center;
-}
-
 // Estilos del sidenav
 
 /* 1. Reset estructural común (Puente Flexbox rígido y sin desbordes) */

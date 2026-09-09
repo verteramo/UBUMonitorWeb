@@ -10,6 +10,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { SessionStore } from '@core/stores/session.store';
 import { DashboardStore } from './dashboard.store';
+import { WorkspaceTabStore } from './main/workspace-tab.store';
+import { WorkspaceComponent } from "./main/workspace.component";
 import { NavbarComponent } from './navbar.component';
 import { ActivityPanelComponent } from './sidenav/panel-activities/activity-panel.component';
 import { UserPanelComponent } from './sidenav/panel-users/user-panel.component';
@@ -31,7 +33,8 @@ import { StatusbarComponent } from './statusbar.component';
     MatProgressSpinnerModule,
     UserPanelComponent,
     ActivityPanelComponent,
-  ],
+    WorkspaceComponent
+],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
   providers: [DashboardStore],
@@ -39,6 +42,7 @@ import { StatusbarComponent } from './statusbar.component';
 export class DashboardComponent {
   readonly store = inject(DashboardStore);
   readonly session = inject(SessionStore);
+  readonly tabStore = inject(WorkspaceTabStore);
 
   onRefresh(): void {
     console.log('Refresh from statusbar');
