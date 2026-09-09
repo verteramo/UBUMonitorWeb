@@ -4,7 +4,6 @@
  * @author Marcelo Verteramo Pérsico
  */
 
-/** Modelo de curso devuelto por el backend. */
 export type Course = {
   id: number;
   name: string;

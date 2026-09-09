@@ -4,7 +4,6 @@
  * @author Marcelo Verteramo Pérsico
  */
 
-/** Modelo de módulo de sección devuelto por el backend. */
 export type Module = {
   id: number;
   url: string | null;

@@ -4,9 +4,6 @@
  * @author Marcelo Verteramo Pérsico
  */
 
-/**
- * Modelo de usuario logueado (principal) devuelto por el backend.
- */
 export type Principal = {
   id: string;
   username: string;

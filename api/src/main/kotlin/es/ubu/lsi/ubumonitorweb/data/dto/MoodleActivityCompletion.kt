@@ -28,7 +28,7 @@ data class MoodleActivityCompletion(
       tracking = tracking,
       overrideBy = overrideby,
       isValueUsed = valueused == true,
-      isCompletionEnabled = hascompletion == true,
+      isEnabled = hascompletion == true,
       isAutomatic = isautomatic == true,
       isTrackedUser = istrackeduser == true,
       isUserVisible = uservisible == true,

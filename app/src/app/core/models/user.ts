@@ -4,7 +4,6 @@
  * @author Marcelo Verteramo Pérsico
  */
 
-/** Modelo de usuario de Moodle devuelto por el backend. */
 export type User = {
   id: number;
   username: string | null;

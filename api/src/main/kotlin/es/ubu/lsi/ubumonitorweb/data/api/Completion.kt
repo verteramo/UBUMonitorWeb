@@ -8,7 +8,7 @@ data class Completion(
   val completedTs: Long?,
   val tracking: Int,
   val overrideBy: Int?,
-  val isCompletionEnabled: Boolean,
+  val isEnabled: Boolean,
   val isValueUsed: Boolean,
   val isAutomatic: Boolean,
   val isTrackedUser: Boolean,
