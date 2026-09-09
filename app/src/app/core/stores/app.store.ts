@@ -23,6 +23,7 @@ type AppState = {
     host: string;
     hosts: string[];
     username: string;
+    usernames: string[];
     offlineMode: boolean;
     rememberHost: boolean;
     rememberUsername: boolean;
@@ -37,10 +38,11 @@ export const initialState: AppState = {
   login: {
     host: '',
     hosts: [],
-    username: '',
-    offlineMode: false,
     rememberHost: false,
+    username: '',
+    usernames: [],
     rememberUsername: false,
+    offlineMode: false,
   },
 };
 
@@ -80,12 +82,15 @@ export const AppStore = signalStore(
      * @param state Preferencias del usuario.
      */
     setLoginState(state: AppState['login']): void {
+      const { host, hosts, rememberHost, username, usernames, rememberUsername } = state;
+
       patchState(store, {
         login: {
           ...state,
-          host: state.rememberHost ? state.host : '',
-          username: state.rememberUsername ? state.username : '',
-          hosts: state.rememberHost ? [...new Set([...state.hosts, state.host])] : state.hosts,
+          host: rememberHost ? host : '',
+          hosts: rememberHost ? [...new Set([...hosts, host])] : hosts,
+          username: rememberUsername ? username : '',
+          usernames: rememberUsername ? [...new Set([...usernames, username])] : usernames,
         },
       });
     },

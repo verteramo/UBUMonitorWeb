@@ -22,6 +22,7 @@
     i18n-label
     label="User"
     autocomplete="username"
+    [list]="store.filteredUsernames()"
     [formField]="loginForm.username"
   />
 

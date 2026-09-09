@@ -49,8 +49,18 @@ export const LoginStore = signalStore(
      * Obtiene la lista de hosts filtrada de acuerdo con la entrada del usuario.
      */
     filteredHosts: computed(() => {
-      const value = model().host.trim().toLowerCase();
-      return model().hosts.filter((current) => current.toLowerCase().includes(value));
+      const value = model().host.toLowerCase();
+      return model().hosts.filter((current) => value && current.toLowerCase().startsWith(value));
+    }),
+
+    /**
+     * Obtiene la lista de nombres de usuario filtrada de acuerdo con la entrada del usuario.
+     */
+    filteredUsernames: computed(() => {
+      const value = model().username.toLowerCase();
+      return model().usernames.filter(
+        (current) => value && current.toLowerCase().startsWith(value),
+      );
     }),
   })),
   withMethods(({ model, loadedState, initialState }) => ({
