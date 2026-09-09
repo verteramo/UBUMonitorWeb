@@ -51,8 +51,8 @@ data class MoodleUser(
       lastCourseAccessTs = lastcourseaccess,
       country = country,
       phones = setOfNotNull(phone1, phone2),
-      groups = groups?.map { it.name } ?: emptyList(),
-      roles = roles?.map { it.shortname } ?: emptyList(),
-      courses = enrolledcourses?.map { it.fullname } ?: emptyList(),
+      groups = groups?.map { it.name } ?: mutableListOf(),
+      roles = roles?.map { it.shortname } ?: mutableListOf(),
+      courses = enrolledcourses?.map { it.fullname } ?: mutableListOf(),
     )
 }

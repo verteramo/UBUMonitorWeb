@@ -16,8 +16,7 @@ class NativeProxyHintsRegistrar : RuntimeHintsRegistrar {
   override fun registerHints(
     hints: RuntimeHints,
     classLoader: ClassLoader?,
-  ) {
-    // Registra el proxy dinámico de la interfaz para que GraalVM lo incluya en el binario
+  ) { // Registra el proxy dinámico de la interfaz para que GraalVM lo incluya en el binario
     hints.proxies().registerJdkProxy(HttpServletRequest::class.java)
 
     // La nueva regla para el proxy CGLIB de Springdoc
