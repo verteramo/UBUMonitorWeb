@@ -1,17 +1,17 @@
-/**
+/*
  * Este fichero forma parte de UBUMonitorWeb.
  *
  * @author Marcelo Verteramo Pérsico
  */
 
-import { Component, inject, linkedSignal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { User } from '@core/models/user';
-import { UsersStore } from '@core/stores/users.store';
+import { UsersStore } from '@pages/dashboard/sidenav/panel-users/users.store';
 import { ProgressSpinnerComponent } from '@shared/components/progress-spinner.component';
 import { FilterControlComponent } from '../components/filter-control.component';
 import { UserArticleComponent } from './user-article.component';
@@ -53,15 +53,22 @@ import { UserDialogComponent } from './user-dialog.component';
         <app-filter-control
           i18n-placeholder
           placeholder="Filter..."
-          [checked]="store.isAllSelected()"
-          [indeterminate]="store.isSomeSelected()"
-          [badge]="store.activeFiltersLength()"
-          [(term)]="term"
-          (toggleAll)="store.toggleAll()"
+          [checked]="store.isCompleteSelection()"
+          [indeterminate]="store.isPartialSelection()"
+          [badge]="store.activeFiltersCount()"
+          [term]="store.term()"
+          (termChange)="store.setTerm($event)"
+          (toggleAll)="store.toggleItems()"
         >
           @if (store.availableRoles()) {
             <mat-form-field appearance="outline" subscriptSizing="dynamic">
-              <mat-select [(value)]="store.roles" multiple i18n-placeholder placeholder="Roles">
+              <mat-select
+                [value]="store.roles()"
+                (valueChange)="store.setRoles($event)"
+                multiple
+                i18n-placeholder
+                placeholder="Roles"
+              >
                 @for (role of store.availableRoles(); track role) {
                   <mat-option [value]="role">{{ role }}</mat-option>
                 }
@@ -71,7 +78,13 @@ import { UserDialogComponent } from './user-dialog.component';
 
           @if (store.availableGroups()) {
             <mat-form-field appearance="outline" subscriptSizing="dynamic">
-              <mat-select [(value)]="store.groups" multiple i18n-placeholder placeholder="Groups">
+              <mat-select
+                [value]="store.groups()"
+                (valueChange)="store.setGroups($event)"
+                multiple
+                i18n-placeholder
+                placeholder="Groups"
+              >
                 @for (group of store.availableGroups(); track group) {
                   <mat-option [value]="group">{{ group }}</mat-option>
                 }
@@ -93,12 +106,11 @@ import { UserDialogComponent } from './user-dialog.component';
       </main>
     }
   `,
+  providers: [UsersStore],
 })
 export class UserPanelComponent {
   readonly dialog = inject(MatDialog);
   readonly store = inject(UsersStore);
-
-  term = linkedSignal(this.store.term);
 
   /** Abre el diálogo con el perfil de un usuario. */
   openProfile(user: User) {

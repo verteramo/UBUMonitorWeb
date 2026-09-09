@@ -1,4 +1,4 @@
-/**
+/*
  * Este fichero forma parte de UBUMonitorWeb.
  *
  * @author Marcelo Verteramo Pérsico
@@ -11,7 +11,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { useSnack } from '@core/composables/snack';
-import { AppError } from '@core/interceptors/error-interceptor';
+import { AppError } from '@core/interceptors/app-error';
 import { url } from '@core/validators/url-validator';
 import { PasswordFieldComponent } from '@shared/components/password-field.component';
 import { InputFieldComponent } from '@shared/components/text-field.component';

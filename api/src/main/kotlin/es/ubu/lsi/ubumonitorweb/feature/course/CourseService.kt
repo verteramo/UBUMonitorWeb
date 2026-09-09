@@ -6,14 +6,20 @@
 
 package es.ubu.lsi.ubumonitorweb.feature.course
 
+import es.ubu.lsi.ubumonitorweb.data.api.Completion
 import es.ubu.lsi.ubumonitorweb.data.api.Course
+import es.ubu.lsi.ubumonitorweb.data.api.Event
+import es.ubu.lsi.ubumonitorweb.data.api.Grade
 import es.ubu.lsi.ubumonitorweb.data.api.Section
 import es.ubu.lsi.ubumonitorweb.data.api.User
 import es.ubu.lsi.ubumonitorweb.data.dto.MoodleCategory
 import es.ubu.lsi.ubumonitorweb.data.dto.MoodleCourse
 import es.ubu.lsi.ubumonitorweb.feature.course.client.BlockStarredcoursesClient
+import es.ubu.lsi.ubumonitorweb.feature.course.client.CoreCalendarClient
+import es.ubu.lsi.ubumonitorweb.feature.course.client.CoreCompletionClient
 import es.ubu.lsi.ubumonitorweb.feature.course.client.CoreCourseClient
 import es.ubu.lsi.ubumonitorweb.feature.course.client.CoreEnrolClient
+import es.ubu.lsi.ubumonitorweb.feature.course.client.GradereportUserClient
 import org.springframework.stereotype.Service
 import org.springframework.web.service.registry.ImportHttpServices
 
@@ -25,28 +31,23 @@ import org.springframework.web.service.registry.ImportHttpServices
  */
 @Service
 @ImportHttpServices(
-  BlockStarredcoursesClient::class,
   CoreCourseClient::class,
   CoreEnrolClient::class,
+  CoreCompletionClient::class,
+  CoreCalendarClient::class,
+  BlockStarredcoursesClient::class,
+  GradereportUserClient::class,
 )
-class CourseService {
-  private val blockStarredcoursesClient: BlockStarredcoursesClient
-  private val coreCourseClient: CoreCourseClient
-  private val coreEnrolClient: CoreEnrolClient
-
-  constructor(
-    blockStarredcoursesClient: BlockStarredcoursesClient,
-    coreCourseClient: CoreCourseClient,
-    coreEnrolClient: CoreEnrolClient,
-  ) {
-    this.blockStarredcoursesClient = blockStarredcoursesClient
-    this.coreCourseClient = coreCourseClient
-    this.coreEnrolClient = coreEnrolClient
-    this.categories = mutableMapOf<Any, MoodleCategory>()
-  }
-
+class CourseService(
+  private val coreCourseClient: CoreCourseClient,
+  private val coreEnrolClient: CoreEnrolClient,
+  private val coreCompletionClient: CoreCompletionClient,
+  private val coreCalendarClient: CoreCalendarClient,
+  private val blockStarredcoursesClient: BlockStarredcoursesClient,
+  private val gradereportUserClient: GradereportUserClient,
+) {
   /** Mapa de categorías solicitadas al webservice de Moodle. */
-  private val categories: MutableMap<Any, MoodleCategory>
+  private val categories: MutableMap<Any, MoodleCategory> = mutableMapOf()
 
   /**
    * Precarga de categorías.
@@ -151,4 +152,23 @@ class CourseService {
   fun getUsers(id: Int): List<User> = coreEnrolClient.getEnrolledUsers(id).map { it.toUser() }
 
   fun getSections(id: Int): List<Section> = coreCourseClient.getContents(id).map { it.toSection() }
+
+  fun getGrades(id: Int): List<Grade> = gradereportUserClient.getGradeItems(id).usergrades.map { it.toGrade() }
+
+  fun getEvents(id: Int): List<Event> =
+    coreCalendarClient
+      .getCalendarEvents(
+        mapOf(
+          "courseids" to listOf(id),
+        ),
+      ).events
+      .map { it.toEvent() }
+
+  fun getCompletion(
+    courseId: Int,
+    userId: Int,
+  ): List<Completion> =
+    coreCompletionClient.getActivitiesCompletionStatus(courseId, userId).statuses.map {
+      it.toCompletion()
+    }
 }

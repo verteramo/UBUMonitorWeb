@@ -1,15 +1,17 @@
-/**
+/*
  * Este fichero forma parte de UBUMonitorWeb.
  *
  * @author Marcelo Verteramo Pérsico
  */
 
-import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
+import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
+import { useSnack } from '@core/composables/snack';
+import { AppError } from '@core/interceptors/app-error';
 import { AuthToken } from '@core/services/auth.service';
 import { SessionStore } from '@core/stores/session.store';
 import { environment as env } from '@env/environment';
-import { catchError } from 'rxjs';
+import { catchError, EMPTY } from 'rxjs';
 
 /**
  * Realiza un pre y post procesamiento de las solicitudes de autenticación.
@@ -20,20 +22,24 @@ import { catchError } from 'rxjs';
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const session = inject(SessionStore);
   const token = req.context.get(AuthToken);
+  const snack = useSnack();
 
   const request = token ? req.clone({ setHeaders: { [env.hostHeader]: token } }) : req;
 
   return next(request).pipe(
-    catchError((response: HttpErrorResponse) => {
+    catchError((error: AppError) => {
       /*
        * Si es una solicitud proveniente de AuthService no se intercepta,
        * se lanza el error para que el LoginComponent lo capture y lo pueda procesar.
        */
-      if (!token && [401, 403].includes(response.status)) {
+      if (!token && error.status === 403) {
         session.clear();
+        snack(error.message);
+
+        return EMPTY;
       }
 
-      throw response;
+      throw error;
     }),
   );
 };

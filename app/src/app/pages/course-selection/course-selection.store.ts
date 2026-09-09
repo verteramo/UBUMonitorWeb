@@ -46,7 +46,7 @@ const initialModelState: CourseSelectionModel = {
 export const CourseSelectionStore = signalStore(
   withState(initialState),
   withProps(({ tab }, service = inject(CourseService)) => ({
-    resource: rxResource({
+    courses: rxResource({
       defaultValue: [],
       params: () => classifications[tab()],
       stream: ({ params }) => service.getCourses(params),
@@ -57,18 +57,18 @@ export const CourseSelectionStore = signalStore(
   withComputed(({ model, tab }) => ({
     sort: computed(() => model().sorts[tab()]),
   })),
-  withComputed(({ resource, model, sort }) => ({
+  withComputed(({ courses, model, sort }) => ({
     selectedCourse: computed(() => {
       const { courseId } = model();
-      return courseId ? resource.value().find(({ id }) => id === courseId) : undefined;
+      return courseId ? courses.value().find(({ id }) => id === courseId) : undefined;
     }),
 
     filteredCourses: computed(() => {
       const term = model().term.trim().toLowerCase();
 
       const filtered = term
-        ? resource.value().filter(({ name }) => name.toLowerCase().includes(term))
-        : [...resource.value()];
+        ? courses.value().filter(({ name }) => name.toLowerCase().includes(term))
+        : [...courses.value()];
 
       const { active, direction } = sort();
 

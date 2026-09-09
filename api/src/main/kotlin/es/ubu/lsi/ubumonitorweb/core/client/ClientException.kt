@@ -40,8 +40,8 @@ class ClientException(
     /** Mapeo de códigos de error de Moodle a códigos de estado HTTP. */
     private val STATUS_CODES =
       mapOf(
-        "invalidlogin" to HttpStatus.FORBIDDEN,
-        "invalidtoken" to HttpStatus.UNAUTHORIZED,
+        "invalidlogin" to HttpStatus.UNAUTHORIZED,
+        "invalidtoken" to HttpStatus.FORBIDDEN,
         "nopermissions" to HttpStatus.FORBIDDEN,
         "invalid_parameter_exception" to HttpStatus.BAD_REQUEST,
         "sitepolicynotagreed" to HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS, // 21-08-2026 12:00

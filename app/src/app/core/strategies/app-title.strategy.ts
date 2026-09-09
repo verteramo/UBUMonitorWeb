@@ -1,4 +1,4 @@
-/**
+/*
  * Este fichero forma parte de UBUMonitorWeb.
  *
  * @author Marcelo Verteramo Pérsico
@@ -15,14 +15,14 @@ import { RouterStateSnapshot, TitleStrategy } from '@angular/router';
 @Injectable()
 export class AppTitleStrategy extends TitleStrategy {
   /** Servicio para manipular el título. */
-  readonly #title = inject(Title);
+  private readonly title = inject(Title);
 
   override updateTitle(snapshot: RouterStateSnapshot): void {
     // Título definido en el Router para el componente renderizado
     const pageTitle = this.buildTitle(snapshot);
 
     if (pageTitle) {
-      this.#title.setTitle(`${pageTitle} - UBUMonitorWeb`);
+      this.title.setTitle(`${pageTitle} - UBUMonitorWeb`);
     }
   }
 }

@@ -20,7 +20,7 @@ import org.springframework.web.service.annotation.PostExchange
  */
 @ClientProfile("webservice-client")
 interface CoreCourseClient {
-  data class ClassifiedCourses(
+  data class EnrolledCoursesByTimelineClassificationResponse(
     val courses: List<MoodleCourse>,
   )
 
@@ -34,7 +34,7 @@ interface CoreCourseClient {
   @PostExchange
   fun getEnrolledCoursesByTimelineClassification(
     @RequestParam classification: String,
-  ): ClassifiedCourses
+  ): EnrolledCoursesByTimelineClassificationResponse
 
   /** Obtiene las categorías de cursos que cumplan con los criterios especificados. */
   @PostExchange

@@ -6,7 +6,7 @@
 
 package es.ubu.lsi.ubumonitorweb.feature.resource
 
-import es.ubu.lsi.ubumonitorweb.core.moodle.Credentials
+import es.ubu.lsi.ubumonitorweb.core.security.Credentials
 import es.ubu.lsi.ubumonitorweb.feature.resource.client.ResourceClient
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service

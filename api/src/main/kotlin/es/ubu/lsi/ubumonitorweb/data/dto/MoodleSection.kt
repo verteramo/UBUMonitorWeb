@@ -26,9 +26,9 @@ data class MoodleSection(
     Section(
       id = id,
       name = name,
-      visible = visible == 1,
       order = section,
-      userVisible = uservisible == true,
+      isVisible = visible == 1,
+      isUserVisible = uservisible == true,
       modules = modules.map { it.toModule() },
     )
 }

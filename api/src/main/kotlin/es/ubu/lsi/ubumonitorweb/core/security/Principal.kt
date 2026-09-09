@@ -15,5 +15,8 @@ data class Principal(
   val lastName: String,
   val fullName: String,
   val picture: String?,
-  val platform: Platform,
+  val siteUrl: String,
+  val siteName: String,
+  val version: String?,
+  val release: String?,
 )

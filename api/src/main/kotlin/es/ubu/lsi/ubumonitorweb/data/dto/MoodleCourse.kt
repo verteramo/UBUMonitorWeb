@@ -45,9 +45,9 @@ data class MoodleCourse(
       id = id,
       name = fullname,
       picture = courseimage,
-      starred = isfavourite ?: false,
-      since = startdate ?: 0,
-      until = enddate ?: 0,
+      isStarred = isfavourite == true,
+      sinceTs = startdate,
+      untilTs = enddate,
       category = category.name,
     )
 }

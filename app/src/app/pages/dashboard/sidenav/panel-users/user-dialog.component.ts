@@ -1,4 +1,4 @@
-/**
+/*
  * Este fichero forma parte de UBUMonitorWeb.
  *
  * @author Marcelo Verteramo Pérsico
@@ -87,19 +87,19 @@ import { TimeAgoPipe } from '@core/pipes/time-ago.pipe';
         <mat-list-item>
           <mat-icon matListItemIcon color="primary">history</mat-icon>
           <span matListItemTitle i18n>First access</span>
-          <span matListItemLine>{{ user.firstAccess | timeAgo: 's' }}</span>
+          <span matListItemLine>{{ user.firstAccessTs | timeAgo }}</span>
         </mat-list-item>
 
         <mat-list-item>
           <mat-icon matListItemIcon color="primary">school</mat-icon>
           <span matListItemTitle i18n>Last course access</span>
-          <span matListItemLine>{{ user.lastCourseAccess | timeAgo: 's' }}</span>
+          <span matListItemLine>{{ user.lastCourseAccessTs | timeAgo }}</span>
         </mat-list-item>
 
         <mat-list-item>
           <mat-icon matListItemIcon color="primary">login</mat-icon>
           <span matListItemTitle i18n>Last platform access</span>
-          <span matListItemLine>{{ user.lastAccess | timeAgo: 's' }}</span>
+          <span matListItemLine>{{ user.lastAccessTs | timeAgo }}</span>
         </mat-list-item>
       </mat-list>
 

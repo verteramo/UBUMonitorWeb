@@ -21,7 +21,7 @@ server:
 
 client:
   profiles:
-    # Perfil con propiedades globales.
+    # Perfiles con propiedades globales.
     default-get:
       host: es.ubu.lsi.ubumonitorweb.core.client.ClientHostProvider
       forward-headers:
@@ -33,7 +33,7 @@ client:
         Content-Type: application/x-www-form-urlencoded
 
     # Perfil del cliente de obtención del token.
-    credentials-client:
+    token-client:
       inherit: default-post
       endpoint: /login/token.php
       params:
