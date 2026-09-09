@@ -8,10 +8,11 @@ import { Component, inject } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { DatasetStore } from '@core/stores/dataset.store';
 import { SessionStore } from '@core/stores/session.store';
 import { DashboardStore } from './dashboard.store';
 import { WorkspaceTabStore } from './main/workspace-tab.store';
-import { WorkspaceComponent } from "./main/workspace.component";
+import { WorkspaceComponent } from './main/workspace.component';
 import { NavbarComponent } from './navbar.component';
 import { ActivityPanelComponent } from './sidenav/panel-activities/activity-panel.component';
 import { UserPanelComponent } from './sidenav/panel-users/user-panel.component';
@@ -33,8 +34,8 @@ import { StatusbarComponent } from './statusbar.component';
     MatProgressSpinnerModule,
     UserPanelComponent,
     ActivityPanelComponent,
-    WorkspaceComponent
-],
+    WorkspaceComponent,
+  ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
   providers: [DashboardStore],
@@ -42,11 +43,8 @@ import { StatusbarComponent } from './statusbar.component';
 export class DashboardComponent {
   readonly store = inject(DashboardStore);
   readonly session = inject(SessionStore);
+  readonly dataset = inject(DatasetStore);
   readonly tabStore = inject(WorkspaceTabStore);
-
-  onRefresh(): void {
-    console.log('Refresh from statusbar');
-  }
 
   onOpenSettings(): void {
     // this.#dialog.open(SettingsComponent, {

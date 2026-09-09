@@ -46,7 +46,7 @@ import { UserDialogComponent } from './user-dialog.component';
     }
   `,
   template: `
-    @if (store.users.isLoading()) {
+    @if (store.isLoading()) {
       <app-progress-spinner i18n>Loading users...</app-progress-spinner>
     } @else {
       <header>

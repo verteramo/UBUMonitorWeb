@@ -50,8 +50,8 @@ import SectionArticleComponent from './section-article.component';
     }
   `,
   template: `
-    @if (store.sections.isLoading()) {
-      <app-progress-spinner i18n>Loading sections...</app-progress-spinner>
+    @if (store.isLoading()) {
+      <app-progress-spinner i18n>Loading activities...</app-progress-spinner>
     } @else {
       <header>
         <app-filter-control

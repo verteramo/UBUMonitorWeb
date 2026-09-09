@@ -61,6 +61,6 @@
   <app-statusbar
     [principal]="session.currentPrincipal()"
     [course]="session.currentCourse()"
-    (refresh)="onRefresh()"
+    (refresh)="dataset.refresh()"
   />
 </footer>

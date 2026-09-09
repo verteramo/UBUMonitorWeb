@@ -1,5 +1,5 @@
 import { computed } from '@angular/core';
-import { withSettings } from '@core/stores/features/settings.feature';
+import { withSettingsSlice } from '@core/stores/features/settings-slice.feature';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 
 /**
@@ -32,5 +32,5 @@ export const DashboardStore = signalStore(
       patchState(store, ({ panels }) => ({ panels: { ...panels, [panel]: expanded } }));
     },
   })),
-  withSettings('dashboard'),
+  withSettingsSlice('dashboard'),
 );

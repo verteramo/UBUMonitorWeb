@@ -2,7 +2,7 @@ import { inject } from '@angular/core';
 import { getState, patchState, signalStoreFeature, watchState, withHooks } from '@ngrx/signals';
 import { SettingsStore } from '../settings.store';
 
-export function withSettings(key: string) {
+export function withSettingsSlice(key: string) {
   return signalStoreFeature(
     withHooks({
       onInit(store) {

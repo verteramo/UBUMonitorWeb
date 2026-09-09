@@ -6,11 +6,13 @@
 
 import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
+import { Completion } from '@core/models/completion';
 import { Course } from '@core/models/course';
+import { Grade } from '@core/models/grade';
 import { Section } from '@core/models/section';
 import { User } from '@core/models/user';
 import { environment as env } from '@env/environment';
-import { Observable, shareReplay } from 'rxjs';
+import { Observable } from 'rxjs';
 
 /**
  * Clasificación de cursos.
@@ -28,7 +30,16 @@ type CourseCache = Record<CourseClassification, Observable<Course[]>>;
 @Service()
 export class CourseService {
   private http = inject(HttpClient);
-  private cache: Partial<CourseCache> = {};
+
+  /**
+   * Obtiene un observable con la información solicitada.
+   *
+   * @param endpoint Subruta.
+   * @returns Observable con la información solicitada.
+   */
+  private getData<T>(endpoint: string): Observable<T> {
+    return this.http.get<T>(`${env.endpoints.courses}/${endpoint}`);
+  }
 
   /**
    * Obtiene la lista de cursos de una clasificación determinada.
@@ -37,9 +48,7 @@ export class CourseService {
    * @returns Lista de cursos.
    */
   getCourses(classification: CourseClassification): Observable<Course[]> {
-    return (this.cache[classification] ??= this.http
-      .get<Course[]>(`${env.endpoints.courses}/${classification}`)
-      .pipe(shareReplay(1)));
+    return this.getData<Course[]>(classification);
   }
 
   /**
@@ -49,8 +58,7 @@ export class CourseService {
    * @returns Lista de usuarios del curso.
    */
   getUsers(id: number): Observable<User[]> {
-    const endpoint = `${env.endpoints.courses}/${id}/users`;
-    return this.http.get<User[]>(endpoint);
+    return this.getData<User[]>(`${id}/users`);
   }
 
   /**
@@ -59,7 +67,34 @@ export class CourseService {
    * @returns Lista de secciones del curso.
    */
   getSections(id: number): Observable<Section[]> {
-    const endpoint = `${env.endpoints.courses}/${id}/sections`;
-    return this.http.get<Section[]>(endpoint);
+    return this.getData<Section[]>(`${id}/sections`);
+  }
+
+  /**
+   * Obtiene la lista de calificaciones de un curso determinado.
+   * @param id ID del curso.
+   * @returns Lista de calificaciones del curso.
+   */
+  getGrades(id: number): Observable<Grade[]> {
+    return this.getData<Grade[]>(`${id}/grades`);
+  }
+
+  /**
+   * Obtiene la lista de eventos de un curso determinado.
+   * @param id ID del curso.
+   * @returns Lista de eventos del curso.
+   */
+  getEvents(id: number): Observable<Event[]> {
+    return this.getData<Event[]>(`${id}/events`);
+  }
+
+  /**
+   * Obtiene el estado de finalización de actividades de un usuario en un curso determinado.
+   * @param courseId ID del curso.
+   * @param userId ID del usuario.
+   * @returns Estado de finalización de actividades del usuario.
+   */
+  getCompletion(courseId: number, userId: number): Observable<Completion[]> {
+    return this.getData<Completion[]>(`${courseId}/completion/${userId}`);
   }
 }
