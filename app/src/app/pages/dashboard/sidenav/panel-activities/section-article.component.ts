@@ -59,13 +59,13 @@ import { Section } from '@core/models/section';
 
       <span [title]="section().name">{{ section().name }}</span>
 
-      @if (section().visible) {
+      @if (section().isVisible) {
         <mat-icon title="Visible">visibility</mat-icon>
       } @else {
         <mat-icon title="Oculto">visibility_off</mat-icon>
       }
 
-      @if (section().userVisble) {
+      @if (section().isUserVisble) {
         <mat-icon title="Público">public</mat-icon>
       }
     </article>
