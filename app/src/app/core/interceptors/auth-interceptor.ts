@@ -14,10 +14,15 @@ import { environment as env } from '@env/environment';
 import { catchError, EMPTY } from 'rxjs';
 
 /**
- * Realiza un pre y post procesamiento de las solicitudes de autenticación.
- * - Pre: Añade el host en la cabecera correspondiente cuando está disponible.
- * - Post: Verifica la presencia de código de estado que evidencian la caducidad
- * del token para limpiar el store de la sesión local.
+ * Realiza un pre y post procesamiento de la solicitud de login.
+ * - Pre: Añade el host en la cabecera correspondiente cuando este
+ *        está disponible mediante el token `AuthToken`.
+ *
+ * - Post: Verifica la presencia del código de estado `403`, que junto
+ *         con la ausencia del token `AuthToken` evidencia la caducidad
+ *         del token de Moodle o de la cookie de sesión del backend,
+ *         por lo que solo queda limpiar la sesión y volver a requerir
+ *         el inicio de sesión.
  */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const session = inject(SessionStore);
@@ -27,11 +32,10 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const request = token ? req.clone({ setHeaders: { [env.hostHeader]: token } }) : req;
 
   return next(request).pipe(
+    // En este momento el error es de tipo AppError porque en la capa más
+    // externa del modelo onion se encuentra el error-interceptor,
+    // que convierte errores HttpErrorResponse en AppError.
     catchError((error: AppError) => {
-      /*
-       * Si es una solicitud proveniente de AuthService no se intercepta,
-       * se lanza el error para que el LoginComponent lo capture y lo pueda procesar.
-       */
       if (!token && error.status === 403) {
         session.clear();
         snack(error.message);

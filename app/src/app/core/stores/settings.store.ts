@@ -20,8 +20,8 @@ import { withSignalStorage } from './features/storage.feature';
  * @returns Identificador único.
  */
 function getKey(principal: Principal, course: Course): string {
-  const token = `${principal.siteUrl}:${principal.id}:${course.id}`;
-  const uniqueId = sha256(token).substring(0, 16);
+  const uniqueToken = `${principal.siteUrl}:${principal.id}:${course.id}`;
+  const uniqueId = sha256(uniqueToken).substring(0, 16);
   return `settings-${uniqueId}`;
 }
 
@@ -57,7 +57,9 @@ export const SettingsStore = signalStore(
     // La clave de almacenamiento es dinámica y ligada al usuario autenticado
     withSignalStorage(
       localStorage,
-      computed(() => principal() && course() ? getKey(currentPrincipal(), currentCourse()) : null),
+      computed(() =>
+        principal() && course() ? getKey(currentPrincipal(), currentCourse()) : null,
+      ),
     ),
   ),
 );

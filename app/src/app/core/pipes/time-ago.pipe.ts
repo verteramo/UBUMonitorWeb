@@ -14,8 +14,9 @@ const HOUR_MS = 60 * MINUTE_MS;
 const DAY_MS = 24 * HOUR_MS;
 
 /**
- * Pipe para formatear timestaps.
- * Todas las cadenas son localizables.
+ * Pipe para formatear timestaps, los timestamps provienen de un servicio PHP,
+ * por lo que vienen en segundos, para una mejor manipulación se convierten a
+ * milisegundos. Todas las cadenas son localizables.
  */
 @Pipe({
   name: 'timeAgo',

@@ -11,7 +11,7 @@ import { environment as env } from '@env/environment';
 import { Observable } from 'rxjs';
 
 /**
- * Parámetros de inicio de sesión.
+ * Parámetros de inicio de sesión para el método `login`.
  */
 export type LoginParams = {
   host: string;
@@ -22,7 +22,7 @@ export type LoginParams = {
 };
 
 /**
- * Token para etiquetar solicitudes de este AuthService.
+ * Token para etiquetar solicitudes de este `AuthService`.
  */
 export const AuthToken = new HttpContextToken<string | null>(() => null);
 

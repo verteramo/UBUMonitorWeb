@@ -9,10 +9,9 @@ import { patchState, signalStore, withComputed, withMethods, withState } from '@
 import { withStorage } from './features/storage.feature';
 
 /*
- * En este fichero se define el estado global de la aplicación,
- * que almacena preferencias que no dependen de que un usuario
- * haya iniciado sesión, como por ejemplo las preferencias del
- * formulario de logín o el theme global.
+ * En este fichero se define el estado global de la aplicación, que almacena
+ * preferencias que no dependen de que un usuario haya iniciado sesión, como
+ * por ejemplo las preferencias del formulario de login o el theme global.
  */
 
 /**
@@ -33,7 +32,7 @@ type AppState = {
 /**
  * Estado inicial.
  */
-const initialState: AppState = {
+export const initialState: AppState = {
   theme: 'system',
   login: {
     host: '',
@@ -93,5 +92,3 @@ export const AppStore = signalStore(
   })),
   withStorage(localStorage, 'app'),
 );
-
-export const initialLoginState = initialState.login;

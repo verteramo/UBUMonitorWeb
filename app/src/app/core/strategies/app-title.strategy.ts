@@ -10,7 +10,7 @@ import { RouterStateSnapshot, TitleStrategy } from '@angular/router';
 
 /**
  * Estrategia de construcción del título de la aplicación;
- * Consiste en "Nombre componente - Nombre aplicación".
+ * consiste en "Nombre componente - Nombre aplicación".
  */
 @Injectable()
 export class AppTitleStrategy extends TitleStrategy {

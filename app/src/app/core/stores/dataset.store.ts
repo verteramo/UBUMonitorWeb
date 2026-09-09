@@ -1,3 +1,9 @@
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 import { inject } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { Grade } from '@core/models/grade';
@@ -8,6 +14,9 @@ import { signalStore, withMethods, withProps } from '@ngrx/signals';
 import { forkJoin } from 'rxjs';
 import { SessionStore } from './session.store';
 
+/**
+ * Propiedades de estado del dataset.
+ */
 export type DatasetState = {
   users: User[];
   sections: Section[];
@@ -15,6 +24,9 @@ export type DatasetState = {
   events: Event[];
 };
 
+/**
+ * Estado inicial.
+ */
 const initialState: DatasetState = {
   users: [],
   sections: [],
@@ -22,6 +34,9 @@ const initialState: DatasetState = {
   events: [],
 };
 
+/**
+ * Store que contiene el dataset completo utilizado por la aplicación.
+ */
 export const DatasetStore = signalStore(
   { providedIn: 'root' },
   withProps((_, { currentCourse } = inject(SessionStore), service = inject(CourseService)) => ({

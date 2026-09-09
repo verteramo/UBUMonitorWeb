@@ -15,14 +15,9 @@ import { environment as env } from '@env/environment';
 import { Observable } from 'rxjs';
 
 /**
- * Clasificación de cursos.
+ * Clasificaciones de cursos.
  */
 export type CourseClassification = 'all' | 'starred' | 'recent' | 'inprogress' | 'future' | 'past';
-
-/**
- * Tipo para el diccionario de cursos en memoria.
- */
-type CourseCache = Record<CourseClassification, Observable<Course[]>>;
 
 /**
  * Servicio de cursos.

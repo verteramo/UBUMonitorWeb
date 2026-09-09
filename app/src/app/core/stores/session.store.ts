@@ -30,7 +30,7 @@ const initialState: SessionState = {
 };
 
 /**
- * Store de propiedades de estado de la sesión: Usuario autenticado (principal) y Curso.
+ * Store de propiedades de estado de la sesión: Usuario autenticado (Principal) y Curso.
  */
 export const SessionStore = signalStore(
   { providedIn: 'root' },

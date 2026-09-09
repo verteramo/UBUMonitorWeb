@@ -69,7 +69,7 @@ export function withSelection<T>(items: Signal<T[]>) {
     })),
     withMethods((store) => ({
       /**
-       * Cambia el estado de selección de un ítem particular.
+       * Cambia el estado de selección de un ítem determinado.
        */
       toggleItem(item: T): void {
         if (store.isSelected(item)) {
@@ -84,7 +84,7 @@ export function withSelection<T>(items: Signal<T[]>) {
       },
 
       /**
-       * Cambia el estado del selección de todos los ítems.
+       * Cambia el estado de selección de todos los ítems.
        */
       toggleItems(): void {
         if (items().length > 0) {
