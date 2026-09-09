@@ -11,15 +11,15 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.service.annotation.PostExchange
 
 /**
- * Cliente HTTP que obtiene las credenciales, se hidrata desde el perfil `credentials` definido en
+ * Cliente HTTP que obtiene las credenciales, se hidrata desde el perfil `token-client` definido en
  * el fichero de configuración de la aplicación.
  */
 @ClientProfile
-interface CredentialsClient {
+interface TokenClient {
   /** Solicitud de las credenciales. */
   @PostExchange
-  fun getCredentials(
+  fun getToken(
     @RequestParam username: String,
     @RequestParam password: String,
-  ): Credentials
+  ): MoodleToken
 }

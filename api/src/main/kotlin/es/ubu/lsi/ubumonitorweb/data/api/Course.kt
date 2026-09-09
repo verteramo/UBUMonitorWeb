@@ -10,8 +10,8 @@ data class Course(
   val id: Int,
   val name: String,
   val picture: String?,
-  val starred: Boolean,
-  val sinceMs: Long?,
-  val untilMs: Long?,
   val category: String,
+  val isStarred: Boolean,
+  val sinceTs: Long?,
+  val untilTs: Long?,
 )

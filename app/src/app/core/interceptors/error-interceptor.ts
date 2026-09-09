@@ -1,11 +1,11 @@
-/**
+/*
  * Este fichero forma parte de UBUMonitorWeb.
  *
  * @author Marcelo Verteramo Pérsico
  */
 
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
-import { AppError } from '@core/models/app-error';
+import { AppError } from '@core/interceptors/app-error';
 import { catchError } from 'rxjs';
 
 /** Relanza los errores normalizados construyendo un AppError. */

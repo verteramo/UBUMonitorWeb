@@ -1,4 +1,4 @@
-/**
+/*
  * Este fichero forma parte de UBUMonitorWeb.
  *
  * @author Marcelo Verteramo Pérsico
@@ -7,15 +7,15 @@
 /** Modelo de módulo de sección devuelto por el backend. */
 export type Module = {
   id: number;
-  url?: string;
+  url: string | null;
   name: string;
-  visible: boolean;
-  userVisible: boolean;
   type: string;
+  plural: string;
   picture: string;
   purpose: string;
-  plural: string;
-  completion: 0 | 1 | 2;
-  sinceMs?: number;
-  untilMs?: number;
+  completion: number;
+  isVisible: boolean;
+  isUserVisible: boolean;
+  sinceTs: number | null;
+  untilTs: number | null;
 };

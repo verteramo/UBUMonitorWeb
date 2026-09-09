@@ -1,4 +1,4 @@
-/**
+/*
  * Este fichero forma parte de UBUMonitorWeb.
  *
  * @author Marcelo Verteramo Pérsico
@@ -12,13 +12,19 @@ import { User } from '@core/models/user';
 import { environment as env } from '@env/environment';
 import { Observable, shareReplay } from 'rxjs';
 
-/** Clasificación de cursos. */
+/**
+ * Clasificación de cursos.
+ */
 export type CourseClassification = 'all' | 'starred' | 'recent' | 'inprogress' | 'future' | 'past';
 
-/** Tipo para el diccionario de cursos en memoria. */
+/**
+ * Tipo para el diccionario de cursos en memoria.
+ */
 type CourseCache = Record<CourseClassification, Observable<Course[]>>;
 
-/** Servicio de cursos. */
+/**
+ * Servicio de cursos.
+ */
 @Service()
 export class CourseService {
   private http = inject(HttpClient);

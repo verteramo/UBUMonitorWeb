@@ -1,4 +1,4 @@
-/**
+/*
  * Este fichero forma parte de UBUMonitorWeb.
  *
  * @author Marcelo Verteramo Pérsico
@@ -22,9 +22,9 @@ const DAY_MS = 24 * HOUR_MS;
   standalone: true,
 })
 export class TimeAgoPipe implements PipeTransform {
-  transform(value: number | null | undefined): string {
+  transform(value: number | null): string {
     if (value) {
-      const diff = new Date().getTime() - value;
+      const diff = new Date().getTime() - value * 1000;
 
       switch (true) {
         case diff >= DAY_MS:

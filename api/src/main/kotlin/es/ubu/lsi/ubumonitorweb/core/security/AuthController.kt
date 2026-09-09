@@ -6,7 +6,6 @@
 
 package es.ubu.lsi.ubumonitorweb.core.security
 
-import es.ubu.lsi.ubumonitorweb.core.moodle.SiteInfo
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpStatus
@@ -30,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController
 class AuthController(
   private val manager: AuthenticationManager,
 ) {
-  data class Credentials(
+  data class LoginParams(
     val username: String,
     val password: String,
   )
@@ -43,13 +42,13 @@ class AuthController(
   fun login(
     request: HttpServletRequest,
     response: HttpServletResponse,
-    @RequestBody credentials: Credentials,
+    @RequestBody loginParams: LoginParams,
   ): Principal =
     manager
       .authenticate(
         UsernamePasswordAuthenticationToken(
-          credentials.username,
-          credentials.password,
+          loginParams.username,
+          loginParams.password,
         ),
       ).let {
         // Almacenamiento de la sesión HTTP en memoria
@@ -62,25 +61,7 @@ class AuthController(
           response,
         )
 
-        val siteInfo = it.principal as SiteInfo
-
-        Principal(
-          id = siteInfo.userid,
-          username = siteInfo.username,
-          isAdmin = siteInfo.userissiteadmin ?: false,
-          language = siteInfo.lang,
-          firstName = siteInfo.firstname,
-          lastName = siteInfo.lastname,
-          fullName = siteInfo.fullname,
-          picture = siteInfo.userpictureurl,
-          platform =
-            Platform(
-              url = siteInfo.siteurl,
-              name = siteInfo.sitename,
-              version = siteInfo.version,
-              release = siteInfo.release,
-            ),
-        )
+        it.principal as Principal
       }
 
   /** Realiza el cierre de sesión. */

@@ -1,4 +1,4 @@
-/**
+/*
  * Este fichero forma parte de UBUMonitorWeb.
  *
  * @author Marcelo Verteramo Pérsico
@@ -108,8 +108,8 @@ import { TimeAgoPipe } from '@core/pipes/time-ago.pipe';
 
       <div class="user-details">
         <strong>{{ user().fullName }}</strong>
-        <small i18n>Course: {{ user().lastCourseAccessMs | timeAgo }}</small>
-        <small i18n>Platform: {{ user().lastAccessMs | timeAgo }}</small>
+        <small i18n>Course: {{ user().lastCourseAccessTs | timeAgo }}</small>
+        <small i18n>Platform: {{ user().lastAccessTs | timeAgo }}</small>
       </div>
 
       <button

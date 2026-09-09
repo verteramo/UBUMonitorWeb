@@ -1,4 +1,4 @@
-/**
+/*
  * Este fichero forma parte de UBUMonitorWeb.
  *
  * @author Marcelo Verteramo Pérsico
@@ -9,8 +9,8 @@ export type Course = {
   id: number;
   name: string;
   picture: string;
-  starred: boolean;
-  sinceMs?: number;
-  untilMs?: number;
   category: string;
+  isStarred: boolean;
+  sinceTs: number | null;
+  untilTs: number | null;
 };

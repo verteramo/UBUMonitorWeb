@@ -6,7 +6,7 @@
 
 package es.ubu.lsi.ubumonitorweb.feature.course
 
-import es.ubu.lsi.ubumonitorweb.core.moodle.SiteInfo
+import es.ubu.lsi.ubumonitorweb.core.security.Principal
 import es.ubu.lsi.ubumonitorweb.data.api.Completion
 import es.ubu.lsi.ubumonitorweb.data.api.Course
 import es.ubu.lsi.ubumonitorweb.data.api.Event
@@ -30,18 +30,18 @@ class CourseController(
   /**
    * Obtiene los cursos, según clasificación, del usuario autenticado.
    *
-   * @param siteInfo Usuario autenticado.
+   * @param principal Usuario autenticado.
    * @param classification Clasificación de los cursos solicitados.
    * @return Cursos solicitados normalizados.
    */
   @GetMapping("/{classification:all|recent|starred|past|future|inprogress}")
   fun getCourses(
-    @AuthenticationPrincipal siteInfo: SiteInfo,
+    @AuthenticationPrincipal principal: Principal,
     @PathVariable classification: String,
   ): List<Course> =
     when (classification) {
-      "all" -> courseService.getAllCourses(siteInfo.userid)
-      "recent" -> courseService.getRecentCourses(siteInfo.userid)
+      "all" -> courseService.getAllCourses(principal.id)
+      "recent" -> courseService.getRecentCourses(principal.id)
       "starred" -> courseService.getStarredCourses()
       else -> courseService.getClassifiedCourses(classification)
     }

@@ -37,12 +37,12 @@ data class MoodleCalendarEvent(
       module = modulename,
       instance = instance,
       type = eventtype,
-      startMs = timestart.times(1000),
-      durationMs = timeduration.times(1000),
+      startTs = timestart,
+      durationTs = timeduration,
       isVisible = visible == 1,
       uuid = uuid,
       sequence = sequence,
-      modifiedMs = timemodified.times(1000),
+      modifiedTs = timemodified,
       subscriptionId = subscriptionid,
     )
 }

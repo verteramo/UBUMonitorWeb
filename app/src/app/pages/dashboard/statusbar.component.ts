@@ -1,4 +1,4 @@
-/**
+/*
  * Este fichero forma parte de UBUMonitorWeb.
  *
  * @author Marcelo Verteramo Pérsico
@@ -49,8 +49,8 @@ import { TimeAgoPipe } from '../../core/pipes/time-ago.pipe';
   template: `
     <div class="status-left">
       <span class="host-name">
-        <a matButton target="_blank" [href]="principal().platform.url" [title]="principal().platform.release">
-          {{ principal().platform.name }}
+        <a matButton target="_blank" [href]="principal().siteUrl" [title]="principal().release">
+          {{ principal().siteName }}
         </a>
       </span>
       <span class="separator">|</span>

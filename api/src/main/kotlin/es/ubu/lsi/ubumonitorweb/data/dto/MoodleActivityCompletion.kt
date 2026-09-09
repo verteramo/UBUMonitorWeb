@@ -24,7 +24,7 @@ data class MoodleActivityCompletion(
       module = modname,
       instance = instance,
       state = state,
-      completedMs = timecompleted.times(1000),
+      completedTs = timecompleted,
       tracking = tracking,
       overrideBy = overrideby,
       isValueUsed = valueused == true,

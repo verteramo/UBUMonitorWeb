@@ -5,7 +5,7 @@ data class Completion(
   val module: String,
   val instance: Int,
   val state: Int?,
-  val completedMs: Long?,
+  val completedTs: Long?,
   val tracking: Int,
   val overrideBy: Int?,
   val isCompletionEnabled: Boolean,

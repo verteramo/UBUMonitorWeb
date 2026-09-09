@@ -6,8 +6,8 @@
 
 package es.ubu.lsi.ubumonitorweb.core.security
 
-import es.ubu.lsi.ubumonitorweb.core.moodle.CredentialsClient
 import es.ubu.lsi.ubumonitorweb.core.moodle.SiteInfoClient
+import es.ubu.lsi.ubumonitorweb.core.moodle.TokenClient
 import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -19,9 +19,9 @@ import org.springframework.web.service.registry.ImportHttpServices
  * Proveedor de autenticación que provee objetos [Authentication].
  */
 @Component
-@ImportHttpServices(CredentialsClient::class, SiteInfoClient::class)
+@ImportHttpServices(TokenClient::class, SiteInfoClient::class)
 class AuthProvider(
-  private val credentialsClient: CredentialsClient,
+  private val tokenClient: TokenClient,
   private val siteInfoClient: SiteInfoClient,
 ) : AuthenticationProvider {
   /** Indica el tipo de token soportado por este [AuthenticationProvider]. */
@@ -37,15 +37,11 @@ class AuthProvider(
    */
   override fun authenticate(authentication: Authentication): Authentication? {
     val credentials =
-      credentialsClient.getCredentials(
-        authentication.name,
-        authentication.credentials.toString(),
-      )
+      tokenClient
+        .getToken(authentication.name, authentication.credentials.toString())
+        .toCredentials()
 
-    val principal =
-      siteInfoClient.getPrincipal(
-        credentials.token,
-      )
+    val principal = siteInfoClient.getSiteInfo(credentials.token).toPrincipal()
 
     return object : AbstractAuthenticationToken(emptyList()) {
       init {

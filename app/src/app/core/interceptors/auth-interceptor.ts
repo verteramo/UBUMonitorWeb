@@ -1,4 +1,4 @@
-/**
+/*
  * Este fichero forma parte de UBUMonitorWeb.
  *
  * @author Marcelo Verteramo Pérsico
@@ -7,7 +7,7 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { useSnack } from '@core/composables/snack';
-import { AppError } from '@core/models/app-error';
+import { AppError } from '@core/interceptors/app-error';
 import { AuthToken } from '@core/services/auth.service';
 import { SessionStore } from '@core/stores/session.store';
 import { environment as env } from '@env/environment';

@@ -1,4 +1,4 @@
-/**
+/*
  * Este fichero forma parte de UBUMonitorWeb.
  *
  * @author Marcelo Verteramo Pérsico
@@ -20,7 +20,7 @@ import { withSignalStorage } from './features/storage.feature';
  * @returns Identificador único.
  */
 function getKey(principal: Principal, course: Course): string {
-  const token = `${principal.platform.url}:${principal.id}:${course.id}`;
+  const token = `${principal.siteUrl}:${principal.id}:${course.id}`;
   const uniqueId = sha256(token).substring(0, 16);
   return `settings-${uniqueId}`;
 }

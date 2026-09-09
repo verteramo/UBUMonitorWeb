@@ -18,7 +18,7 @@ import org.springframework.web.service.annotation.PostExchange
 interface SiteInfoClient {
   /** Solicitud de los datos del principal. */
   @PostExchange
-  fun getPrincipal(
+  fun getSiteInfo(
     @RequestParam wstoken: String,
-  ): SiteInfo
+  ): MoodleSiteInfo
 }
