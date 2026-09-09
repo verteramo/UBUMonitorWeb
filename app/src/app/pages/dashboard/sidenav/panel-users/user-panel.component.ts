@@ -12,8 +12,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { User } from '@core/models/user';
 import { UsersStore } from '@pages/dashboard/sidenav/panel-users/users.store';
+import { FilterControlComponent } from '@shared/components/filter-control.component';
 import { ProgressSpinnerComponent } from '@shared/components/progress-spinner.component';
-import { FilterControlComponent } from '../components/filter-control.component';
 import { UserArticleComponent } from './user-article.component';
 import { UserDialogComponent } from './user-dialog.component';
 

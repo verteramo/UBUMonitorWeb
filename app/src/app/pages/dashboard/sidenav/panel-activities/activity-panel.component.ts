@@ -12,8 +12,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
+import { FilterControlComponent } from '@shared/components/filter-control.component';
 import { ProgressSpinnerComponent } from '@shared/components/progress-spinner.component';
-import { FilterControlComponent } from '../components/filter-control.component';
 import { ActivitiesStore } from './activities.store';
 import SectionArticleComponent from './section-article.component';
 

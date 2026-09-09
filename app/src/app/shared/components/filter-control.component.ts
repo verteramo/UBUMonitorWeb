@@ -1,4 +1,14 @@
-import { Component, input, model, output } from '@angular/core';
+import {
+  afterNextRender,
+  Component,
+  computed,
+  ElementRef,
+  input,
+  model,
+  output,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
@@ -97,24 +107,32 @@ import { MatMenuModule } from '@angular/material/menu';
 
       <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <input matInput [placeholder]="placeholder()" [(ngModel)]="term" />
-        <mat-icon matSuffix>search</mat-icon>
+        @if (term()) {
+          <button matSuffix matIconButton aria-label="Clear" (click)="term.set('')">
+            <mat-icon>close</mat-icon>
+          </button>
+        } @else {
+          <mat-icon matSuffix>search</mat-icon>
+        }
       </mat-form-field>
 
-      <button matIconButton [matMenuTriggerFor]="filters">
-        <mat-icon
-          aria-hidden="false"
-          [matBadge]="badge()"
-          [matBadgeHidden]="badge() === 0"
-          matBadgeSize="medium"
-          matBadgeColor="accent"
-        >
-          filter_list
-        </mat-icon>
-      </button>
+      @if (hasContent()) {
+        <button matIconButton [matMenuTriggerFor]="filters">
+          <mat-icon
+            aria-hidden="false"
+            [matBadge]="badge()"
+            [matBadgeHidden]="badge() === 0"
+            matBadgeSize="medium"
+            matBadgeColor="accent"
+          >
+            filter_list
+          </mat-icon>
+        </button>
+      }
     </div>
 
     <mat-menu #filters="matMenu" xPosition="before">
-      <div class="filters-menu" (click)="$event.stopPropagation()">
+      <div #content class="filters-menu" (click)="$event.stopPropagation()">
         <h3 i18n>Filters</h3>
         <mat-divider></mat-divider>
         <!-- Filtros específicos -->
@@ -129,10 +147,19 @@ export class FilterControlComponent {
   checked = input<boolean>(false);
   indeterminate = input<boolean>(false);
   badge = input<number>(0);
-
-  /** Término de búsqueda (two-way binding). */
   term = model<string>('');
-
-  /** Evento emitido al pulsar el checkbox. */
   toggleAll = output<void>();
+
+  protected readonly content = viewChild<ElementRef<HTMLDivElement>>('content');
+  protected readonly hasContent = signal(false);
+
+  private contentLength = computed(() => {
+    return this.content()?.nativeElement.children.length ?? 0;
+  });
+
+  constructor() {
+    afterNextRender(() => {
+      this.hasContent.set(this.contentLength() > 2);
+    });
+  }
 }
