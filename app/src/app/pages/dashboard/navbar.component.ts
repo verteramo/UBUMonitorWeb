@@ -80,7 +80,7 @@ import { ThemeToggleComponent } from '@shared/components/theme-toggle.component'
 
       <span class="spacer"></span>
 
-      <!-- Menú Logs -->
+      <!-- Menú Logs
       <button matButton [matMenuTriggerFor]="logsMenu" i18n>
         <mat-icon>receipt_long</mat-icon> Logs
       </button>
@@ -93,13 +93,17 @@ import { ThemeToggleComponent } from '@shared/components/theme-toggle.component'
           <mat-icon>delete_sweep</mat-icon>
           <span i18n>Clear</span>
         </button>
-      </mat-menu>
+      </mat-menu> -->
 
       <!-- Menú Export -->
       <button matButton [matMenuTriggerFor]="exportMenu" i18n>
         <mat-icon>download</mat-icon> Export
       </button>
       <mat-menu #exportMenu="matMenu">
+        <button mat-menu-item (click)="exportDataset.emit()">
+          <mat-icon>dataset</mat-icon>
+          <span i18n>Dataset</span>
+        </button>
         <button mat-menu-item>
           <mat-icon>dashboard</mat-icon>
           <span i18n>Dashboard</span>
@@ -111,6 +115,17 @@ import { ThemeToggleComponent } from '@shared/components/theme-toggle.component'
         <button mat-menu-item>
           <mat-icon>group</mat-icon>
           <span i18n>Users</span>
+        </button>
+      </mat-menu>
+
+      <!-- Menú Import -->
+      <button matButton [matMenuTriggerFor]="importMenu" i18n>
+        <mat-icon>upload</mat-icon> Import
+      </button>
+      <mat-menu #importMenu="matMenu">
+        <button mat-menu-item (click)="importDataset.emit()">
+          <mat-icon>dataset</mat-icon>
+          <span i18n>Dataset</span>
         </button>
       </mat-menu>
 
@@ -160,4 +175,7 @@ export class NavbarComponent {
 
   /** Evento para abrir la configuración. */
   openSettings = output<void>();
+
+  exportDataset = output<void>();
+  importDataset = output<void>();
 }
