@@ -39,3 +39,4 @@ export async function openFilePicker(options: OpenFilePickerOptions): Promise<st
   const file = await handle.getFile();
   return await file.text();
 }
+
