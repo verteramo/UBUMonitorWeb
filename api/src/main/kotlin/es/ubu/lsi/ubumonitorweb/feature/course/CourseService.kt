@@ -6,22 +6,22 @@
 
 package es.ubu.lsi.ubumonitorweb.feature.course
 
-import es.ubu.lsi.ubumonitorweb.data.api.Completion
-import es.ubu.lsi.ubumonitorweb.data.api.Course
-import es.ubu.lsi.ubumonitorweb.data.api.Event
-import es.ubu.lsi.ubumonitorweb.data.api.Grade
-import es.ubu.lsi.ubumonitorweb.data.api.LogEntry
-import es.ubu.lsi.ubumonitorweb.data.api.Section
-import es.ubu.lsi.ubumonitorweb.data.api.User
-import es.ubu.lsi.ubumonitorweb.data.dto.MoodleCategory
-import es.ubu.lsi.ubumonitorweb.data.dto.MoodleCourse
-import es.ubu.lsi.ubumonitorweb.feature.course.client.BlockStarredcoursesClient
-import es.ubu.lsi.ubumonitorweb.feature.course.client.CoreCalendarClient
-import es.ubu.lsi.ubumonitorweb.feature.course.client.CoreCompletionClient
-import es.ubu.lsi.ubumonitorweb.feature.course.client.CoreCourseClient
-import es.ubu.lsi.ubumonitorweb.feature.course.client.CoreEnrolClient
-import es.ubu.lsi.ubumonitorweb.feature.course.client.GradereportUserClient
-import es.ubu.lsi.ubumonitorweb.feature.course.client.ReportLogClient
+import es.ubu.lsi.ubumonitorweb.domain.Completion
+import es.ubu.lsi.ubumonitorweb.domain.Course
+import es.ubu.lsi.ubumonitorweb.domain.Event
+import es.ubu.lsi.ubumonitorweb.domain.Grade
+import es.ubu.lsi.ubumonitorweb.domain.LogEntry
+import es.ubu.lsi.ubumonitorweb.domain.Section
+import es.ubu.lsi.ubumonitorweb.domain.User
+import es.ubu.lsi.ubumonitorweb.moodle.client.BlockStarredcoursesClient
+import es.ubu.lsi.ubumonitorweb.moodle.client.CoreCalendarClient
+import es.ubu.lsi.ubumonitorweb.moodle.client.CoreCompletionClient
+import es.ubu.lsi.ubumonitorweb.moodle.client.CoreCourseClient
+import es.ubu.lsi.ubumonitorweb.moodle.client.CoreEnrolClient
+import es.ubu.lsi.ubumonitorweb.moodle.client.GradereportUserClient
+import es.ubu.lsi.ubumonitorweb.moodle.client.ReportLogClient
+import es.ubu.lsi.ubumonitorweb.moodle.dto.MoodleCategory
+import es.ubu.lsi.ubumonitorweb.moodle.dto.MoodleCourse
 import org.springframework.stereotype.Service
 import org.springframework.web.service.registry.ImportHttpServices
 

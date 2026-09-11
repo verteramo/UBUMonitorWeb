@@ -7,13 +7,13 @@
 package es.ubu.lsi.ubumonitorweb.feature.course
 
 import es.ubu.lsi.ubumonitorweb.core.security.Principal
-import es.ubu.lsi.ubumonitorweb.data.api.Completion
-import es.ubu.lsi.ubumonitorweb.data.api.Course
-import es.ubu.lsi.ubumonitorweb.data.api.Event
-import es.ubu.lsi.ubumonitorweb.data.api.Grade
-import es.ubu.lsi.ubumonitorweb.data.api.LogEntry
-import es.ubu.lsi.ubumonitorweb.data.api.Section
-import es.ubu.lsi.ubumonitorweb.data.api.User
+import es.ubu.lsi.ubumonitorweb.domain.Completion
+import es.ubu.lsi.ubumonitorweb.domain.Course
+import es.ubu.lsi.ubumonitorweb.domain.Event
+import es.ubu.lsi.ubumonitorweb.domain.Grade
+import es.ubu.lsi.ubumonitorweb.domain.LogEntry
+import es.ubu.lsi.ubumonitorweb.domain.Section
+import es.ubu.lsi.ubumonitorweb.domain.User
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable

@@ -6,7 +6,7 @@
 
 package es.ubu.lsi.ubumonitorweb.feature.resource
 
-import es.ubu.lsi.ubumonitorweb.feature.resource.client.ResourceClient
+import es.ubu.lsi.ubumonitorweb.moodle.client.ResourceClient
 import org.springframework.stereotype.Service
 import org.springframework.web.service.registry.ImportHttpServices
 
