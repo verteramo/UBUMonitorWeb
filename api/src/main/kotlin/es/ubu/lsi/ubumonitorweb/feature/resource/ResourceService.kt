@@ -6,9 +6,7 @@
 
 package es.ubu.lsi.ubumonitorweb.feature.resource
 
-import es.ubu.lsi.ubumonitorweb.core.security.Credentials
 import es.ubu.lsi.ubumonitorweb.feature.resource.client.ResourceClient
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.web.service.registry.ImportHttpServices
 
@@ -19,11 +17,8 @@ import org.springframework.web.service.registry.ImportHttpServices
 class ResourceService(
   private val resourceClient: ResourceClient,
 ) {
-  private val credentials: Credentials?
-    get() = SecurityContextHolder.getContext().authentication?.credentials as? Credentials
-
   fun getUserIcon(
     id: Int,
     size: String,
-  ) = credentials?.run { resourceClient.getUserIcon(id, size, token) }
+  ): ByteArray = resourceClient.getUserIcon(id, size)
 }

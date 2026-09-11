@@ -3,6 +3,7 @@ package es.ubu.lsi.ubumonitorweb.core.moodle
 import es.ubu.lsi.ubumonitorweb.core.locale.Message
 import es.ubu.lsi.ubumonitorweb.core.security.Credentials
 import es.ubu.lsi.ubumonitorweb.core.security.Principal
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.jsoup.Jsoup
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -29,6 +30,8 @@ class AuthService(
   private val coreUserClient: CoreUserClient,
   private val userEditClient: UserEditClient,
 ) {
+  private val logger = KotlinLogging.logger {}
+
   /**
    * Mapea un token de Moodle, junto con la 'sesskey' y la cookie de sesión a un objeto Credentials.
    */
@@ -47,7 +50,7 @@ class AuthService(
    */
   private fun MoodleSiteInfo.toPrincipal(
     timezone: String?,
-    siteTimezone: String,
+    siteTimezone: String?,
   ) = Principal(
     id = userid,
     username = username,
@@ -94,8 +97,8 @@ class AuthService(
    */
   private val ResponseEntity<String>.siteTimezone: String?
     get() =
-      body?.let {
-        Jsoup.parse(it).selectFirst("select#id_timezone option[value=99]")?.text()?.let {
+      body?.let { body ->
+        Jsoup.parse(body).selectFirst("select#id_timezone option[value=\"99\"]")?.text()?.let {
           Regex("\\((.*)\\)").find(it)?.groupValues?.get(1)
         }
       }
@@ -122,6 +125,13 @@ class AuthService(
     val loginToken = getResponse.loginToken
     val sessionKey = getResponse.sessionKey
 
+    logger.debug {
+      "GET call:\n" +
+        "First cookie: $firstCookie\n" +
+        "loginToken: $loginToken\n" +
+        "sessionKey: $sessionKey\n\n"
+    }
+
     if (firstCookie is String && loginToken is String && sessionKey is String) {
       // Llamada POST al formulario de login
       // Se incluyen la cookie de sesión y el 'logintoken'
@@ -130,6 +140,12 @@ class AuthService(
       val sessionCookie = postResponse.moodleSessionCookie ?: firstCookie
       // Solicitud del token de los webservices
       val moodleToken = tokenClient.getToken(username, password)
+
+      logger.debug {
+        "POST call:\n" +
+          "Definitive cookie: $sessionCookie\n" +
+          "moodleToken: $moodleToken\n"
+      }
 
       return moodleToken.toCredentials(sessionKey, sessionCookie)
     }
@@ -142,11 +158,12 @@ class AuthService(
   /**
    * Realiza todo el procedimiento necesario para obtener los datos del principal.
    */
-  fun getPrincipal(credentials: Credentials): Principal? {
-    val siteInfo = coreWebserviceClient.getSiteInfo(credentials.token)
-    val userData = coreUserClient.getUsersByField("username", listOf(siteInfo.username)).firstOrNull()
-    val siteTimezone = userEditClient.getEditForm().siteTimezone
+  fun getPrincipal(credentials: Credentials): Principal =
+    credentials.run {
+      val siteInfo = coreWebserviceClient.getSiteInfo(token)
+      val userInfo = coreUserClient.getUsersByField(token, "username", listOf(siteInfo.username)).firstOrNull()
+      val siteTimezone = userEditClient.getEditForm(sessionCookie).siteTimezone
 
-    return siteTimezone?.let { siteInfo.toPrincipal(userData?.timezone, it) }
-  }
+      siteInfo.toPrincipal(userInfo?.timezone, siteTimezone)
+    }
 }

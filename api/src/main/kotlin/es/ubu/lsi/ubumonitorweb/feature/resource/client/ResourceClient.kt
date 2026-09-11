@@ -12,10 +12,9 @@ import org.springframework.web.service.annotation.GetExchange
 
 @ClientProfile
 interface ResourceClient {
-  @GetExchange("/{id}/user/icon/{size}?token={token}")
+  @GetExchange("/{id}/user/icon/{size}")
   fun getUserIcon(
     @PathVariable id: Int,
     @PathVariable size: String,
-    @PathVariable token: String,
   ): ByteArray
 }

@@ -11,7 +11,6 @@ import org.springframework.web.service.annotation.GetExchange
 interface ReportLogClient {
   @GetExchange
   fun getLogs(
-    @RequestHeader(HttpHeaders.COOKIE) cookie: String,
     @RequestParam id: Int,
     @RequestParam date: Long? = null,
     @RequestParam origin: String? = null,

@@ -35,6 +35,7 @@ dependencies {
 
   implementation(libs.jackson.module.kotlin)
   implementation(libs.jackson.dataformat.xml)
+  implementation(libs.jackson.dataformat.yaml)
   implementation(libs.woodstox.core)
   implementation(libs.springdoc.openapi)
   implementation(libs.kotlin.logging)

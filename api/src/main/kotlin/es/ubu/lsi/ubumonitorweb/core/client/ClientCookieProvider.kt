@@ -11,11 +11,10 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 
 /**
- * Proveedor que extrae y entrega el token necesario para el parámetro `wstoken` desde el
- * contexto de seguridad.
+ * Proveedor que extrae y entrega la cookie de sesión de Moodle desde el contexto de seguridad.
  */
 @Component
-class ClientTokenProvider : ClientPropertyProvider<String?> {
+class ClientCookieProvider : ClientPropertyProvider<String?> {
   /**
    * Credenciales presentes en el contexto de seguridad.
    */
@@ -25,5 +24,5 @@ class ClientTokenProvider : ClientPropertyProvider<String?> {
   /**
    * Invocador del provider.
    */
-  override fun invoke(context: ClientPropertyProvider.Context): String? = credentials?.token
+  override fun invoke(context: ClientPropertyProvider.Context): String? = credentials?.sessionCookie?.substringAfter("=")
 }

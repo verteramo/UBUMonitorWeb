@@ -28,20 +28,30 @@ import java.lang.reflect.Method
  */
 @Component
 class ClientFunctionProvider : ClientPropertyProvider<String?> {
-  /** Sufijo del nombre de los clientes HTTP. */
+  /**
+   * Sufijo del nombre de los clientes HTTP.
+   */
   private val suffix = "Client"
 
-  /** Expresión regular para la identificación de cambios de minúscula a mayúscula. */
+  /**
+   * Expresión regular para la identificación de cambios de minúscula a mayúscula.
+   */
   private val regex = Regex("(?<=[a-z])(?=[A-Z])")
 
-  /** Nombre del cliente sin sufijo. */
+  /**
+   * Nombre del cliente sin sufijo.
+   */
   private val Class<*>.clientName: String
     get() = simpleName.removeSuffix(suffix)
 
-  /**  Nombre cualificado de la función en formato snake_case. */
+  /**
+   * Nombre cualificado de la función en formato snake_case.
+   */
   private val Method.functionName: String
     get() = "${declaringClass.clientName}_$name".replace(regex, "_").lowercase()
 
-  /** Invocador del provider. */
+  /**
+   * Invocador del provider.
+   */
   override fun invoke(context: ClientPropertyProvider.Context) = context.method.functionName
 }

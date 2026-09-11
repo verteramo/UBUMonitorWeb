@@ -21,47 +21,47 @@ server:
 
 client:
   profiles:
-    # Perfil con propiedades globales
-    default:
+    # Perfil con propiedades globales para peticiones GET
+    default-get:
       host: es.ubu.lsi.ubumonitorweb.core.client.ClientHostProvider
-      headers:
-        Content-Type: application/x-www-form-urlencoded
       forward-headers:
         - Accept-Language
 
-    # Perfil del cliente del formulario de login
-    login-client:
-      inherit: default
-      endpoint: /login/index.php
+    # Perfil con propiedades globales para peticiones GET
+    default-post:
+      inherit: default-get
+      headers:
+        Content-Type: application/x-www-form-urlencoded
 
     # Perfil del cliente de obtención del token
     token-client:
-      inherit: default
+      inherit: default-post
       endpoint: /login/token.php
       params:
         service: moodle_mobile_app
 
-    # Perfil del cliente de obtención de los datos del usuario propietario del token
-    site-info-client:
-      inherit: default
-      endpoint: /webservice/rest/server.php
-      params:
-        moodlewsrestformat: json
-        wsfunction: core_webservice_get_site_info
+    # Perfil del cliente del formulario de login
+    login-client:
+      inherit: default-get
+      endpoint: /login/index.php
 
     # Perfil del cliente del formulario de edición del perfil
     user-edit-client:
-      inherit: default
+      inherit: default-get
       endpoint: /user/edit.php
 
     # Perfil del cliente de recursos que requerirían cookies de sesión (usando token)
     resource-client:
-      inherit: default
+      inherit: default-get
       endpoint: /webservice/pluginfile.php
+      providers:
+        token:
+          location: param
+          bean: es.ubu.lsi.ubumonitorweb.core.client.ClientTokenProvider
 
     # Perfil del cliente de reportes de logs
     report-log-client:
-      inherit: default
+      inherit: default-get
       endpoint: /report/log/index.php
       params:
         logreader: logstore_standard
@@ -69,10 +69,14 @@ client:
         chooselog: 1
         # Los nombres de los campos son siempre en inglés (para garantizar un mapeado correcto)
         lang: en
+      providers:
+        MoodleSession:
+          location: cookie
+          bean:  es.ubu.lsi.ubumonitorweb.core.client.ClientCookieProvider
 
     # Perfil de los clientes del webservice REST
     webservice-client:
-      inherit: default
+      inherit: default-post
       endpoint: /webservice/rest/server.php
       params:
         moodlewsrestformat: json

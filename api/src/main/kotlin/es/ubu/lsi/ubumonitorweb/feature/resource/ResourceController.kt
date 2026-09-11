@@ -21,5 +21,5 @@ class ResourceController(
   fun getUserIcon(
     @PathVariable id: Int,
     @PathVariable size: String,
-  ): ByteArray? = resourceService.getUserIcon(id, size)
+  ): ByteArray = resourceService.getUserIcon(id, size)
 }

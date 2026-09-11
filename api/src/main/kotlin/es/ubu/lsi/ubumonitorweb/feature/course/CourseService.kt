@@ -10,6 +10,7 @@ import es.ubu.lsi.ubumonitorweb.data.api.Completion
 import es.ubu.lsi.ubumonitorweb.data.api.Course
 import es.ubu.lsi.ubumonitorweb.data.api.Event
 import es.ubu.lsi.ubumonitorweb.data.api.Grade
+import es.ubu.lsi.ubumonitorweb.data.api.LogEntry
 import es.ubu.lsi.ubumonitorweb.data.api.Section
 import es.ubu.lsi.ubumonitorweb.data.api.User
 import es.ubu.lsi.ubumonitorweb.data.dto.MoodleCategory
@@ -20,6 +21,7 @@ import es.ubu.lsi.ubumonitorweb.feature.course.client.CoreCompletionClient
 import es.ubu.lsi.ubumonitorweb.feature.course.client.CoreCourseClient
 import es.ubu.lsi.ubumonitorweb.feature.course.client.CoreEnrolClient
 import es.ubu.lsi.ubumonitorweb.feature.course.client.GradereportUserClient
+import es.ubu.lsi.ubumonitorweb.feature.course.client.ReportLogClient
 import org.springframework.stereotype.Service
 import org.springframework.web.service.registry.ImportHttpServices
 
@@ -37,6 +39,7 @@ import org.springframework.web.service.registry.ImportHttpServices
   CoreCalendarClient::class,
   BlockStarredcoursesClient::class,
   GradereportUserClient::class,
+  ReportLogClient::class,
 )
 class CourseService(
   private val coreCourseClient: CoreCourseClient,
@@ -45,6 +48,7 @@ class CourseService(
   private val coreCalendarClient: CoreCalendarClient,
   private val blockStarredcoursesClient: BlockStarredcoursesClient,
   private val gradereportUserClient: GradereportUserClient,
+  private val reportLogClient: ReportLogClient,
 ) {
   /** Mapa de categorías solicitadas al webservice de Moodle. */
   private val categories: MutableMap<Any, MoodleCategory> = mutableMapOf()
@@ -171,4 +175,6 @@ class CourseService(
     coreCompletionClient.getActivitiesCompletionStatus(courseId, userId).statuses.map {
       it.toCompletion()
     }
+
+  fun getLogs(id: Int): List<LogEntry> = reportLogClient.getLogs(id).first().map { it.toLogEntry() }
 }

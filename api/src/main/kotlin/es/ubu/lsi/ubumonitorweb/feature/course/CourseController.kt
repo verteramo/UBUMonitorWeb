@@ -11,6 +11,7 @@ import es.ubu.lsi.ubumonitorweb.data.api.Completion
 import es.ubu.lsi.ubumonitorweb.data.api.Course
 import es.ubu.lsi.ubumonitorweb.data.api.Event
 import es.ubu.lsi.ubumonitorweb.data.api.Grade
+import es.ubu.lsi.ubumonitorweb.data.api.LogEntry
 import es.ubu.lsi.ubumonitorweb.data.api.Section
 import es.ubu.lsi.ubumonitorweb.data.api.User
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -65,6 +66,11 @@ class CourseController(
   fun getEvents(
     @PathVariable id: Int,
   ): List<Event> = courseService.getEvents(id)
+
+  @GetMapping("/{id}/logs")
+  fun getLogs(
+    @PathVariable id: Int,
+  ): List<LogEntry> = courseService.getLogs(id)
 
   @GetMapping("{courseId}/completion/{userId}")
   fun getCompletion(

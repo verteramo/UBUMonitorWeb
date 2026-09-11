@@ -2,6 +2,7 @@ package es.ubu.lsi.ubumonitorweb.core.moodle
 
 import es.ubu.lsi.ubumonitorweb.core.client.ClientProfile
 import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestParam
@@ -24,7 +25,7 @@ interface LoginClient {
    * Llamada POST al formulario incluyendo la cookie, el token CSRF y el usuario/contraseña,
    * en la respuesta se incluye la cookie `MoodleSession` definitiva.
    */
-  @PostExchange
+  @PostExchange(contentType = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
   fun postCall(
     @RequestHeader(HttpHeaders.COOKIE) cookie: String,
     @RequestParam username: String,

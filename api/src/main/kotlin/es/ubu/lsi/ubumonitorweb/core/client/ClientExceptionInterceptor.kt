@@ -63,9 +63,25 @@ class ClientExceptionInterceptor(
   private fun ClientHttpResponse.isLoginFormResponse(): Boolean =
     statusCode in arrayOf(HttpStatus.OK, HttpStatus.SEE_OTHER) && headers.contentType?.includes(
       MediaType.TEXT_HTML,
-    ) == true && headers[HttpHeaders.SET_COOKIE]?.firstOrNull {
-      it.startsWith("MoodleSession")
-    } != null
+    ) == true &&
+      headers[HttpHeaders.SET_COOKIE]?.firstOrNull {
+        it.startsWith("MoodleSession")
+      } != null
+
+  /**
+   * TODO: Mejorar la detección de las respuestas del endpoint `/user/edit.php`, se deja temporalmente
+   * de esta manera para avanzar, pero realmente un código de estado 200 con contenido HTML no identifica
+   * claramente respuestas de servidores Moodle.
+   *
+   * Se podría considerar verificar la etqiueta HTML `meta`, que se ha observado que tiene un contenido similar a:
+   * ```html
+   * <meta name="keywords" content="moodle, ..." />
+   * ```
+   */
+  private fun ClientHttpResponse.isEditFormResponse(): Boolean =
+    statusCode.isSameCodeAs(HttpStatus.OK) && headers.contentType?.includes(
+      MediaType.TEXT_HTML,
+    ) == true
 
   /**
    * Mapper correspondiente al MediaType.
@@ -108,7 +124,7 @@ class ClientExceptionInterceptor(
             }
           }
         }
-      } else if (!isLoginFormResponse()) {
+      } else if (!isLoginFormResponse() && !isEditFormResponse()) {
         // Si no, si no es una respuesta del formulario de login,
         // se determina que la respuesta no proviene de una aplicación Moodle
         throw ResponseStatusException(HttpStatus.BAD_REQUEST, Message.ERROR_BAD_MOODLE())

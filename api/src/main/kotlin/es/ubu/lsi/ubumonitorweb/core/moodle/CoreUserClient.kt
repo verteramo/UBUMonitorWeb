@@ -6,10 +6,11 @@ import es.ubu.lsi.ubumonitorweb.data.dto.MoodleUser
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.service.annotation.PostExchange
 
-@ClientProfile("webservice")
+@ClientProfile("webservice-client")
 interface CoreUserClient {
   @PostExchange
   fun getUsersByField(
+    @RequestParam wstoken: String,
     @RequestParam field: String,
     @PhpArray values: List<String>,
   ): List<MoodleUser>

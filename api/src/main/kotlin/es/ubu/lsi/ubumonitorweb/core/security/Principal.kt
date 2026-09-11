@@ -20,5 +20,5 @@ data class Principal(
   val siteName: String,
   val siteVersion: String?,
   val siteRelease: String?,
-  val siteTimezone: String,
+  val siteTimezone: String?,
 )
