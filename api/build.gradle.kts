@@ -38,6 +38,7 @@ dependencies {
   implementation(libs.woodstox.core)
   implementation(libs.springdoc.openapi)
   implementation(libs.kotlin.logging)
+  implementation(libs.jsoup)
 
   providedRuntime(libs.spring.boot.starter.tomcat.runtime)
   testImplementation(libs.kotlin.test.junit5)

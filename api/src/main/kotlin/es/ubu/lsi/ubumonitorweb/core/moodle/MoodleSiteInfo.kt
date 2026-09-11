@@ -6,7 +6,6 @@
 
 package es.ubu.lsi.ubumonitorweb.core.moodle
 
-import es.ubu.lsi.ubumonitorweb.core.security.Principal
 import es.ubu.lsi.ubumonitorweb.feature.resource.client.ResourceUrlConverter
 import tools.jackson.databind.annotation.JsonDeserialize
 
@@ -23,20 +22,4 @@ data class MoodleSiteInfo(
   val userissiteadmin: Boolean?,
   val version: String?,
   val release: String?,
-) {
-  fun toPrincipal() =
-    Principal(
-      id = userid,
-      username = username,
-      isAdmin = userissiteadmin == true,
-      language = lang,
-      firstName = firstname,
-      lastName = lastname,
-      fullName = fullname,
-      picture = userpictureurl,
-      siteUrl = siteurl,
-      siteName = sitename,
-      version = version,
-      release = release,
-    )
-}
+)

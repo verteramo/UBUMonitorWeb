@@ -14,6 +14,9 @@ import org.springframework.context.ApplicationContext
 import org.springframework.core.MethodParameter
 import org.springframework.core.annotation.AnnotatedElementUtils
 import org.springframework.stereotype.Component
+import org.springframework.web.bind.annotation.CookieValue
+import org.springframework.web.bind.annotation.RequestHeader
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.service.invoker.HttpRequestValues
 import org.springframework.web.util.DefaultUriBuilderFactory
 import java.lang.reflect.Method
@@ -27,10 +30,14 @@ class ClientProfileProcessor(
   private val request: HttpServletRequest,
   private val context: ApplicationContext,
 ) : HttpRequestValues.Processor {
-  /** Expresión regular para la identificación de cambios de minúscula a mayúscula. */
+  /**
+   * Expresión regular para la identificación de cambios de minúscula a mayúscula.
+   */
   private val regex = Regex("(?<=[a-z])(?=[A-Z])")
 
-  /** Nombre del perfil para el cliente. */
+  /**
+   * Nombre del perfil para el cliente.
+   */
   private val Method.profile: String
     get() =
       AnnotatedElementUtils
@@ -42,7 +49,27 @@ class ClientProfileProcessor(
           it.isNotBlank()
         } ?: declaringClass.simpleName.replace(regex, "-").lowercase()
 
-  /** Invocador del procesador. */
+  /**
+   * Resuelve el nombre que tendrá el parámetro una vez inyectado en la solicitud HTTP.
+   * Por ejemplo, si el parámetro estuviera anotado como:
+   *
+   * ```kotlin
+   * @RequestParam("httpParamName") paramName
+   * ```
+   */
+  private val MethodParameter.httpParamName: String?
+    get() =
+      getParameterAnnotation(RequestHeader::class.java)?.let {
+        it.name.ifEmpty { it.value }.ifEmpty { parameterName }
+      } ?: getParameterAnnotation(RequestParam::class.java)?.let {
+        it.name.ifEmpty { it.value }.ifEmpty { parameterName }
+      } ?: getParameterAnnotation(CookieValue::class.java)?.let {
+        it.name.ifEmpty { it.value }.ifEmpty { parameterName }
+      } ?: parameterName
+
+  /**
+   * Invocador del procesador.
+   */
   override fun process(
     method: Method,
     parameters: Array<out MethodParameter>,
@@ -74,12 +101,15 @@ class ClientProfileProcessor(
         profile.params.forEach(requestValues::addRequestParameter)
 
         // Paso de valores dinámicos (resueltos por providers) a la solicitud saliente
+        // Si existe algún parámetro con el mismo nombre se le da prioridad y nunca se ejecuta el provider
         profile.providers.forEach { (name, provider) ->
-          context.getBean(provider.bean).invoke(clientPropertyProviderContext).toString().also {
-            when (provider.location) {
-              Location.HEADER -> requestValues.addHeader(name, it)
-              Location.COOKIE -> requestValues.addCookie(name, it)
-              Location.PARAM -> requestValues.addRequestParameter(name, it)
+          if (parameters.none { it.httpParamName == name }) {
+            context.getBean(provider.bean).invoke(clientPropertyProviderContext).toString().also {
+              when (provider.location) {
+                Location.HEADER -> requestValues.addHeader(name, it)
+                Location.COOKIE -> requestValues.addCookie(name, it)
+                Location.PARAM -> requestValues.addRequestParameter(name, it)
+              }
             }
           }
         }

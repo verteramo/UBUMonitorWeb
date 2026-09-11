@@ -6,18 +6,10 @@
 
 package es.ubu.lsi.ubumonitorweb.core.moodle
 
-import es.ubu.lsi.ubumonitorweb.core.security.Credentials
-
 /**
  * Objeto de credenciales de Moodle.
  */
 data class MoodleToken(
   val token: String,
   val privatetoken: String,
-) {
-  fun toCredentials() =
-    Credentials(
-      token = token,
-      privateToken = privatetoken,
-    )
-}
+)

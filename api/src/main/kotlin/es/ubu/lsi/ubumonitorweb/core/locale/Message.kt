@@ -33,7 +33,8 @@ enum class Message(
   ERROR_HTTP_MISSING_HEADER("error.http.missing_header"),
   ERROR_PROFILE_INHERIT("error.profile_inherit"),
   ERROR_PROFILE_NOT_FOUND("error.profile_not_found"),
-  ERROR_BAD_MOODLE("error.bad_moodle"), ;
+  ERROR_BAD_MOODLE("error.bad_moodle"),
+  ERROR_INVALID_LOGIN("error.invalid_login"), ;
 
   /**
    * Obtiene un mensaje localizado y parametrizado desde el proveedor de mensajes.

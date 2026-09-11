@@ -32,6 +32,7 @@ data class MoodleUser(
   val descriptionformat: Int?,
   val city: String?,
   val country: String?,
+  val timezone: String?,
   @JsonDeserialize(converter = ResourceUrlConverter::class) val profileimageurl: String?,
   val customfields: List<MoodleCustomField>?,
   val groups: List<MoodleGroup>?,

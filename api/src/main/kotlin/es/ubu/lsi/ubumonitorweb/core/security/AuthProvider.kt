@@ -6,43 +6,39 @@
 
 package es.ubu.lsi.ubumonitorweb.core.security
 
-import es.ubu.lsi.ubumonitorweb.core.moodle.SiteInfoClient
-import es.ubu.lsi.ubumonitorweb.core.moodle.TokenClient
+import es.ubu.lsi.ubumonitorweb.core.moodle.AuthService
 import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
-import org.springframework.web.service.registry.ImportHttpServices
 
 /**
  * Proveedor de autenticación que provee objetos [Authentication].
  */
 @Component
-@ImportHttpServices(TokenClient::class, SiteInfoClient::class)
 class AuthProvider(
-  private val tokenClient: TokenClient,
-  private val siteInfoClient: SiteInfoClient,
+  private val authService: AuthService,
 ) : AuthenticationProvider {
-  /** Indica el tipo de token soportado por este [AuthenticationProvider]. */
+  /**
+   * Indica el tipo de token de Spring Security soportado por este [AuthenticationProvider].
+   * No tiene nada que ver con el token de Moodle, es un método interno de Spring Security.
+   */
   override fun supports(authentication: Class<*>): Boolean =
     UsernamePasswordAuthenticationToken::class.java.isAssignableFrom(authentication)
 
   /**
-   * Realiza todo el procedimiento de autenticación necesario para obtener
-   * las credenciales, el principal, y construir y devolver el AuthenticationToken.
-   *
-   * @param authentication Token sin autenticar.
-   * @return Token autenticado.
+   * Realiza el procedimiento de autenticación.
    */
   override fun authenticate(authentication: Authentication): Authentication? {
-    val credentials =
-      tokenClient
-        .getToken(authentication.name, authentication.credentials.toString())
-        .toCredentials()
+    // Obtención del usuario/contraseña desde el token de Spring Security
+    val username = authentication.name
+    val password = authentication.credentials.toString()
 
-    val principal = siteInfoClient.getSiteInfo(credentials.token).toPrincipal()
+    val credentials = authService.getCredentials(username, password)
+    val principal = authService.getPrincipal(credentials)
 
+    // Construcción y retorno del objeto Authentication para Spring Security
     return object : AbstractAuthenticationToken(emptyList()) {
       init {
         super.isAuthenticated = true

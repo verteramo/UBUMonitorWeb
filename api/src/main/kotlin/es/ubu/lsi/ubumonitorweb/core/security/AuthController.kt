@@ -34,10 +34,14 @@ class AuthController(
     val password: String,
   )
 
-  /** Repositorio de la sesión HTTP en memoria. */
+  /**
+   * Repositorio de la sesión HTTP en memoria.
+   */
   private val session = HttpSessionSecurityContextRepository()
 
-  /** Inicio de sesión. */
+  /**
+   * Realiza el inicio de sesión.
+   */
   @PostMapping("/login")
   fun login(
     request: HttpServletRequest,
@@ -64,7 +68,9 @@ class AuthController(
         it.principal as Principal
       }
 
-  /** Realiza el cierre de sesión. */
+  /**
+   * Realiza el cierre de sesión.
+   */
   @GetMapping("/logout")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   fun logout(

@@ -14,8 +14,8 @@ import org.springframework.web.service.annotation.PostExchange
  * Cliente HTTP que obtiene los datos del principal, se hidrata desde el perfil `principal` definido
  * en el fichero de configuración de la aplicación.
  */
-@ClientProfile
-interface SiteInfoClient {
+@ClientProfile("webservice-client")
+interface CoreWebserviceClient {
   /** Solicitud de los datos del principal. */
   @PostExchange
   fun getSiteInfo(
