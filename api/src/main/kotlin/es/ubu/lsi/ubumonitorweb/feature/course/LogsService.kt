@@ -57,9 +57,7 @@ class LogsService(
     val dateTimeFormatter = baseDateTimeFormatter.withZone(zone)
 
     return reportLogClient.getLogs(id).first().map { entry ->
-      intRegex.findAll(entry.description).map { it.value.toInt() }.toList().let { values ->
-        entry.toLogEntry(dateTimeFormatter).also { logMapper.compose(it, values) }
-      }
+      entry.toLogEntry(dateTimeFormatter).also { logMapper.compose(it, entry.description) }
     }
   }
 }

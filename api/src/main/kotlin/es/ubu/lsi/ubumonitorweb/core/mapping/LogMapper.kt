@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service
 import tools.jackson.core.type.TypeReference
 import tools.jackson.databind.ObjectMapper
 import tools.jackson.dataformat.yaml.YAMLFactory
+import java.util.regex.Pattern
 
 /**
  * Mapper que, a partir de un fichero de configuración YAML, es capaz de parsear y construir objetos de log
@@ -19,7 +20,8 @@ import tools.jackson.dataformat.yaml.YAMLFactory
  * El fichero de configuración YAML tiene la siguiente estructura:
  * ```yaml
  * Logs:
- *   Log report viewed: [userId, courseId]
+ *   Log report viewed:
+ *     - The user with id '(?<userId>-?\d+)' viewed the log report for the course with id '(?<courseId>-?\d+)'.
  * ```
  *
  * Suponiendo el siguiente registro de log en JSON:
@@ -55,14 +57,37 @@ import tools.jackson.dataformat.yaml.YAMLFactory
  */
 @Service
 class LogMapper {
+  class LogTemplate(
+    patternString: String,
+  ) {
+    private val pattern = Pattern.compile(patternString, Pattern.CASE_INSENSITIVE)
+
+    fun matchAndExtract(description: String): Map<String, Int>? {
+      val matcher = pattern.matcher(description)
+      if (!matcher.find()) return null
+
+      // Extraemos directamente usando las keys dinámicas del motor de Java
+      return pattern
+        .namedGroups()
+        .keys
+        .mapNotNull { name ->
+          matcher.group(name)?.toIntOrNull()?.let { name to it }
+        }.toMap()
+    }
+  }
+
   /**
    * Configuración de mappings del fichero YAML.
    */
-  private val mappings: Map<String, Map<String, List<String>>> by lazy {
+  private val mappings: Map<String, Map<String, List<LogTemplate>>> by lazy {
     val mapper = ObjectMapper(YAMLFactory())
 
-    javaClass.getResourceAsStream("/logs-mappings.yaml").let {
-      mapper.readValue(it, object : TypeReference<Map<String, Map<String, List<String>>>>() {})
+    javaClass.getResourceAsStream("/alt-logs-mappings.yaml").use { stream ->
+      val rawMappings = mapper.readValue(stream, object : TypeReference<Map<String, Map<String, List<String>>>>() {})
+
+      rawMappings.mapValues { (_, events) ->
+        events.mapValues { (_, templates) -> templates.map(::LogTemplate) }
+      }
     }
   }
 
@@ -71,11 +96,11 @@ class LogMapper {
    */
   fun compose(
     entry: LogEntry,
-    values: List<Int>,
+    description: String,
   ) {
-    val events = mappings[entry.component] ?: emptyMap()
-    val fields = events[entry.event] ?: emptyList()
-
-    entry.attributes.putAll(fields zip values)
+    mappings[entry.component]
+      ?.get(entry.event)
+      ?.firstNotNullOfOrNull { it.matchAndExtract(description) }
+      ?.let { entry.attributes.putAll(it) }
   }
 }

@@ -1,0 +1,478 @@
+Activity report:
+  Activity report viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the outline activity report for the course with id '(?<courseId>-?\d+)'.
+  Outline report viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the outline report for the user with id '(?<targetUserId>-?\d+)' for the course with id '(?<courseId>-?\d+)'.
+Assignment:
+  A submission has been submitted.:
+    - The user with id '(?<userId>-?\d+)' has submitted the submission with id '(?<submissionId>-?\d+)' for the assignment with course module id '(?<moduleId>-?\d+)'.
+  All the submissions are being downloaded.:
+    - The user with id '(?<userId>-?\d+)' has downloaded all the submissions for the assignment with course module id '(?<moduleId>-?\d+)'.
+  An extension has been granted.:
+    - The user with id '(?<userId>-?\d+)' has granted an extension for the user with id '(?<targetUserId>-?\d+)' for the assignment with course module id '(?<moduleId>-?\d+)'.
+  Assignment override created:
+    - The user with id '(?<userId>-?\d+)' created the override with id '(?<overrideId>-?\d+)' for the assign with course module id '(?<moduleId>-?\d+)' for the user with id '(?<targetUserId>-?\d+)'.
+  Course module instance list viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the instance list for the module '.*?' in the course with id '(?<courseId>-?\d+)'.
+  Course module viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the '.*?' activity with course module id '(?<moduleId>-?\d+)'.
+  Grading form viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the grading form for the user with id '(?<targetUserId>-?\d+)' for the assignment with course module id '(?<moduleId>-?\d+)'.
+  Grading table viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the grading table for the assignment with course module id '(?<moduleId>-?\d+)'.
+  Submission confirmation form viewed.:
+    - The user with id '(?<userId>-?\d+)' viewed the submission confirmation form for the assignment with course module id '(?<moduleId>-?\d+)'.
+  Submission form viewed.:
+    - The user with id '(?<userId>-?\d+)' viewed their submission for the assignment with course module id '(?<moduleId>-?\d+)'.
+    - The user with id '(?<userId>-?\d+)' viewed the submission form for the user with id '(?<targetUserId>-?\d+)' for the assignment with course module id '(?<moduleId>-?\d+)'.
+  Submission viewed.:
+    - The user with id '(?<userId>-?\d+)' viewed the submission for the user with id '(?<targetUserId>-?\d+)' for the assignment with course module id '(?<moduleId>-?\d+)'.
+  The state of the workflow has been updated.:
+    - The user with id '(?<userId>-?\d+)' has set the workflow state of the user with id '(?<targetUserId>-?\d+)' to the state '.*?' for the assignment with course module id '(?<moduleId>-?\d+)'.
+  The status of the submission has been viewed.:
+    - The user with id '(?<userId>-?\d+)' has viewed the submission status page for the assignment with course module id '(?<moduleId>-?\d+)'.
+  The submission has been graded.:
+    - The user with id '(?<userId>-?\d+)' has graded the submission '(?<submissionId>-?\d+)' for the user with id '(?<targetUserId>-?\d+)' for the assignment with course module id '(?<moduleId>-?\d+)'.
+  The submissions have been unlocked for a user.:
+    - The user with id '(?<userId>-?\d+)' locked the submission for the user with id '(?<targetUserId>-?\d+)' for the assignment with course module id '(?<moduleId>-?\d+)'.
+  The user has accepted the statement of the submission.:
+    - The user with id '(?<userId>-?\d+)' has accepted the statement of the submission with id '(?<submissionId>-?\d+)' for the assignment with course module id '(?<moduleId>-?\d+)'.
+Book:
+  Chapter created:
+    - The user with id '(?<userId>-?\d+)' created the chapter with id '(?<chapterId>-?\d+)' for the book with course module id '(?<moduleId>-?\d+)'.
+  Chapter updated:
+    - The user with id '(?<userId>-?\d+)' updated the chapter with id '(?<chapterId>-?\d+)' for the book with course module id '(?<moduleId>-?\d+)'.
+  Chapter viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the chapter with id '(?<chapterId>-?\d+)' for the book with course module id '(?<moduleId>-?\d+)'.
+  Course module viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the '.*?' activity with course module id '(?<moduleId>-?\d+)'.
+Book printing:
+  Book printed:
+    - The user with id '(?<userId>-?\d+)' has printed the book with course module id '(?<moduleId>-?\d+)'.
+Chat:
+  Course module instance list viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the instance list for the module '.*?' in the course with id '(?<courseId>-?\d+)'.
+  Course module viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the '.*?' activity with course module id '(?<moduleId>-?\d+)'.
+  Message sent:
+    - "The user with id '(?<userId>-?\\d+)' has sent a message in the chat with course module id\n            '(?<moduleId>-?\\d+)'."
+  Sessions viewed:
+    - "The user with id '(?<userId>-?\\d+)' has viewed the sessions of the chat with course module id\n            '(?<moduleId>-?\\d+)'."
+Choice:
+  Choice answer added:
+    - "The user with id '(?<userId>-?\\d+)' has added the option with id '(?<optionId>-?\\d+)' for the\n            user with id '(?<targetUserId>-?\\d+)' from the choice activity with course module id '(?<moduleId>-?\\d+)'."
+  Choice made:
+    - "The user with id '(?<userId>-?\\d+)' made the choice with id '(?<choiceId>-?\\d+)' in the choice activity\n            with course module id '(?<moduleId>-?\\d+)'."
+  Choice report viewed:
+    - "The user with id '(?<userId>-?\\d+)' has viewed the report for the choice activity with course module id\n            '(?<moduleId>-?\\d+)'"
+  Course module viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the '.*?' activity with course module id '(?<moduleId>-?\d+)'.
+Comments:
+  Comment created:
+    - The user with id '(?<userId>-?\d+)' added the comment with id '(?<commentId>-?\d+)' to the '.*?' with course module id '(?<moduleId>-?\d+)'.
+  Comment deleted:
+    - The user with id '(?<userId>-?\d+)' deleted the comment with id '(?<commentId>-?\d+)' from the '.*?' with course module id '(?<moduleId>-?\d+)'.
+Course completion:
+  Completion report viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the completion report for the course with id '(?<courseId>-?\d+)'.
+Course participation:
+  Participation report viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the course participation report for the course with id '(?<courseId>-?\d+)'.
+Database:
+  Course module viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the '.*?' activity with course module id '(?<moduleId>-?\d+)'.
+  Field created:
+    - The user with id '(?<userId>-?\d+)' created the field with id '(?<fieldId>-?\d+)' for the data activity with course module id '(?<moduleId>-?\d+)'.
+  Field updated:
+    - The user with id '(?<userId>-?\d+)' updated the field with id '(?<fieldId>-?\d+)' in the data activity with course module id '(?<moduleId>-?\d+)'.
+  Record created:
+    - The user with id '(?<userId>-?\d+)' created the data record with id '(?<recordId>-?\d+)' for the data activity with course module id '(?<moduleId>-?\d+)'.
+  Record deleted:
+    - The user with id '(?<userId>-?\d+)' deleted the data record with id '(?<recordId>-?\d+)' in the data activity with course module id '(?<moduleId>-?\d+)'.
+  Record updated:
+    - The user with id '(?<userId>-?\d+)' updated the data record with id '(?<recordId>-?\d+)' in the data activity with course module id '(?<moduleId>-?\d+)'.
+  Template updated:
+    - The user with id '(?<userId>-?\d+)' updated the template for the data activity with course module id '(?<moduleId>-?\d+)'.
+  Templates viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the template for the data activity with course module id '(?<moduleId>-?\d+)'.
+Event monitor:
+  Rule created:
+    - The user with id '(?<userId>-?\d+)' created the event monitor rule with id '(?<eventId>-?\d+)'.
+  Subscription created:
+    - The user with id '(?<userId>-?\d+)' created the event monitor subscription with id '(?<subscriptionId>-?\d+)'.
+Excel spreadsheet:
+  XLS grade exported:
+    - The user with id '(?<userId>-?\d+)' exported grades using the xls export in the gradebook.
+External tool:
+  Course module viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the '.*?' activity with course module id '(?<moduleId>-?\d+)'.
+Feedback:
+  Course module instance list viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the instance list for the module '.*?' in the course with id '(?<courseId>-?\d+)'.
+  Course module viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the '.*?' activity with course module id '(?<moduleId>-?\d+)'.
+File:
+  Course module viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the '.*?' activity with course module id '(?<moduleId>-?\d+)'.
+File submissions:
+  A file has been uploaded.:
+    - The user with id '(?<userId>-?\d+)' has uploaded a file to the submission with id '(?<submissionId>-?\d+)' in the assignment activity with course module id '(?<moduleId>-?\d+)'.
+  Submission created.:
+    - The user with id '(?<userId>-?\d+)' created a file submission and uploaded '(?<fileCount>-?\d+)' file/s in the assignment with course module id '(?<moduleId>-?\d+)'.
+    - The user with id '(?<userId>-?\d+)' created a file submission and uploaded '(?<fileCount>-?\d+)' file/s in the assignment with course module id '(?<moduleId>-?\d+)' for the group with id '(?<groupId>-?\d+)'.
+  Submission updated.:
+    - The user with id '(?<userId>-?\d+)' updated a file submission and uploaded '(?<fileCount>-?\d+)' file/s in the assignment with course module id '(?<moduleId>-?\d+)'.
+    - The user with id '(?<userId>-?\d+)' updated a file submission and uploaded '(?<fileCount>-?\d+)' file/s in the assignment with course module id '(?<moduleId>-?\d+)' for the group with id '(?<groupId>-?\d+)'.
+Folder:
+  Course module viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the '.*?' activity with course module id '(?<moduleId>-?\d+)'.
+  Folder updated:
+    - The user with id '(?<userId>-?\d+)' updated the folder activity with course module id '(?<moduleId>-?\d+)'.
+  Zip archive of folder downloaded:
+    - The user with id '(?<userId>-?\d+)' downloaded a zip archive containing all the files from the folder activity with course module id '(?<moduleId>-?\d+)'.
+Forum:
+  Course module instance list viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the instance list for the module '.*?' in the course with id '(?<courseId>-?\d+)'.
+  Course module viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the '.*?' activity with course module id '(?<moduleId>-?\d+)'.
+  Course searched:
+    - The user with id '(?<userId>-?\d+)' has searched the course with id '(?<courseId>-?\d+)' for forum posts containing ".*?".
+  Discussion created:
+    - The user with id '(?<userId>-?\d+)' has created the discussion with id '(?<discussionId>-?\d+)' in the forum with course module id '(?<moduleId>-?\d+)'.
+  Discussion deleted:
+    - The user with id '(?<userId>-?\d+)' has deleted the discussion with id '(?<discussionId>-?\d+)' in the forum with course module id '(?<moduleId>-?\d+)'.
+  Discussion moved:
+    - The user with id '(?<userId>-?\d+)' has moved the discussion with id '(?<discussionId>-?\d+)' from the forum with id '(?<forumId>-?\d+)' to the forum with id '(?<forumId2>-?\d+)'.
+  Discussion pinned:
+    - The user (?<userId>-?\d+) has pinned the discussion (?<discussionId>-?\d+) in the forum (?<forumId>-?\d+)
+  Discussion subscription created:
+    - The user with id '(?<userId>-?\d+)' subscribed the user with id '(?<targetUserId>-?\d+)' to the discussion  with id '(-?\d+)' in the forum with the course module id '(?<moduleId>-?\d+)'.
+  Discussion subscription deleted:
+    - The user with id '(?<userId>-?\d+)' unsubscribed the user with id '(?<targetUserId>-?\d+)' from the discussion  with id '(-?\d+)' in the forum with the course module id '(?<moduleId>-?\d+)'.
+  Discussion viewed:
+    - The user with id '(?<userId>-?\d+)' has viewed the discussion with id '(?<discussionId>-?\d+)' in the forum with course module id '(?<moduleId>-?\d+)'.
+  Post created:
+    - The user with id '(?<userId>-?\d+)' has created the post with id '(?<postId>-?\d+)' in the discussion with id '(?<discussionId>-?\d+)' in the forum with course module id '(?<moduleId>-?\d+)'.
+  Post deleted:
+    - The user with id '(?<userId>-?\d+)' has deleted the post with id '(?<postId>-?\d+)' in the discussion with id '(?<discussionId>-?\d+)' in the forum with course module id '(?<moduleId>-?\d+)'.
+  Post updated:
+    - The user with id '(?<userId>-?\d+)' has updated the post with id '(?<postId>-?\d+)' in the discussion with id '(?<discussionId>-?\d+)' in the forum with course module id '(?<moduleId>-?\d+)'.
+  Some content has been posted.:
+    - The user with id '(?<userId>-?\d+)' has posted content in the forum post with id '(?<postId>-?\d+)' in the discussion '(?<discussionId>-?\d+)' located in the forum with course module id '(?<moduleId>-?\d+)'.
+  Subscribers viewed:
+    - The user with id '(?<userId>-?\d+)' has viewed the subscribers list for the forum with course module id '(?<moduleId>-?\d+)'.
+  Subscription created:
+    - The user with id '(?<userId>-?\d+)' subscribed the user with id '(?<targetUserId>-?\d+)' to the forum with course module id '(?<moduleId>-?\d+)'.
+  Subscription deleted:
+    - The user with id '(?<userId>-?\d+)' unsubscribed the user with id '(?<targetUserId>-?\d+)' to the forum with course module id '(?<moduleId>-?\d+)'.
+  User report viewed:
+    - The user with id '(?<userId>-?\d+)' has viewed the user report for the user with id '(?<targetUserId>-?\d+)' in the course with id '(?<courseId>-?\d+)' with viewing mode '.*?'.
+Glossary:
+  Category has been created:
+    - The user with id '(?<userId>-?\d+)' created the category with id '(?<categoryId>-?\d+)' for the glossary activity with course module id '(?<moduleId>-?\d+)'.
+  Course module viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the '.*?' activity with course module id '(?<moduleId>-?\d+)'.
+  Entry has been created:
+    - The user with id '(?<userId>-?\d+)' has created the glossary entry with id '(?<glossaryEntryId>-?\d+)' for the glossary activity with course module id '(?<moduleId>-?\d+)'.
+  Entry has been updated:
+    - The user with id '(?<userId>-?\d+)' has updated the glossary entry with id '(?<glossaryEntryId>-?\d+)' in the glossary activity with course module id '(?<moduleId>-?\d+)'.
+Grader report:
+  Grader report viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the grader report in the gradebook.
+HotPot module:
+  Course module viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the '.*?' activity with course module id '(?<moduleId>-?\d+)'.
+  HotPot attempt started:
+    - The user with id "(?<userId>-?\d+)" started an attempt at the ".*?" activity with course module id "(?<moduleId>-?\d+)"
+  HotPot attempt submitted:
+    - The user with id "(?<userId>-?\d+)" submitted an attempt at the ".*?" activity with course module id "(?<moduleId>-?\d+)"
+IMS content package:
+  Course module viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the '.*?' activity with course module id '(?<moduleId>-?\d+)'.
+Journal:
+  Course module viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the '.*?' activity with course module id '(?<moduleId>-?\d+)'.
+  Journal entries viewed:
+    - "The user with id '(?<userId>-?\\d+)' has viewed the entries for the journal activity with the course module id\n            '(?<moduleId>-?\\d+)'"
+  Journal entry created:
+    - The user with id '(?<userId>-?\d+)' has created an entry for the journal activity with the course module id '(?<moduleId>-?\d+)'
+  Journal entry updated:
+    - The user with id '(?<userId>-?\d+)' has updated an entry for the journal activity with the course module id '(?<moduleId>-?\d+)'
+Lesson:
+  Content page viewed:
+    - The user with id '(?<userId>-?\d+)' has viewed the content page with id '(?<pageId>-?\d+)' in the lesson activity with course module id '(?<moduleId>-?\d+)'.
+  Course module instance list viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the instance list for the module '.*?' in the course with id '(?<courseId>-?\d+)'.
+  Course module viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the '.*?' activity with course module id '(?<moduleId>-?\d+)'.
+  Lesson ended:
+    - The user with id '(?<userId>-?\d+)' ended the lesson with course module id '(?<moduleId>-?\d+)'.
+  Lesson started:
+    - The user with id '(?<userId>-?\d+)' started the lesson with course module id '(?<moduleId>-?\d+)'.
+  Page created:
+    - The user with id '(?<userId>-?\d+)' has created a Matching page with the id '(?<pageId>-?\d+)' in the lesson activity with course module id '(?<moduleId>-?\d+)'.
+    - The user with id '(?<userId>-?\d+)' has created a Content page with the id '(?<pageId>-?\d+)' in the lesson activity with course module id '(?<moduleId>-?\d+)'.
+  Page moved:
+    - The user with id '(?<userId>-?\d+)' has moved a Content page with the id '(?<pageId>-?\d+)' to the slot after the page with the id '(?<pageId2>-?\d+)' and before the page with the id '(?<pageId3>-?\d+)' in the lesson activity with course module id '(?<moduleId>-?\d+)'.
+  Page updated:
+    - The user with id '(?<userId>-?\d+)' has updated the Content page with the id '(?<pageId>-?\d+)' in the lesson activity with course module id '(?<moduleId>-?\d+)'.
+    - The user with id '(?<userId>-?\d+)' has updated the True/false page with the id '(?<pageId>-?\d+)' in the lesson activity with course module id '(?<moduleId>-?\d+)'.
+  Question answered:
+    - The user with id '(?<userId>-?\d+)' has answered the Matching question with id '(?<questionId>-?\d+)' in the lesson activity with course module id '(?<moduleId>-?\d+)'.
+  Question viewed:
+    - The user with id '(?<userId>-?\d+)' has viewed the Multichoice question with id '(?<questionId>-?\d+)' in the lesson activity with course module id '(?<moduleId>-?\d+)'.
+    - The user with id '(?<userId>-?\d+)' has viewed the Matching question with id '(?<questionId>-?\d+)' in the lesson activity with course module id '(?<moduleId>-?\d+)'.
+Live logs:
+  Live log report viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the live log report for the course with id '(?<courseId>-?\d+)'.
+Logs:
+  Log report viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the log report for the course with id '(?<courseId>-?\d+)'.
+  User log report viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the user log report for the user with id '(?<targetUserId>-?\d+)'.
+Online text submissions:
+  An online text has been uploaded.:
+    - The user with id '(?<userId>-?\d+)' has saved an online text submission with id '(?<submissionId>-?\d+)' in the assignment activity with course module id '(?<moduleId>-?\d+)'.
+  Submission created.:
+    - The user with id '(?<userId>-?\d+)' created an online text submission with '(?<wordCount>-?\d+)' words in the assignment with course module id '(?<moduleId>-?\d+)'.
+    - The user with id '(?<userId>-?\d+)' created an online text submission with '(?<wordCount>-?\d+)' words in the assignment with course module id '(?<moduleId>-?\d+)' for the group with id '(?<groupId>-?\d+)'.
+  Submission updated.:
+    - The user with id '(?<userId>-?\d+)' updated an online text submission with '(?<wordCount>-?\d+)' words in the assignment with course module id '(?<moduleId>-?\d+)' for the group with id '(?<groupId>-?\d+)'.
+OpenDocument spreadsheet:
+  OpenDocument grade exported:
+    - The user with id '(?<userId>-?\d+)' exported grades using the ods export in the gradebook.
+Outcomes report:
+  Grade outcomes report viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the outcomes report in the gradebook.
+Overview report:
+  Grade overview report viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the overview report in the gradebook.
+Page:
+  Course module viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the '.*?' activity with course module id '(?<moduleId>-?\d+)'.
+Quiz:
+  Course module instance list viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the instance list for the module '.*?' in the course with id '(?<courseId>-?\d+)'.
+  Course module viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the '.*?' activity with course module id '(?<moduleId>-?\d+)'.
+  Question manually graded:
+    - The user with id '(?<userId>-?\d+)' manually graded the question with id '(?<questionId>-?\d+)' for the attempt with id '(?<attemptId>-?\d+)' for the quiz with course module id '(?<moduleId>-?\d+)'.
+  Quiz attempt abandoned:
+    - The user with id '(?<userId>-?\d+)' has had their attempt with id '(?<attemptId>-?\d+)' marked as abandoned for the quiz with course module id '(?<moduleId>-?\d+)'.
+  Quiz attempt deleted:
+    - The user with id '(?<userId>-?\d+)' deleted the attempt with id '(?<attemptId>-?\d+)' belonging to the quiz with course module id '(?<moduleId>-?\d+)' for the user with id '(?<targetUserId>-?\d+)'.
+  Quiz attempt preview started:
+    - The user with id '(?<userId>-?\d+)' has had their attempt with id '(?<attemptId>-?\d+)' previewed by the user with id '(?<targetUserId>-?\d+)' for the quiz with course module id '(?<moduleId>-?\d+)'.
+  Quiz attempt reviewed:
+    - The user with id '(?<userId>-?\d+)' has had their attempt with id '(?<attemptId>-?\d+)' reviewed by the user with id '(?<targetUserId>-?\d+)' for the quiz with course module id '(?<moduleId>-?\d+)'.
+  Quiz attempt started:
+    - The user with id '(?<userId>-?\d+)' has started the attempt with id '(?<attemptId>-?\d+)' for the quiz with course module id '(?<moduleId>-?\d+)'.
+  Quiz attempt submitted:
+    - The user with id '(?<userId>-?\d+)' has submitted the attempt with id '(?<attemptId>-?\d+)' for the quiz with course module id '(?<moduleId>-?\d+)'.
+  Quiz attempt summary viewed:
+    - The user with id '(?<userId>-?\d+)' has viewed the summary for the attempt with id '(?<attemptId>-?\d+)' belonging to the user with id '(?<targetUserId>-?\d+)' for the quiz with course module id '(?<moduleId>-?\d+)'.
+  Quiz attempt viewed:
+    - The user with id '(?<userId>-?\d+)' has viewed the attempt with id '(?<attemptId>-?\d+)' belonging to the user with id '(?<targetUserId>-?\d+)' for the quiz with course module id '(?<moduleId>-?\d+)'.
+  Quiz edit page viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the edit page for the quiz with course module id '(?<moduleId>-?\d+)'.
+  Quiz report viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the report '.*?' for the quiz with course module id '(?<moduleId>-?\d+)'.
+Recycle bin:
+  Item created:
+    - Item created with ID (?<itemId>-?\d+).
+  Item deleted:
+    - Item with ID (?<itemId>-?\d+) deleted.
+  Item restored:
+    - Item with ID (?<itemId>-?\d+) restored.
+SCORM package:
+  Course module viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the '.*?' activity with course module id '(?<moduleId>-?\d+)'.
+  Sco launched:
+    - The user with id '(?<userId>-?\d+)' launched the sco with id '(?<scoId>-?\d+)' for the scorm with course module id '(?<moduleId>-?\d+)'.
+  Submitted SCORM raw score:
+    - The user with the id '(?<userId>-?\d+)' submitted the element '.*?' with the value of '(?<scormValue>-?\d+)' for the attempt with the id '(?<attemptId>-?\d+)' for a scorm activity with the course module id '(?<moduleId>-?\d+)'.
+  Submitted SCORM status:
+    - The user with the id '(?<userId>-?\d+)' submitted the element '.*?' with the value of '.*?' for the attempt with the id '(?<attemptId>-?\d+)' for a scorm activity with the course module id '(?<moduleId>-?\d+)'.
+Single view:
+  Grade single view report viewed.:
+    - The user with id '(?<userId>-?\d+)' viewed the singleview report in the gradebook.
+Statistics:
+  User statistics report viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the user statistics report for the user with id '(?<targetUserId>-?\d+)'.
+Submission comments:
+  Comment created:
+    - The user with id '(?<userId>-?\d+)' added the comment with id '(?<commentId>-?\d+)' to the submission with id '(?<submissionId>-?\d+)' for the assignment with course module id '(?<moduleId>-?\d+)'.
+Survey:
+  Course module viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the '.*?' activity with course module id '(?<moduleId>-?\d+)'.
+  Survey report viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the report for the survey with course module id '(?<moduleId>-?\d+)'.
+  Survey response submitted:
+    - The user with id '(?<userId>-?\d+)' submitted a response for the survey with course module id '(?<moduleId>-?\d+)'.
+System:
+  Badge listing viewed:
+    - The user with id '(?<userId>-?\d+)' has viewed the list of available badges for the course with the id '(?<courseId>-?\d+)'.
+  Calendar event created:
+    - The user with id '(?<userId>-?\d+)' created the event '.*?' with id '(?<eventId>-?\d+)'.
+  Calendar event deleted:
+    - The user with id '(?<userId>-?\d+)' deleted the event '.*?' with id '(?<eventId>-?\d+)'.
+  Calendar event updated:
+    - The user with id '(?<userId>-?\d+)' updated the event '.*?' with id '(?<eventId>-?\d+)'.
+  Calendar subscription updated:
+    - "User (?<userId>-?\\d+) has updated a calendar\n        subscription with id (?<subscriptionId>-?\\d+) of event type course."
+  Course activity completion updated:
+    - The user with id '(?<userId>-?\d+)' updated the completion state for the course module with id '(?<moduleId>-?\d+)' for the user with id '(?<targetUserId>-?\d+)'.
+  Course backup created:
+    - The user with id '(?<userId>-?\d+)' created a backup of the course with the id '(?<courseId>-?\d+)'.
+  Course completed:
+    - The user with id '(?<userId>-?\d+)' completed the course with id '(?<courseId>-?\d+)'.
+  Course completion updated:
+    - The user with id '(?<userId>-?\d+)' updated the requirements to complete the course with id '(?<courseId>-?\d+)'.
+  Course content deleted:
+    - The user with id '(?<userId>-?\d+)' deleted content from course with id '(?<courseId>-?\d+)'.
+  Course created:
+    - The user with id '(?<userId>-?\d+)' created the course with id '(?<courseId>-?\d+)'.
+  Course module created:
+    - The user with id '(?<userId>-?\d+)' created the '.*?' activity with course module id '(?<moduleId>-?\d+)'.
+  Course module deleted:
+    - The user with id '(?<userId>-?\d+)' deleted the '.*?' activity with course module id '(?<moduleId>-?\d+)'.
+  Course module instance list viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the list of resources in the course with id '(?<courseId>-?\d+)'.
+  Course module updated:
+    - The user with id '(?<userId>-?\d+)' updated the '.*?' activity with course module id '(?<moduleId>-?\d+)'.
+  Course reset ended:
+    - The reset of the course with id '(?<courseId>-?\d+)' has ended.
+  Course reset started:
+    - The user with id '(?<userId>-?\d+)' started the reset of the course with id '(?<courseId>-?\d+)'.
+  Course restored:
+    - The user with id '(?<userId>-?\d+)' restored the course with id '(?<courseId>-?\d+)'.
+    - The user with id '(?<userId>-?\d+)' restored old course with id '(?<courseId>-?\d+)' to a new course with id '(?<courseId2>-?\d+)'.
+  Course section created:
+    - The user with id '(?<userId>-?\d+)' created section number '(?<sectionId>-?\d+)' for the course with id '(?<courseId>-?\d+)'
+  Course section deleted:
+    - The user with id '(?<userId>-?\d+)' deleted section number '(?<sectionId>-?\d+)' (section name '.*?') for the course with id '(?<courseId>-?\d+)'
+  Course section updated:
+    - The user with id '(?<userId>-?\d+)' updated section number '(?<sectionId>-?\d+)' for the course with id '(?<courseId>-?\d+)'
+  Course summary viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the course information for the course with id '(?<courseId>-?\d+)'.
+  Course updated:
+    - The user with id '(?<userId>-?\d+)' updated the course with id '(?<courseId>-?\d+)'.
+  Course user report viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the user report for the course with id '(?<courseId>-?\d+)' for user with id '(?<targetUserId>-?\d+)'.
+  Course viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the course with id '(?<courseId>-?\d+)'.
+    - The user with id '(?<userId>-?\d+)' viewed the section number '(?<sectionId>-?\d+)' of the course with id '(?<courseId>-?\d+)'.
+  Enrolment instance created:
+    - The user with id '(?<userId>-?\d+)' created the instance of enrolment method '.*?' with id '(?<enrolmentId>-?\d+)'.
+  Enrolment instance updated:
+    - The user with id '(?<userId>-?\d+)' updated the instance of enrolment method '.*?' with id '(?<enrolmentId>-?\d+)'.
+  Evidence created.:
+    - The user with id '(?<userId>-?\d+)' created an evidence with id '(?<evidenceId>-?\d+)'.
+  Grade deleted:
+    - The user with id '(?<userId>-?\d+)' deleted the grade with id '(?<gradeId>-?\d+)' for the user with id '(?<targetUserId>-?\d+)' for the grade item with id '(?<itemId>-?\d+)'.
+  Group assigned to grouping:
+    - The user with id '(?<userId>-?\d+)' assigned the group with id '(?<groupId>-?\d+)' to the grouping with id '(?<groupingId>-?\d+)'.
+  Group created:
+    - The user with id '(?<userId>-?\d+)' created the group with id '(?<groupId>-?\d+)'.
+  Group deleted:
+    - The user with id '(?<userId>-?\d+)' deleted the group with id '(?<groupId>-?\d+)'.
+  Group member added:
+    - The user with id '(?<userId>-?\d+)' added the user with id '(?<targetUserId>-?\d+)' to the group with id '(?<groupId>-?\d+)'.
+  Group member removed:
+    - The user with id '(?<userId>-?\d+)' removed the user with id '(?<targetUserId>-?\d+)' to the group with id '(?<groupId>-?\d+)'.
+  Group updated:
+    - The user with id '(?<userId>-?\d+)' updated the group with id '(?<groupId>-?\d+)'.
+  Grouping deleted:
+    - The user with id '(?<userId>-?\d+)' deleted the grouping with id '(?<groupingId>-?\d+)'.
+  Note created:
+    - The user with id '(?<userId>-?\d+)' created the note with id '(?<noteId>-?\d+)' for the user with id '(?<targetUserId>-?\d+)'.
+  Notes viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the notes for the course with id '(?<courseId>-?\d+)'.
+  Question category created:
+    - The user with id '(?<userId>-?\d+)' created the question category with id '(?<questionCategoryId>-?\d+)'.
+  Recent activity viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the recent activity report in the course with id '(?<courseId>-?\d+)'.
+  Role assigned:
+    - The user with id '(?<userId>-?\d+)' assigned the role with id '(?<roleId>-?\d+)' to the user with id '(?<targetUserId>-?\d+)'.
+  Role capabilities updated:
+    - The user with id '(?<userId>-?\d+)' updated the capabilities for the role with id '(?<roleId>-?\d+)'.
+  Role unassigned:
+    - The user with id '(?<userId>-?\d+)' unassigned the role with id '(?<roleId>-?\d+)' from the user with id '(?<targetUserId>-?\d+)'.
+  Tag added to an item:
+    - The user with id '(?<userId>-?\d+)' added the tag with id '(?<tagId>-?\d+)' to the item type '.*?' with id '(-?\d+)'.
+  User competency rated in course.:
+    - The user with id '(?<userId>-?\d+)' rated the user competency with id '(?<userCompetencyId>-?\d+)' with '(-?\d+)' rating in course with id '(?<courseId>-?\d+)'
+  User competency viewed in a course.:
+    - The user with id '(?<userId>-?\d+)' viewed the user course competency with id '(?<userCompetencyId>-?\d+)' in course with id '(?<courseId>-?\d+)'
+  User enrolled in course:
+    - The user with id '(?<userId>-?\d+)' enrolled the user with id '(?<targetUserId>-?\d+)' using the enrolment method '.*?' in the course with id '(?<courseId>-?\d+)'.
+  User graded:
+    - The user with id '(?<userId>-?\d+)' updated the grade with id '(?<gradeId>-?\d+)' for the user with id '(?<targetUserId>-?\d+)' for the grade item with id '(?<itemId>-?\d+)'.
+  User list viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the list of users in the course with id '(?<courseId>-?\d+)'.
+  User profile viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the profile for the user with id '(?<targetUserId>-?\d+)' in the course with id '(?<courseId>-?\d+)'.
+  User unenrolled from course:
+    - The user with id '(?<userId>-?\d+)' unenrolled the user with id '(?<targetUserId>-?\d+)' using the enrolment method '.*?' from the course with id '(?<courseId>-?\d+)'.
+Turnitin Assignment 2:
+  Add Submission:
+    - Entrega del usuario enviada a Turnitin '.*?'
+    - El usuario ha añadido una entrega '.*?'
+  List Submissions:
+    - 'El usuario ha visto la lista de entregas al curso: (?<courseId>-?\d+)'
+    - 'El usuario vio la bandeja de entrada de su entrega en el curso: (?<courseId>-?\d+)'
+URL:
+  Course module viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the '.*?' activity with course module id '(?<moduleId>-?\d+)'.
+User report:
+  Grade user report viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the user report in the gradebook.
+User tours:
+  Step shown:
+    - The user with id '(?<userId>-?\d+)' has viewed the tour with id '(?<tourId>-?\d+)' at step index '(?<stepIndex>-?\d+)' (id '(?<stepId>-?\d+)') on the page with URL '.*?'.
+  Tour ended:
+    - The user with id '(?<userId>-?\d+)' has ended the tour with id '(?<tourId>-?\d+)' at step index '(?<stepIndex>-?\d+)' (id '(?<stepId>-?\d+)') on the page with URL '.*?'.
+  Tour started:
+    - The user with id '(?<userId>-?\d+)' has started the tour with id '(?<tourId>-?\d+)' on the page with URL '.*?'.
+Wiki:
+  Comment created:
+    - The user with id '(?<userId>-?\d+)' added a comment with id '(?<commentId>-?\d+)' on the page with id '(?<pageId>-?\d+)' for the wiki with course module id '(?<moduleId>-?\d+)'.
+  Comments viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the comments for the page with id '(?<pageId>-?\d+)' for the wiki with course module id '(?<moduleId>-?\d+)'.
+  Course module viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the '.*?' activity with course module id '(?<moduleId>-?\d+)'.
+  Wiki history viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the history for the page with id '(?<pageId>-?\d+)' for the wiki with course module id '(?<moduleId>-?\d+)'.
+  Wiki page created:
+    - The user with id '(?<userId>-?\d+)' created the page with id '(?<pageId>-?\d+)' for the wiki with course module id '(?<moduleId>-?\d+)'.
+  Wiki page locks deleted:
+    - The user with id '(?<userId>-?\d+)' deleted locks for the page with id '(?<pageId>-?\d+)' for the wiki with course module id '(?<moduleId>-?\d+)'.
+  Wiki page map viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the wiki map for the page with id '(?<pageId>-?\d+)' for the wiki with course module id '(?<moduleId>-?\d+)'.
+  Wiki page updated:
+    - The user with id '(?<userId>-?\d+)' updated the page with id '(?<pageId>-?\d+)' for the wiki with course module id '(?<moduleId>-?\d+)'.
+  Wiki page viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the page with id '(?<pageId>-?\d+)' for the wiki with course module id '(?<moduleId>-?\d+)'.
+Workshop:
+  A submission has been uploaded.:
+    - The user with id '(?<userId>-?\d+)' has uploaded the submission with id '(?<submissionId>-?\d+)' to the workshop activity with course module id '(?<moduleId>-?\d+)'.
+  Assessment evaluated:
+    - The user with id '(?<userId>-?\d+)' has had their assessment attempt evaluated for the workshop with course module id '(?<moduleId>-?\d+)'.
+  Course module instance list viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the instance list for the module '.*?' in the course with id '(?<courseId>-?\d+)'.
+  Course module viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the '.*?' activity with course module id '(?<moduleId>-?\d+)'.
+  Phase switched:
+    - The user with id '(?<userId>-?\d+)' has switched the phase of the workshop with course module id '(?<moduleId>-?\d+)' to '(-?\d+)'.
+  Submission assessed:
+    - The user with id '(?<userId>-?\d+)' assessed the submission with id '(?<submissionId>-?\d+)' for the user with id '(?<targetUserId>-?\d+)' in the workshop with course module id '(?<moduleId>-?\d+)'.
+  Submission created:
+    - The user with id '(?<userId>-?\d+)' created the submission with id of '(?<submissionId>-?\d+)' for the workshop with course module id '(?<moduleId>-?\d+)'.
+  Submission deleted:
+    - The user with id '(?<userId>-?\d+)' deleted the submission with id '(?<submissionId>-?\d+)' for the workshop with course module id '(?<moduleId>-?\d+)'.
+  Submission re-assessed:
+    - The user with id '(?<userId>-?\d+)' reassessed the submission with id '(?<submissionId>-?\d+)' for the user with id '(?<targetUserId>-?\d+)' in the workshop with course module id '(?<moduleId>-?\d+)'.
+  Submission updated:
+    - The user with id '(?<userId>-?\d+)' updated the submission with id '(?<submissionId>-?\d+)' for the workshop with course module id '(?<moduleId>-?\d+)'.
+  Submission viewed:
+    - The user with id '(?<userId>-?\d+)' viewed the submission with id '(?<submissionId>-?\d+)' for the workshop with course module id '(?<moduleId>-?\d+)'.
