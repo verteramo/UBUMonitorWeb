@@ -6,9 +6,11 @@
 
 import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
+import { CalendarEvent } from '@core/models/calendar-event';
 import { Completion } from '@core/models/completion';
 import { Course } from '@core/models/course';
 import { Grade } from '@core/models/grade';
+import { LogEntry } from '@core/models/log-entry';
 import { Section } from '@core/models/section';
 import { User } from '@core/models/user';
 import { environment as env } from '@env/environment';
@@ -75,12 +77,21 @@ export class CourseService {
   }
 
   /**
+   * Obtiene la lista de logs de un curso determinado.
+   * @param id ID del curso.
+   * @returns Lista de logs del curso.
+   */
+  getLogs(id: number): Observable<LogEntry[]> {
+    return this.getData<LogEntry[]>(`${id}/logs`);
+  }
+
+  /**
    * Obtiene la lista de eventos de un curso determinado.
    * @param id ID del curso.
    * @returns Lista de eventos del curso.
    */
-  getEvents(id: number): Observable<Event[]> {
-    return this.getData<Event[]>(`${id}/events`);
+  getCalendarEvents(id: number): Observable<CalendarEvent[]> {
+    return this.getData<CalendarEvent[]>(`${id}/events`);
   }
 
   /**

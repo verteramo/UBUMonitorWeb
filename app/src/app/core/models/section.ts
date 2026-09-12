@@ -11,6 +11,6 @@ export type Section = {
   name: string | null;
   order: number | null;
   isVisible: boolean;
-  isUserVisble: boolean;
+  isUserVisible: boolean;
   modules: Module[];
 };

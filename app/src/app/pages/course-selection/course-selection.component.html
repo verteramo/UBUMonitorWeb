@@ -7,7 +7,7 @@ Este fichero forma parte de UBUMonitorWeb.
 <div class="container">
   <header>
     <div class="user-info">
-      <h1>Course</h1>
+      <h1 i18n>Course selection</h1>
       <h2>{{ session.currentPrincipal().fullName }}</h2>
       <a [href]="session.currentPrincipal().siteUrl" target="_blank">
         {{ session.currentPrincipal().siteName }}
@@ -103,7 +103,7 @@ Este fichero forma parte de UBUMonitorWeb.
         <mat-checkbox i18n>Grades</mat-checkbox>
         <mat-checkbox i18n>Activity completion</mat-checkbox>
       </div>
-      <button mat-flat-button color="primary" [disabled]="form.courseId().controlValue() === null">
+      <button mat-flat-button color="primary" [disabled]="form.courseId().controlValue() === null" i18n>
         Select
       </button>
     </footer>

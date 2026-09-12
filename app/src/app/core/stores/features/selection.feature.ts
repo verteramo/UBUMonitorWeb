@@ -25,7 +25,12 @@ type SelectionState<T> = {
  *
  * @param items Colección de ítems que gestionará la selección.
  */
-export function withSelection<T>(items: Signal<T[]>) {
+export function withSelection<S, T>(collection: Signal<S[]>, mapFn: (value: S) => T) {
+  /**
+   * Items seleccionables.
+   */
+  const items = computed(() => collection().map(mapFn));
+
   /**
    * Estado inicial.
    */

@@ -7,6 +7,7 @@
 import { inject } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { Grade } from '@core/models/grade';
+import { LogEntry } from '@core/models/log-entry';
 import { Section } from '@core/models/section';
 import { User } from '@core/models/user';
 import { CourseService } from '@core/services/course.service';
@@ -20,9 +21,9 @@ import { SessionStore } from './session.store';
  */
 export type DatasetState = {
   users: User[];
+  logs: LogEntry[];
   sections: Section[];
   grades: Grade[];
-  events: Event[];
 };
 
 /**
@@ -30,9 +31,9 @@ export type DatasetState = {
  */
 const initialState: DatasetState = {
   users: [],
+  logs: [],
   sections: [],
   grades: [],
-  events: [],
 };
 
 /**
@@ -58,9 +59,9 @@ export const DatasetStore = signalStore(
           course &&
           forkJoin({
             users: service.getUsers(course.id),
+            logs: service.getLogs(course.id),
             sections: service.getSections(course.id),
             grades: service.getGrades(course.id),
-            events: service.getEvents(course.id),
           })
         );
       },

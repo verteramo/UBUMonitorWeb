@@ -10,12 +10,12 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { DatasetStore } from '@core/stores/dataset.store';
 import { SessionStore } from '@core/stores/session.store';
+import { openFilePicker, saveFilePicker, UmwDatasetType } from '@core/utils/window.utils';
 import { DashboardStore } from './dashboard.store';
-import { WorkspaceTabStore } from './main/workspace-tab.store';
 import { WorkspaceComponent } from './main/workspace.component';
 import { NavbarComponent } from './navbar.component';
-import { ActivityPanelComponent } from './sidenav/panel-activities/activity-panel.component';
-import { UserPanelComponent } from './sidenav/panel-users/user-panel.component';
+import { ActivityPanelComponent } from './sidenav/activities/panel.component';
+import { UserPanelComponent } from './sidenav/users/panel.component';
 import { StatusbarComponent } from './statusbar.component';
 
 /**
@@ -44,12 +44,29 @@ export class DashboardComponent {
   readonly store = inject(DashboardStore);
   readonly session = inject(SessionStore);
   readonly dataset = inject(DatasetStore);
-  readonly tabStore = inject(WorkspaceTabStore);
 
   onOpenSettings(): void {
     // this.#dialog.open(SettingsComponent, {
     //   width: '1200px',
     //   height: '90vh',
     // })
+  }
+
+  async exportDataset(): Promise<void> {
+    try {
+      const data = this.dataset.encrypt();
+      await saveFilePicker({ suggestedName: 'dataset.umw', types: [UmwDatasetType] }, data);
+    } catch (e) {
+      console.error('Error writing file', e);
+    }
+  }
+
+  async importDataset(): Promise<void> {
+    try {
+      const data = await openFilePicker({ types: [UmwDatasetType] });
+      this.dataset.decrypt(data);
+    } catch (e) {
+      console.error('Error reading file', e);
+    }
   }
 }

@@ -5,6 +5,8 @@
     (logout)="session.logout()"
     (toggleSidebar)="drawer.toggle()"
     (openSettings)="onOpenSettings()"
+    (exportDataset)="exportDataset()"
+    (importDataset)="importDataset()"
   />
 </header>
 
@@ -13,46 +15,28 @@
     <mat-sidenav
       #drawer
       mode="side"
-      [opened]="store.sidenav()"
-      (openedChange)="store.setSidenav($event)"
+      [opened]="store.sidenavOpened()"
+      (openedChange)="store.setSidenavOpened($event)"
     >
-      <div class="sidebar-component">
-        <mat-accordion multi="true">
-          @if (!['events'].includes(tabStore.tab())) {
-            <mat-expansion-panel
-              [expanded]="store.expanded()('users')"
-              (opened)="store.expand('users', true)"
-              (closed)="store.expand('users', false)"
-            >
-              <mat-expansion-panel-header>
-                <mat-panel-title i18n>Users</mat-panel-title>
-              </mat-expansion-panel-header>
-              <div class="expansion-panel-body">
-                <app-users-panel />
-              </div>
-            </mat-expansion-panel>
-          }
+      <mat-accordion multi="true">
+        @if (store.isPanelVisible('users')) {
+          <app-users-panel
+            [expanded]="store.isPanelExpanded('users')"
+            (expandedChange)="store.setPanelExpanded('users', $event)"
+          />
+        }
 
-          @if (!['risk', 'enrollment'].includes(tabStore.tab())) {
-            <mat-expansion-panel
-              [expanded]="store.expanded()('activities')"
-              (opened)="store.expand('activities', true)"
-              (closed)="store.expand('activities', false)"
-            >
-              <mat-expansion-panel-header>
-                <mat-panel-title i18n>Activities</mat-panel-title>
-              </mat-expansion-panel-header>
-              <div class="expansion-panel-body">
-                <app-activity-panel />
-              </div>
-            </mat-expansion-panel>
-          }
-        </mat-accordion>
-      </div>
+        @if (store.isPanelVisible('activities')) {
+          <app-activity-panel
+            [expanded]="store.isPanelExpanded('activities')"
+            (expandedChange)="store.setPanelExpanded('activities', $event)"
+          />
+        }
+      </mat-accordion>
     </mat-sidenav>
 
     <mat-sidenav-content>
-      <app-workspace />
+      <app-workspace [tabIndex]="store.tabIndex()" (tabIndexChange)="store.setTabIndex($event)" />
     </mat-sidenav-content>
   </mat-sidenav-container>
 </main>

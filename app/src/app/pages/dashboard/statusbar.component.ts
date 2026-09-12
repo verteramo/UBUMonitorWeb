@@ -49,7 +49,7 @@ import { TimeAgoPipe } from '../../core/pipes/time-ago.pipe';
   template: `
     <div class="status-left">
       <span class="host-name">
-        <a matButton target="_blank" [href]="principal().siteUrl" [title]="principal().release">
+        <a matButton target="_blank" [href]="principal().siteUrl" [title]="principal().siteRelease">
           {{ principal().siteName }}
         </a>
       </span>

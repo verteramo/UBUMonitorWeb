@@ -7,10 +7,16 @@
 import { Component, input, output } from '@angular/core';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatIcon } from '@angular/material/icon';
-import { Section } from '@core/models/section';
+
+type Item = {
+  id: number;
+  name: string | null;
+  isVisible: boolean;
+  isUserVisible: boolean;
+}
 
 @Component({
-  selector: 'app-section-article',
+  selector: 'app-item',
   imports: [MatIcon, MatCheckbox],
   styles: `
     article {
@@ -54,25 +60,25 @@ import { Section } from '@core/models/section';
     }
   `,
   template: `
-    <article [class.selected]="selected()" (click)="toggle.emit(section().id)">
+    <article [class.selected]="selected()" (click)="toggle.emit(item().id)">
       <mat-checkbox [checked]="selected()" style="pointer-events: none"></mat-checkbox>
 
-      <span [title]="section().name">{{ section().name }}</span>
+      <span [title]="item().name">{{ item().name }}</span>
 
-      @if (section().isVisible) {
-        <mat-icon title="Visible">visibility</mat-icon>
-      } @else {
-        <mat-icon title="Oculto">visibility_off</mat-icon>
+      @if (item().isUserVisible) {
+        <mat-icon i18n-title title="Public">public</mat-icon>
       }
 
-      @if (section().isUserVisble) {
-        <mat-icon title="Público">public</mat-icon>
+      @if (item().isVisible) {
+        <mat-icon i18n-title title="Visible">visibility</mat-icon>
+      } @else {
+        <mat-icon i18n-title title="Hidden">visibility_off</mat-icon>
       }
     </article>
   `,
 })
-export default class SectionArticleComponent {
-  section = input.required<Section>();
+export default class ItemComponent {
+  item = input.required<Item>();
   selected = input<boolean>();
   toggle = output<number>();
 }

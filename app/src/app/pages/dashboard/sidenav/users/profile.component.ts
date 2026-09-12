@@ -141,6 +141,6 @@ import { TimeAgoPipe } from '@core/pipes/time-ago.pipe';
     </mat-dialog-actions>
   `,
 })
-export class UserDialogComponent {
+export class ProfileComponent {
   user = inject<User>(MAT_DIALOG_DATA);
 }

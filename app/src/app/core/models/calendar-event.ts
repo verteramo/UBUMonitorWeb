@@ -4,7 +4,7 @@
  * @author Marcelo Verteramo Pérsico
  */
 
-export type Event = {
+export type CalendarEvent = {
   id: number;
   name: string;
   description: string | null;

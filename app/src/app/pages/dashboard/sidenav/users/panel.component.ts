@@ -1,32 +1,23 @@
-/*
- * Este fichero forma parte de UBUMonitorWeb.
- *
- * @author Marcelo Verteramo Pérsico
- */
-
-import { Component, inject } from '@angular/core';
+import { Component, inject, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { User } from '@core/models/user';
-import { UsersStore } from '@pages/dashboard/sidenav/panel-users/users.store';
+import { ExpansionPanelComponent } from '@shared/components/expansion-panel.component';
 import { FilterControlComponent } from '@shared/components/filter-control.component';
-import { ProgressSpinnerComponent } from '@shared/components/progress-spinner.component';
-import { UserArticleComponent } from './user-article.component';
-import { UserDialogComponent } from './user-dialog.component';
+import { ProfileComponent } from './profile.component';
+import { UserComponent } from './user.component';
+import { UsersStore } from './users.store';
 
-/** Componente del panel de usuarios. */
 @Component({
   selector: 'app-users-panel',
   imports: [
     FormsModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatProgressSpinnerModule,
-    UserArticleComponent,
-    ProgressSpinnerComponent,
+    ExpansionPanelComponent,
+    UserComponent,
     FilterControlComponent,
   ],
   styles: `
@@ -34,21 +25,17 @@ import { UserDialogComponent } from './user-dialog.component';
       display: flex;
       flex-direction: column;
       flex: 1;
-      height: 100%;
       min-height: 0;
       overflow: hidden;
     }
-
-    main {
-      flex: 1;
-      min-height: 0;
-      overflow-y: auto;
-    }
   `,
   template: `
-    @if (store.isLoading()) {
-      <app-progress-spinner i18n>Loading users...</app-progress-spinner>
-    } @else {
+    <app-expansion-panel
+      i18n-title
+      title="Users"
+      [(expanded)]="expanded"
+      [loading]="store.isLoading()"
+    >
       <header>
         <app-filter-control
           i18n-placeholder
@@ -95,8 +82,8 @@ import { UserDialogComponent } from './user-dialog.component';
       </header>
 
       <main>
-        @for (user of store.filteredUsers(); track user.id) {
-          <app-user-article
+        @for (user of store.filteredItems(); track user.id) {
+          <app-user
             [user]="user"
             [selected]="store.isSelected(user.id)"
             (toggle)="store.toggleItem($event)"
@@ -104,16 +91,16 @@ import { UserDialogComponent } from './user-dialog.component';
           />
         }
       </main>
-    }
+    </app-expansion-panel>
   `,
   providers: [UsersStore],
 })
 export class UserPanelComponent {
+  readonly expanded = model.required<boolean>();
   readonly dialog = inject(MatDialog);
   readonly store = inject(UsersStore);
 
-  /** Abre el diálogo con el perfil de un usuario. */
   openProfile(user: User) {
-    this.dialog.open(UserDialogComponent, { data: user });
+    this.dialog.open(ProfileComponent, { data: user });
   }
 }

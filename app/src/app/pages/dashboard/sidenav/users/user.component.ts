@@ -12,7 +12,7 @@ import { User } from '@core/models/user';
 import { TimeAgoPipe } from '@core/pipes/time-ago.pipe';
 
 @Component({
-  selector: 'app-user-article',
+  selector: 'app-user',
   imports: [MatIconModule, MatCheckboxModule, TimeAgoPipe, MatButtonModule],
   styles: `
     article {
@@ -125,7 +125,7 @@ import { TimeAgoPipe } from '@core/pipes/time-ago.pipe';
     </article>
   `,
 })
-export class UserArticleComponent {
+export class UserComponent {
   user = input.required<User>();
   selected = input<boolean>();
 

@@ -21,7 +21,9 @@ import { ProgressSpinnerComponent } from '@shared/components/progress-spinner.co
 import { ThemeToggleComponent } from '@shared/components/theme-toggle.component';
 import { CourseSelectionStore } from './course-selection.store';
 
-/** Componente de selección de cursos. */
+/**
+ * Componente de selección de cursos.
+ */
 @Component({
   selector: 'app-course-selection',
   standalone: true,

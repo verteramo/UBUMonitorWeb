@@ -5,54 +5,56 @@
  */
 
 import { computed } from '@angular/core';
+import { User } from '@core/models/user';
 import { withDatasetSlice } from '@core/stores/features/dataset-slice.feature';
 import { withFilters } from '@core/stores/features/filters.feature';
+import { withSelection } from '@core/stores/features/selection.feature';
 import { withSettingsSlice } from '@core/stores/features/settings-slice.feature';
 import { signalStore, withComputed, withFeature } from '@ngrx/signals';
-import { withSelection } from '../../../../core/stores/features/selection.feature';
 
 /**
  * Propiedades de estado del panel de usuarios.
  */
-type UsersState = {
+type Filters = {
   term: string;
   roles: string[];
   groups: string[];
 };
 
-/**
- * Estado inicial.
- */
-const initialState: UsersState = {
-  term: '',
-  roles: [],
-  groups: [],
+type TransformedFilters = {
+  term: string;
+  roles: Set<string>;
+  groups: Set<string>;
 };
 
 /**
  * Store de las propiedades de estado del panel de usuarios.
  */
 export const UsersStore = signalStore(
-  withFilters(initialState, ['roles', 'groups']),
-  withComputed(({ term, roles, groups }) => ({
-    _normTerm: computed(() => term().trim().toLowerCase()),
-    _rolesSet: computed(() => new Set(roles())),
-    _groupsSet: computed(() => new Set(groups())),
-  })),
   withDatasetSlice('users'),
-  withComputed(({ users, _normTerm: term, _rolesSet: roles, _groupsSet: groups }) => ({
-    /**
-     * Usuarios filtrados por término de búsqueda, roles y grupos.
-     */
-    filteredUsers: computed(() => {
-      return users().filter((user) => {
-        const matchesTerm = !term() || user.fullName.toLowerCase().includes(term());
-        const matchesRoles = !roles().size || user.roles.some((r) => roles().has(r));
-        const matchesGroups = !groups().size || user.groups.some((g) => groups().has(g));
-        return matchesTerm && matchesRoles && matchesGroups;
-      });
+  withFeature(({ users }) =>
+    withFilters<User, Filters, TransformedFilters>({
+      filters: { term: '', roles: [], groups: [] },
+      transformFn: ({ term, roles, groups }) => ({
+        term: term.trim().toLowerCase(),
+        roles: new Set(roles),
+        groups: new Set(groups),
+      }),
+      items: users,
+      filterFn: ({ term, roles, groups }, user) => {
+        return (
+          (!term || user.fullName.toLowerCase().includes(term)) &&
+          (!roles.size || user.roles.some((role) => roles.has(role))) &&
+          (!groups.size || user.groups.some((group) => groups.has(group)))
+        );
+      },
+      sortFn: (a, b) => {
+        return a.fullName.localeCompare(b.fullName);
+      },
+      countableFilters: ['roles', 'groups'],
     }),
-
+  ),
+  withComputed(({ users }) => ({
     /**
      * Roles disponibles.
      */
@@ -76,8 +78,6 @@ export const UsersStore = signalStore(
   /**
    * Habilitación de la funcionalidad de selección para el store.
    */
-  withFeature(({ filteredUsers }) =>
-    withSelection(computed(() => filteredUsers().map(({ id }) => id))),
-  ),
+  withFeature(({ filteredItems }) => withSelection(filteredItems, (user) => user.id)),
   withSettingsSlice('users'),
 );

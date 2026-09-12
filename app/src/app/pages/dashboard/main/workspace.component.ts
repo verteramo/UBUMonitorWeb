@@ -1,36 +1,42 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
+import { ChangeDetectionStrategy, Component, model } from '@angular/core';
 import { MatTabsModule } from '@angular/material/tabs';
-import { WorkspaceTab, WorkspaceTabStore } from './workspace-tab.store';
 
 @Component({
   selector: 'app-workspace',
   standalone: true,
   imports: [MatTabsModule],
-  styles: ``,
+  styles: `
+    ::ng-deep .mat-mdc-tab {
+      min-width: 0 !important;
+      padding: 0 8px !important;
+    }
+
+    ::ng-deep .mdc-tab__text-label {
+      font-size: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  `,
   template: `
-    <mat-tab-group (selectedIndexChange)="tabStore.setTab(tabs[$event])" animationDuration="0ms">
-      <mat-tab label="Visual Analysis">
-      </mat-tab>
-      <mat-tab label="Compare">
-      </mat-tab>
-      <mat-tab label="Forums">
-      </mat-tab>
-      <mat-tab label="Dropout Risk">
-      </mat-tab>
-      <mat-tab label="Enrollment">
-      </mat-tab>
-      <mat-tab label="Events">
-      </mat-tab>
-      <mat-tab label="Clustering">
-      </mat-tab>
+    <mat-tab-group [(selectedIndex)]="tabIndex" animationDuration="0ms">
+      <mat-tab i18n-label label="Visual Analysis"> </mat-tab>
+      <mat-tab i18n-label label="Compare"> </mat-tab>
+      <mat-tab i18n-label label="Forums"> </mat-tab>
+      <mat-tab i18n-label label="Dropout Risk"> </mat-tab>
+      <mat-tab i18n-label label="Enrollment"> </mat-tab>
+      <mat-tab i18n-label label="Events"> </mat-tab>
+      <mat-tab i18n-label label="Clustering"> </mat-tab>
     </mat-tab-group>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WorkspaceComponent {
-  readonly tabStore = inject(WorkspaceTabStore);
-
-  readonly tabs: WorkspaceTab[] = [
-    'visual', 'compare', 'forums', 'risk', 'enrollment', 'events', 'clustering'
-  ];
+  readonly tabIndex = model.required<number>();
 }
