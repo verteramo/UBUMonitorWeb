@@ -4,7 +4,7 @@
  * @author Marcelo Verteramo Pérsico
  */
 
-package es.ubu.lsi.ubumonitorweb.moodle.client
+package es.ubu.lsi.ubumonitorweb.core.client
 
 import tools.jackson.databind.util.StdConverter
 

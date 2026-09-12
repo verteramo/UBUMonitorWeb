@@ -1,15 +1,23 @@
-package es.ubu.lsi.ubumonitorweb.core.moodle
+package es.ubu.lsi.ubumonitorweb.core.security
 
 import es.ubu.lsi.ubumonitorweb.core.locale.Message
-import es.ubu.lsi.ubumonitorweb.core.security.Credentials
-import es.ubu.lsi.ubumonitorweb.core.security.Principal
-import io.github.oshai.kotlinlogging.KotlinLogging
+import es.ubu.lsi.ubumonitorweb.domain.Credentials
+import es.ubu.lsi.ubumonitorweb.domain.Principal
+import es.ubu.lsi.ubumonitorweb.moodle.client.CoreUserClient
+import es.ubu.lsi.ubumonitorweb.moodle.client.CoreWebserviceClient
+import es.ubu.lsi.ubumonitorweb.moodle.client.LoginClient
+import es.ubu.lsi.ubumonitorweb.moodle.client.TokenClient
+import es.ubu.lsi.ubumonitorweb.moodle.client.UserEditClient
+import es.ubu.lsi.ubumonitorweb.moodle.dto.MoodleSiteInfo
+import es.ubu.lsi.ubumonitorweb.moodle.dto.MoodleToken
 import org.jsoup.Jsoup
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.web.service.registry.ImportHttpServices
+import java.time.ZoneId
+import java.time.ZoneOffset
 
 /**
  * Servicio de autenticación que realiza todas las consultas necesarias a los distintos endpoints de Moodle para
@@ -30,8 +38,6 @@ class AuthService(
   private val coreUserClient: CoreUserClient,
   private val userEditClient: UserEditClient,
 ) {
-  private val logger = KotlinLogging.logger {}
-
   /**
    * Mapea un token de Moodle, junto con la 'sesskey' y la cookie de sesión a un objeto Credentials.
    */
@@ -49,8 +55,8 @@ class AuthService(
    * Mapea los datos del Principal.
    */
   private fun MoodleSiteInfo.toPrincipal(
-    timezone: String?,
-    siteTimezone: String?,
+    timezone: ZoneId,
+    siteTimezone: ZoneId,
   ) = Principal(
     id = userid,
     username = username,
@@ -89,7 +95,9 @@ class AuthService(
     get() =
       body?.let {
         Regex("sesskey=(\\w+)").find(it)?.groupValues?.get(1)
-          ?: Regex("\"sesskey\":\"(\\w+)\"").find(it)?.groupValues?.get(1)
+          ?: Regex("\"sesskey\":\"(\\w+)\"").find(it)?.groupValues?.get(
+            1,
+          )
       }
 
   /**
@@ -125,27 +133,12 @@ class AuthService(
     val loginToken = getResponse.loginToken
     val sessionKey = getResponse.sessionKey
 
-    logger.debug {
-      "GET call:\n" +
-        "First cookie: $firstCookie\n" +
-        "loginToken: $loginToken\n" +
-        "sessionKey: $sessionKey\n\n"
-    }
-
-    if (firstCookie is String && loginToken is String && sessionKey is String) {
-      // Llamada POST al formulario de login
+    if (firstCookie is String && loginToken is String && sessionKey is String) { // Llamada POST al formulario de login
       // Se incluyen la cookie de sesión y el 'logintoken'
       val postResponse = loginClient.postCall(firstCookie, username, password, loginToken)
       // Se extrae la segunda cookie de sesión, se utiliza la primera como fallback
-      val sessionCookie = postResponse.moodleSessionCookie ?: firstCookie
-      // Solicitud del token de los webservices
+      val sessionCookie = postResponse.moodleSessionCookie ?: firstCookie // Solicitud del token de los webservices
       val moodleToken = tokenClient.getToken(username, password)
-
-      logger.debug {
-        "POST call:\n" +
-          "Definitive cookie: $sessionCookie\n" +
-          "moodleToken: $moodleToken\n"
-      }
 
       return moodleToken.toCredentials(sessionKey, sessionCookie)
     }
@@ -156,14 +149,28 @@ class AuthService(
   }
 
   /**
+   * Convierte una cadena en una zona horaria;
+   * Moodle utiliza "99" en la zona horaria del usuario cuando se utiliza la del servidor.
+   */
+  private fun String?.toZoneId(fallback: String): ZoneId =
+    if (!isNullOrBlank() && !equals("99")) {
+      runCatching { ZoneId.of(this) }.getOrNull() ?: runCatching {
+        ZoneId.ofOffset("UTC", ZoneOffset.ofTotalSeconds(toDouble().times(3600).toInt()))
+      }.getOrNull()
+    } else {
+      null
+    } ?: ZoneId.of(fallback)
+
+  /**
    * Realiza todo el procedimiento necesario para obtener los datos del principal.
    */
   fun getPrincipal(credentials: Credentials): Principal =
     credentials.run {
       val siteInfo = coreWebserviceClient.getSiteInfo(token)
       val userInfo = coreUserClient.getUsersByField(token, "username", listOf(siteInfo.username)).firstOrNull()
-      val siteTimezone = userEditClient.getEditForm(sessionCookie).siteTimezone
+      val siteTimezone = userEditClient.getEditForm(sessionCookie).siteTimezone.toZoneId("UTC")
+      val userTimezone = userInfo?.timezone.toZoneId(siteTimezone.id)
 
-      siteInfo.toPrincipal(userInfo?.timezone, siteTimezone)
+      siteInfo.toPrincipal(userTimezone, siteTimezone)
     }
 }

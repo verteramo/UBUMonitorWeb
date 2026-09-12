@@ -7,7 +7,7 @@
 package es.ubu.lsi.ubumonitorweb.core.client
 
 import es.ubu.lsi.ubumonitorweb.core.locale.Message
-import es.ubu.lsi.ubumonitorweb.core.security.Principal
+import es.ubu.lsi.ubumonitorweb.domain.Principal
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.context.SecurityContextHolder

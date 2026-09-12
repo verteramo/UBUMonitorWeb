@@ -6,7 +6,6 @@
 
 package es.ubu.lsi.ubumonitorweb.core.security
 
-import es.ubu.lsi.ubumonitorweb.core.moodle.AuthService
 import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken

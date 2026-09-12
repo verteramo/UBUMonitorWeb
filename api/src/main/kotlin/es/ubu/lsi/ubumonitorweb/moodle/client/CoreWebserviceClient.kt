@@ -4,9 +4,10 @@
  * @author Marcelo Verteramo Pérsico
  */
 
-package es.ubu.lsi.ubumonitorweb.core.moodle
+package es.ubu.lsi.ubumonitorweb.moodle.client
 
 import es.ubu.lsi.ubumonitorweb.core.client.ClientProfile
+import es.ubu.lsi.ubumonitorweb.moodle.dto.MoodleSiteInfo
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.service.annotation.PostExchange
 

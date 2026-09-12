@@ -4,7 +4,7 @@
  * @author Marcelo Verteramo Pérsico
  */
 
-package es.ubu.lsi.ubumonitorweb.core.moodle
+package es.ubu.lsi.ubumonitorweb.moodle.dto
 
 /**
  * Objeto de credenciales de Moodle.

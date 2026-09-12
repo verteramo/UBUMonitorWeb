@@ -4,7 +4,7 @@
  * @author Marcelo Verteramo Pérsico
  */
 
-package es.ubu.lsi.ubumonitorweb.core.security
+package es.ubu.lsi.ubumonitorweb.domain
 
 data class Credentials(
   val token: String,

@@ -1,6 +1,10 @@
-package es.ubu.lsi.ubumonitorweb.moodle.dto
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
 
-import es.ubu.lsi.ubumonitorweb.domain.LogEntry
+package es.ubu.lsi.ubumonitorweb.moodle.dto
 
 data class MoodleLogEntry(
   val time: String,
@@ -12,17 +16,4 @@ data class MoodleLogEntry(
   val description: String,
   val origin: String,
   val ipaddress: String,
-) {
-  fun toLogEntry() =
-    LogEntry(
-      time = time,
-      userFullName = userfullname,
-      affectedUser = affecteduser,
-      context = eventcontext,
-      component = component,
-      event = eventname,
-      description = description,
-      origin = origin,
-      ipAddress = ipaddress,
-    )
-}
+)

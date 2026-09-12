@@ -1,4 +1,10 @@
-package es.ubu.lsi.ubumonitorweb.core.moodle
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
+package es.ubu.lsi.ubumonitorweb.moodle.client
 
 import es.ubu.lsi.ubumonitorweb.core.client.ClientProfile
 import es.ubu.lsi.ubumonitorweb.core.client.PhpArray

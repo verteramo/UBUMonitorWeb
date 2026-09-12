@@ -1,13 +1,18 @@
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 package es.ubu.lsi.ubumonitorweb.domain
 
+import java.time.ZonedDateTime
+
 data class LogEntry(
-  val time: String,
-  val userFullName: String,
-  val affectedUser: String,
-  val context: String,
+  val datetime: ZonedDateTime,
   val component: String,
   val event: String,
-  val description: String,
   val origin: String,
   val ipAddress: String,
+  val attributes: MutableMap<String, Int> = mutableMapOf(),
 )

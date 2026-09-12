@@ -1,0 +1,114 @@
+GET https://school.moodledemo.net/login/index.php
+Accept: application/json, text/plain, */*
+User-Agent: bruno-runtime/4.1.0
+request-start-time: 1789139152578
+
+HTTP/1.1 200 OK
+date: Fri, 11 Sep 2026 15:05:55 GMT
+content-type: text/html; charset=utf-8
+transfer-encoding: chunked
+connection: keep-alive
+cache-control: no-store, no-cache, must-revalidate, no-transform
+content-language: en
+content-script-type: text/javascript
+content-style-type: text/css
+expires: Mon, 20 Aug 1969 09:23:00 GMT
+last-modified: Fri, 11 Sep 2026 15:05:55 GMT
+pragma: no-cache
+server: nginx
+set-cookie: MoodleSession=0877a0ac697ca8dbe6e14b643405928b; path=/; secure
+vary: Accept-Encoding
+x-ua-compatible: IE=edge
+request-duration: 317
+Request completed in 317 ms
+
+##############################################################################
+
+POST https://school.moodledemo.net/login/index.php
+username=teacher&password=moodle26&logintoken=sunLGXsWADEPldLCPeDwVhjjtCJZweIM
+Accept: application/json, text/plain, */*
+Content-Type: application/x-www-form-urlencoded
+User-Agent: bruno-runtime/4.1.0
+Cookie: MoodleSession=0877a0ac697ca8dbe6e14b643405928b
+request-start-time: 1789139200453
+
+HTTP/1.1 303 See Other
+date: Fri, 11 Sep 2026 15:06:43 GMT
+content-type: text/html; charset=utf-8
+transfer-encoding: chunked
+connection: keep-alive
+cache-control: no-store, no-cache, must-revalidate
+content-language: en
+expires: Thu, 19 Nov 1981 08:52:00 GMT
+location: https://school.moodledemo.net/login/index.php?testsession=13
+pragma: no-cache
+server: nginx
+set-cookie: MoodleSession=dfa30687fa50a8b1f0fafae5754fbc0a; path=/; secure,MOODLEID1_=deleted; expires=Thu, 01 Jan 1970 00:00:01 GMT; Max-Age=0; path=/; secure,MOODLEID1_=sodium%3APKrmYv2qP6tAMb4ZrNRuhI5vlJ29quEnem3%2BYkSENmTBPDTLbpwzSszQQYY5Ty4%3D; expires=Tue, 10 Nov 2026 15:06:43 GMT; Max-Age=5184000; path=/; secure
+x-redirect-by: Moodle
+
+GET https://school.moodledemo.net/login/index.php?testsession=13
+Accept: application/json, text/plain, */*
+Content-Type: undefined
+User-Agent: bruno-runtime/4.1.0
+Cookie: MoodleSession=dfa30687fa50a8b1f0fafae5754fbc0a; MOODLEID1_=sodium%3APKrmYv2qP6tAMb4ZrNRuhI5vlJ29quEnem3%2BYkSENmTBPDTLbpwzSszQQYY5Ty4%3D
+request-start-time: 1789139200789
+Accept-Encoding: gzip, compress, deflate, br
+
+HTTP/1.1 303 See Other
+date: Fri, 11 Sep 2026 15:06:43 GMT
+content-type: text/html; charset=utf-8
+transfer-encoding: chunked
+connection: keep-alive
+cache-control: no-store, no-cache, must-revalidate
+content-language: en
+expires: Thu, 19 Nov 1981 08:52:00 GMT
+location: https://school.moodledemo.net/my/
+pragma: no-cache
+server: nginx
+x-redirect-by: Moodle
+
+GET https://school.moodledemo.net/my/
+Accept: application/json, text/plain, */*
+Content-Type: undefined
+User-Agent: bruno-runtime/4.1.0
+Cookie: MoodleSession=dfa30687fa50a8b1f0fafae5754fbc0a; MOODLEID1_=sodium%3APKrmYv2qP6tAMb4ZrNRuhI5vlJ29quEnem3%2BYkSENmTBPDTLbpwzSszQQYY5Ty4%3D
+request-start-time: 1789139201094
+Accept-Encoding: gzip, compress, deflate, br
+
+HTTP/1.1 200 OK
+date: Fri, 11 Sep 2026 15:06:43 GMT
+content-type: text/html; charset=utf-8
+transfer-encoding: chunked
+connection: keep-alive
+cache-control: private, pre-check=0, post-check=0, max-age=0, no-transform
+content-language: en
+content-script-type: text/javascript
+content-style-type: text/css
+expires: 
+pragma: no-cache
+server: nginx
+vary: Accept-Encoding
+x-ua-compatible: IE=edge
+
+#####################################################################################################
+
+GET https://school.moodledemo.net/report/log/index.php?id=72&logreader=logstore_standard&download=json&chooselog=1&lang=en
+Accept: application/json, text/plain, */*
+Content-Type: application/x-www-form-urlencoded
+User-Agent: bruno-runtime/4.1.0
+Cookie: MoodleSession=dfa30687fa50a8b1f0fafae5754fbc0a
+request-start-time: 1789139236617
+
+HTTP/1.1 200 OK
+date: Fri, 11 Sep 2026 15:07:19 GMT
+content-type: application/json
+transfer-encoding: chunked
+connection: keep-alive
+cache-control: max-age=10
+content-disposition: attachment; filename="logs_Effective Memory Techniques_20260911-1607.json"
+expires: Thu, 01 Jan 1970 00:00:00 GMT
+pragma: 
+server: nginx
+vary: Accept-Encoding
+request-duration: 522
+Request completed in 522 ms

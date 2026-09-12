@@ -4,9 +4,9 @@
  * @author Marcelo Verteramo Pérsico
  */
 
-package es.ubu.lsi.ubumonitorweb.core.moodle
+package es.ubu.lsi.ubumonitorweb.moodle.dto
 
-import es.ubu.lsi.ubumonitorweb.moodle.client.ResourceUrlConverter
+import es.ubu.lsi.ubumonitorweb.core.client.ResourceUrlConverter
 import tools.jackson.databind.annotation.JsonDeserialize
 
 data class MoodleSiteInfo(

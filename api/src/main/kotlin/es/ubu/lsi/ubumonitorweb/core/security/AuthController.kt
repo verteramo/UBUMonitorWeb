@@ -6,6 +6,7 @@
 
 package es.ubu.lsi.ubumonitorweb.core.security
 
+import es.ubu.lsi.ubumonitorweb.domain.Principal
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpStatus

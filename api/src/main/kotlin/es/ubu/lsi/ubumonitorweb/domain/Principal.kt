@@ -4,7 +4,9 @@
  * @author Marcelo Verteramo Pérsico
  */
 
-package es.ubu.lsi.ubumonitorweb.core.security
+package es.ubu.lsi.ubumonitorweb.domain
+
+import java.time.ZoneId
 
 data class Principal(
   val id: Int,
@@ -14,11 +16,11 @@ data class Principal(
   val fullName: String,
   val picture: String?,
   val language: String,
-  val timezone: String?,
+  val timezone: ZoneId,
   val isAdmin: Boolean,
   val siteUrl: String,
   val siteName: String,
   val siteVersion: String?,
   val siteRelease: String?,
-  val siteTimezone: String?,
+  val siteTimezone: ZoneId,
 )
