@@ -20,7 +20,7 @@ referencesLog.setLogReferencessAttributes(log, ids);
 
 ### Alternativas para UBUMonitorWeb
 #### Enfoque "Strategy" (extracción posicional)
-En este caso se utiliza un enfoque conceptualmente similar al de la versión desktop, pero aprovechando la potencia de YAML para representar las "estrategias" de forma declarativa, y aprovechando que el consumidor de los objetos resultantes acepta un tipado dinámico. En lugar de creando clases, se utiliza un mapa YAML que vincula cada evento con los campos que contiene, en el mismo orden en que serán extraídos, por ejemplo:
+En este caso se utiliza un enfoque conceptualmente similar al de la versión desktop, pero aprovechando la potencia de YAML para representar las "estrategias" de forma declarativa, y aprovechando que el consumidor de los objetos resultantes acepta tipado dinámico (Typescript permite definir campos opcionales). En lugar de creando clases, se utiliza un mapa YAML que vincula cada evento con los campos que contiene, en el mismo orden en que serán extraídos, por ejemplo:
 ```yaml
 Book:
   Chapter viewed: [ userId, chapterId, moduleId ]
