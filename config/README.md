@@ -32,12 +32,18 @@ Choice:
 Luego la implementación se reduciría a cargar este mapa (`mappings`) en memoria y asignar los enteros extraídos a los nombres de campos definidos en el YAML:
 ```kotlin
 fun compose(
-  entry: LogEntry, // Entrada de log
-  values: List<Int>, // Lista de IDs (extracción ciega también)
+  // Entrada de log
+  entry: LogEntry,
+  // Lista de IDs (extracción ciega también)
+  // Ejemplo: [1, 75, 1129]
+  values: List<Int>,
   ) {
   val events = mappings[entry.component] ?: emptyMap()
+
+  // Ejemplo: [userId,chapterId,moduleId]
   val fields = events[entry.event] ?: emptyList()
 
+  // El método zip los empareja
   entry.attributes.putAll(fields zip values)
 }
 ```
