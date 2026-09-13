@@ -75,5 +75,6 @@ Se incluye este ejemplo porque se desconoce el motivo por el que se utilizó `'S
   - Si algún log no se ajusta al contrato, resulta en un objeto log sin atributos; mantenimiento de YAML más complejo.
 
 ### Conclusiones
+Strategy proporciona mejores resultados, su implementación es más sencilla, el YAML de configuración es más pequeño y sencillo de mantener.
 - En el directorio `src` paralelo a este fichero se encuentran los notebooks para convertir [Componentes y eventos.json](https://github.com/yjx0003/UBUMonitor/blob/c73e5576fc49531c2b1f2149d61425c4bb2a930c/python/Componentes%20y%20eventos.json#L38) en los YAML de configuración.
-- En la [rama `main` de UBUMonitorWeb](https://github.com/verteramo/UBUMonitorWeb/tree/main) se encuentra la implementación del enfoque Strategy; en la rama [`alt-#24`]
+- En la [rama `main` de UBUMonitorWeb](https://github.com/verteramo/UBUMonitorWeb/tree/main) se encuentra la implementación del enfoque Strategy; en la rama [`alt-#24`](https://github.com/verteramo/UBUMonitorWeb/tree/alt-%2324) la implementación del enfoque Template matching.
