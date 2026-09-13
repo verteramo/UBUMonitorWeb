@@ -48,6 +48,48 @@ fun compose(
 - **Desventajas**:
   - Frágil ante cambios silenciosos, si una actualización de Moodle añadiera un identificador extra en el texto de un evento, los valores se desplazarían y los datos se corromperían sin levantar excepciones, pero sin duda es un escenario poco probable que se solventaría con un ajuste en el YAML.
 
+Ejemplo de resultado:
+```json
+[
+  {
+    "datetime": "2026-09-13T11:14:53+01:00",
+    "component": "Forum",
+    "event": "Discussion viewed",
+    "origin": "web",
+    "ipAddress": "85.137.98.152",
+    "attributes": {
+      "userId": 1,
+      "discussionId": 241,
+      "moduleId": 1169
+    }
+  },
+  {
+    "datetime": "2026-09-13T11:11:30+01:00",
+    "component": "System",
+    "event": "Course activity completion updated",
+    "origin": "web",
+    "ipAddress": "154.222.105.26",
+    "attributes": {
+      "userId": 1,
+      "moduleId": 1172,
+      "targetUserId": 1
+    }
+  },
+  {
+    "datetime": "2026-09-13T11:11:30+01:00",
+    "component": "System",
+    "event": "Course activity completion updated",
+    "origin": "web",
+    "ipAddress": "154.222.105.26",
+    "attributes": {
+      "userId": 1,
+      "moduleId": 1172,
+      "targetUserId": 1
+    }
+  }
+]
+```
+
 #### Enfoque Template matching (similar a [Grok y su Oniguruma syntax](https://www.elastic.co/docs/reference/logstash/plugins/plugins-filters-grok#_regular_expressions))
 Otro enfoque, más autocontenido y autodescriptivo, pero también más estricto, elimina por completo la dependencia del orden posicional, los datos ya no se extraen como una lista ordenada, sino como un mapa directo clave-valor; el patrón define simultáneamente el contrato de coincidencia y los metadatos:
 ```yaml
@@ -73,6 +115,40 @@ Se incluye este ejemplo porque se desconoce el motivo por el que se utilizó `'S
 - **Desventajas**:
   - **Necesidad de compilar todos los contratos durante el levantamiento de la aplicación, ya que son expresiones regulares**.
   - Si algún log no se ajusta al contrato, resulta en un objeto log sin atributos; mantenimiento de YAML más complejo.
+
+Ejemplo de resultado (se puede observar la fragilidad de errores silenciosos en los contratos):
+```json
+[
+  {
+    "datetime": "2026-09-13T11:04:49+01:00",
+    "component": "Forum",
+    "event": "Discussion viewed",
+    "origin": "web",
+    "ipAddress": "66.227.164.85",
+    "attributes": {
+      "discussionId": 241,
+      "moduleId": 1169,
+      "userId": 1
+    }
+  },
+  {
+    "datetime": "2026-09-13T11:01:33+01:00",
+    "component": "System",
+    "event": "Section viewed",
+    "origin": "web",
+    "ipAddress": "216.244.66.246",
+    "attributes": {}
+  },
+  {
+    "datetime": "2026-09-13T11:01:27+01:00",
+    "component": "System",
+    "event": "Section viewed",
+    "origin": "web",
+    "ipAddress": "216.244.66.246",
+    "attributes": {}
+  }
+]
+```
 
 ### Conclusiones
 Strategy proporciona mejores resultados, su implementación es más sencilla, el YAML de configuración es más pequeño y sencillo de mantener.
