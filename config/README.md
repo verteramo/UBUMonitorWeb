@@ -160,3 +160,29 @@ Ejemplo de resultado (se puede observar la fragilidad de errores silenciosos en 
 Strategy proporciona mejores resultados, su implementación es más sencilla, el YAML de configuración es más pequeño y sencillo de mantener.
 - En el directorio `src` paralelo a este fichero se encuentran los notebooks para convertir [Componentes y eventos.json](https://github.com/yjx0003/UBUMonitor/blob/c73e5576fc49531c2b1f2149d61425c4bb2a930c/python/Componentes%20y%20eventos.json#L38) en los YAML de configuración.
 - En la [rama `main` de UBUMonitorWeb](https://github.com/verteramo/UBUMonitorWeb/tree/main) se encuentra la implementación del enfoque Strategy; en la rama [`alt-#24`](https://github.com/verteramo/UBUMonitorWeb/tree/alt-%2324) la implementación del enfoque Template matching.
+
+### Actualidad
+Actualmente, se está implementando la primera propuesta con una adopción de la segunda, la posibilidad de varios tipos de captura:
+```yaml
+  Grading table viewed:
+    - [userId, moduleId]
+  Submission confirmation form viewed.:
+    - [userId, moduleId]
+  Submission form viewed.:
+    - [userId, moduleId]
+    - [userId, targetUserId, moduleId]
+```
+De esta manera se puede escoger la lista que coincida en longitud con el número de valores extraídos:
+```kotlin
+fun compose(
+  entry: LogEntry,
+  values: List<Int>, ) {
+  // Se selecciona la lista de campos que coincide
+  // en longitud con el número real de enteros extraídos
+  val fields =
+    mappings[entry.component]
+      ?.get(entry.event)
+      ?.find { it.size == values.size } ?: emptyList()
+  entry.attributes.putAll(fields zip values)
+}
+```
