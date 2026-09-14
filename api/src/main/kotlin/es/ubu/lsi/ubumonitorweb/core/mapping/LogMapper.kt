@@ -58,11 +58,11 @@ class LogMapper {
   /**
    * Configuración de mappings del fichero YAML.
    */
-  private val mappings: Map<String, Map<String, List<String>>> by lazy {
+  private val mappings: Map<String, Map<String, List<List<String>>>> by lazy {
     val mapper = ObjectMapper(YAMLFactory())
 
-    javaClass.getResourceAsStream("/logs-mappings.yaml").let {
-      mapper.readValue(it, object : TypeReference<Map<String, Map<String, List<String>>>>() {})
+    javaClass.getResourceAsStream("/logs-mappings.yaml").use { stream ->
+      mapper.readValue(stream, object : TypeReference<Map<String, Map<String, List<List<String>>>>>() {})
     }
   }
 
@@ -73,8 +73,12 @@ class LogMapper {
     entry: LogEntry,
     values: List<Int>,
   ) {
-    val events = mappings[entry.component] ?: emptyMap()
-    val fields = events[entry.event] ?: emptyList()
+    // Se selecciona la lista de campos que coincide
+    // en longitud con el número real de enteros extraídos
+    val fields =
+      mappings[entry.component]
+        ?.get(entry.event)
+        ?.find { it.size == values.size } ?: emptyList()
 
     entry.attributes.putAll(fields zip values)
   }

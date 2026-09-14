@@ -212,7 +212,7 @@
       "The user with id 'INTEGER' viewed the 'STRING' activity with course module id 'INTEGER'."
     ],
     "Course searched": [
-      "The user with id 'INTEGER' has searched the course with id 'INTEGER' for forum posts containing \"STRING\"."
+      "The user with id 'INTEGER' has searched the course with id 'INTEGER' for forum posts containing 'STRING'."
     ],
     "Discussion created": [
       "The user with id 'INTEGER' has created the discussion with id 'INTEGER' in the forum with course module id 'INTEGER'."
@@ -284,10 +284,10 @@
       "The user with id 'INTEGER' viewed the 'STRING' activity with course module id 'INTEGER'."
     ],
     "HotPot attempt started": [
-      "The user with id \"INTEGER\" started an attempt at the \"STRING\" activity with course module id \"INTEGER\""
+      "The user with id 'INTEGER' started an attempt at the 'STRING' activity with course module id 'INTEGER'"
     ],
     "HotPot attempt submitted": [
-      "The user with id \"INTEGER\" submitted an attempt at the \"STRING\" activity with course module id \"INTEGER\""
+      "The user with id 'INTEGER' submitted an attempt at the 'STRING' activity with course module id 'INTEGER'"
     ]
   },
   "IMS content package": {

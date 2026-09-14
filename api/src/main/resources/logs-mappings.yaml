@@ -1,86 +1,473 @@
+Activity report:
+  Activity report viewed:
+    - [userId, courseId]
+  Outline report viewed:
+    - [userId, targetUserId, courseId]
 Assignment:
-  A submission has been submitted.: [ userId, submissionId, moduleId ]
-  Course module instance list viewed: [ userId, courseId ]
-  Course module viewed: [ userId, moduleId ]
-  Grading form viewed: [ userId, targetUserId, moduleId ]
-  Grading table viewed: [ userId, moduleId ]
-  Submission confirmation form viewed.: [ userId, submissionId, moduleId ]
-  Submission form viewed.: [ userId, submissionId, moduleId ]
-  The allocated marker has been updated.: [ userId, targetUserId, moduleId ]
-  The status of the submission has been viewed.: [ userId, submissionId, moduleId ]
-  The submission has been graded.: [ userId, submissionId, targetUserId, moduleId ]
-  The user has accepted the statement of the submission.: [ userId, submissionId, moduleId ]
+  A submission has been submitted.:
+    - [userId, submissionId, moduleId]
+  All the submissions are being downloaded.:
+    - [userId, moduleId]
+  An extension has been granted.:
+    - [userId, targetUserId, moduleId]
+  Assignment override created:
+    - [userId, overrideId, moduleId, targetUserId]
+  Course module instance list viewed:
+    - [userId, courseId]
+  Course module viewed:
+    - [userId, moduleId]
+  Grading form viewed:
+    - [userId, targetUserId, moduleId]
+  Grading table viewed:
+    - [userId, moduleId]
+  Submission confirmation form viewed.:
+    - [userId, moduleId]
+  Submission form viewed.:
+    - [userId, moduleId]
+    - [userId, targetUserId, moduleId]
+  Submission viewed.:
+    - [userId, targetUserId, moduleId]
+  The state of the workflow has been updated.:
+    - [userId, targetUserId, moduleId]
+  The status of the submission has been viewed.:
+    - [userId, moduleId]
+  The submission has been graded.:
+    - [userId, submissionId, targetUserId, moduleId]
+  The submissions have been unlocked for a user.:
+    - [userId, targetUserId, moduleId]
+  The user has accepted the statement of the submission.:
+    - [userId, submissionId, moduleId]
 Book:
-  Chapter viewed: [ userId, chapterId, moduleId ]
-  Course module viewed: [ userId, moduleId ]
+  Chapter created:
+    - [userId, chapterId, moduleId]
+  Chapter updated:
+    - [userId, chapterId, moduleId]
+  Chapter viewed:
+    - [userId, chapterId, moduleId]
+  Course module viewed:
+    - [userId, moduleId]
+Book printing:
+  Book printed:
+    - [userId, moduleId]
+Chat:
+  Course module instance list viewed:
+    - [userId, courseId]
+  Course module viewed:
+    - [userId, moduleId]
+  Message sent:
+    - [userId]
+  Sessions viewed:
+    - [userId]
 Choice:
-  Choice answer added: [ userId, targetUserId, moduleId ]
-  Course module viewed: [ userId, moduleId ]
+  Choice answer added:
+    - [userId, optionId, targetUserId, moduleId]
+  Choice made:
+    - [userId, choiceId, moduleId]
+  Choice report viewed:
+    - [userId]
+  Course module viewed:
+    - [userId, moduleId]
+Comments:
+  Comment created:
+    - [userId, commentId, moduleId]
+  Comment deleted:
+    - [userId, commentId, moduleId]
+Course completion:
+  Completion report viewed:
+    - [userId, courseId]
+Course participation:
+  Participation report viewed:
+    - [userId, courseId]
+Database:
+  Course module viewed:
+    - [userId, moduleId]
+  Field created:
+    - [userId, fieldId, moduleId]
+  Field updated:
+    - [userId, fieldId, moduleId]
+  Record created:
+    - [userId, recordId, moduleId]
+  Record deleted:
+    - [userId, recordId, moduleId]
+  Record updated:
+    - [userId, recordId, moduleId]
+  Template updated:
+    - [userId, moduleId]
+  Templates viewed:
+    - [userId, moduleId]
+Event monitor:
+  Rule created:
+    - [userId, eventId, ruleId]
+  Subscription created:
+    - [userId, eventId, subscriptionId]
+Excel spreadsheet:
+  XLS grade exported:
+    - [userId]
+External tool:
+  Course module viewed:
+    - [userId, moduleId]
+Feedback:
+  Course module instance list viewed:
+    - [userId, courseId]
+  Course module viewed:
+    - [userId, moduleId]
+File:
+  Course module viewed:
+    - [userId, moduleId]
 File submissions:
-  A file has been uploaded.: [ userId, submissionId, moduleId ]
-  Submission created.: [ userId, submissionId, moduleId ]
+  A file has been uploaded.:
+    - [userId, submissionId, moduleId]
+  Submission created.:
+    - [userId, submissionFiles, moduleId]
+    - [userId, submissionFiles, moduleId, groupId]
+  Submission updated.:
+    - [userId, submissionFiles, moduleId]
+    - [userId, submissionFiles, moduleId, groupId]
+Folder:
+  Course module viewed:
+    - [userId, moduleId]
+  Folder updated:
+    - [userId, moduleId]
+  Zip archive of folder downloaded:
+    - [userId, moduleId]
 Forum:
-  Course module viewed: [ userId, moduleId ]
-  Discussion created: [ userId, discussionId, moduleId ]
-  Discussion deleted: [ userId, discussionId, moduleId ]
-  Discussion subscription created: [ userId, targetUserId, discussionId, moduleId ]
-  Discussion viewed: [ userId, discussionId, moduleId ]
-  Post created: [ userId, postId, discussionId, moduleId ]
-  Post deleted: [ userId, postId, discussionId, moduleId ]
-  Some content has been posted.: [ userId, postId, discussionId, moduleId ]
-  Subscription created: [ userId, targetUserId, moduleId ]
-  Subscription deleted: [ userId, targetUserId, moduleId ]
+  Course module instance list viewed:
+    - [userId, courseId]
+  Course module viewed:
+    - [userId, moduleId]
+  Course searched:
+    - [userId, courseId]
+  Discussion created:
+    - [userId, discussionId, moduleId]
+  Discussion deleted:
+    - [userId, discussionId, moduleId]
+  Discussion moved:
+    - [userId, discussionId, forumId, targetForumId]
+  Discussion pinned:
+    - [userId, discussionId, forumId]
+  Discussion subscription created:
+    - [userId, targetUserId, moduleId]
+  Discussion subscription deleted:
+    - [userId, targetUserId, moduleId]
+  Discussion viewed:
+    - [userId, discussionId, moduleId]
+  Post created:
+    - [userId, postId, discussionId, moduleId]
+  Post deleted:
+    - [userId, postId, discussionId, moduleId]
+  Post updated:
+    - [userId, postId, discussionId, moduleId]
+  Some content has been posted.:
+    - [userId, postId, moduleId]
+  Subscribers viewed:
+    - [userId, moduleId]
+  Subscription created:
+    - [userId, targetUserId, moduleId]
+  Subscription deleted:
+    - [userId, targetUserId, moduleId]
+  User report viewed:
+    - [userId, targetUserId, courseId]
 Glossary:
-  Course module viewed: [ userId, moduleId ]
-  Entry has been created: [ userId, glossaryEntryId, moduleId ]
+  Category has been created:
+    - [userId, categoryId, moduleId]
+  Course module viewed:
+    - [userId, moduleId]
+  Entry has been created:
+    - [userId, glossaryEntryId, moduleId]
+  Entry has been updated:
+    - [userId, glossaryEntryId, moduleId]
 Grader report:
-  Grader report viewed: [ userId ]
-H5P:
-  Course module viewed: [ userId, moduleId ]
-  xAPI statement received: [ moduleId ]
-H5P Package:
-  H5P content viewed: [ userId, h5pId ]
+  Grader report viewed:
+    - [userId]
+HotPot module:
+  Course module viewed:
+    - [userId, moduleId]
+  HotPot attempt started:
+    - [userId, moduleId]
+  HotPot attempt submitted:
+    - [userId, moduleId]
+IMS content package:
+  Course module viewed:
+    - [userId, moduleId]
+Journal:
+  Course module viewed:
+    - [userId, moduleId]
+  Journal entries viewed:
+    - [userId]
+  Journal entry created:
+    - [userId, moduleId]
+  Journal entry updated:
+    - [userId, moduleId]
+Lesson:
+  Content page viewed:
+    - [userId, pageId, moduleId]
+  Course module instance list viewed:
+    - [userId, courseId]
+  Course module viewed:
+    - [userId, moduleId]
+  Lesson ended:
+    - [userId, moduleId]
+  Lesson started:
+    - [userId, moduleId]
+  Page created:
+    - [userId, pageId, moduleId]
+  Page moved:
+    - [userId, pageId, prevPageId, nextPageId, moduleId]
+  Page updated:
+    - [userId, pageId, moduleId]
+  Question answered:
+    - [userId, questionId, moduleId]
+  Question viewed:
+    - [userId, questionId, moduleId]
+Live logs:
+  Live log report viewed:
+    - [userId, courseId]
 Logs:
-  Log report viewed: [ userId, courseId ]
+  Log report viewed:
+    - [userId, courseId]
+  User log report viewed:
+    - [userId, targetUserId]
 Online text submissions:
-  An online text has been uploaded.: [ userId, submissionId, moduleId ]
-  Submission created.: [ userId, submissionId, moduleId ]
+  An online text has been uploaded.:
+    - [userId, submissionId, moduleId]
+  Submission created.:
+    - [userId, submissionWords, moduleId]
+    - [userId, submissionWords, moduleId, groupId]
+  Submission updated.:
+    - [userId, submissionWords, moduleId, groupId]
+OpenDocument spreadsheet:
+  OpenDocument grade exported:
+    - [userId]
+Outcomes report:
+  Grade outcomes report viewed:
+    - [userId]
+Overview report:
+  Grade overview report viewed:
+    - [userId]
 Page:
-  Course module viewed: [ userId, moduleId ]
+  Course module viewed:
+    - [userId, moduleId]
 Quiz:
-  Course module viewed: [ userId, moduleId ]
-  Quiz attempt reviewed: [ userId, attemptId, targetUserId, moduleId ]
-  Quiz attempt started: [ userId, attemptId, moduleId ]
-  Quiz attempt submitted: [ userId, attemptId, moduleId ]
-  Quiz attempt summary viewed: [ userId, attemptId, targetUserId, moduleId ]
-  Quiz attempt updated: [ userId, attemptId, targetUserId, moduleId ]
-  Quiz attempt viewed: [ userId, attemptId, targetUserId, moduleId ]
+  Course module instance list viewed:
+    - [userId, courseId]
+  Course module viewed:
+    - [userId, moduleId]
+  Question manually graded:
+    - [userId, questionId, attemptId, moduleId]
+  Quiz attempt abandoned:
+    - [userId, attemptId, moduleId]
+  Quiz attempt deleted:
+    - [userId, attemptId, moduleId, targetUserId]
+  Quiz attempt preview started:
+    - [userId, attemptId, targetUserId, moduleId]
+  Quiz attempt reviewed:
+    - [userId, attemptId, targetUserId, moduleId]
+  Quiz attempt started:
+    - [userId, attemptId, moduleId]
+  Quiz attempt submitted:
+    - [userId, attemptId, moduleId]
+  Quiz attempt summary viewed:
+    - [userId, attemptId, targetUserId, moduleId]
+  Quiz attempt viewed:
+    - [userId, attemptId, targetUserId, moduleId]
+  Quiz edit page viewed:
+    - [userId, moduleId]
+  Quiz report viewed:
+    - [userId, moduleId]
+Recycle bin:
+  Item created:
+    - [itemId]
+  Item deleted:
+    - [itemId]
+  Item restored:
+    - [itemId]
+SCORM package:
+  Course module viewed:
+    - [userId, moduleId]
+  Sco launched:
+    - [userId, scormId, moduleId]
+  Submitted SCORM raw score:
+    - [userId, scormValue, attemptId, moduleId]
+  Submitted SCORM status:
+    - [userId, attemptId, moduleId]
+Single view:
+  Grade single view report viewed.:
+    - [userId]
+Statistics:
+  User statistics report viewed:
+    - [userId, targetUserId]
 Submission comments:
-  Comment created: [ userId, commentId, submissionId, moduleId ]
+  Comment created:
+    - [userId, commentId, submissionId, moduleId]
+Survey:
+  Course module viewed:
+    - [userId, moduleId]
+  Survey report viewed:
+    - [userId, moduleId]
+  Survey response submitted:
+    - [userId, moduleId]
 System:
-  Calendar event created: [ userId, eventId ]
-  Calendar event updated: [ userId, eventId ]
-  Course activities overview page viewed: [ userId, courseId ]
-  Course activity completion updated: [ userId, moduleId, targetUserId ]
-  Course module created: [ userId, moduleId ]
-  Course module updated: [ userId, moduleId ]
-  Course restored: [ userId, courseId ]
-  Course section created: [ userId, courseId ]
-  Course updated: [ userId, courseId ]
-  Course user report viewed: [ userId, courseId, targetUserId ]
-  Course viewed: [ userId, courseId ]
-  Enrolment instance created: [ userId, enrolmentId ]
-  Enrolment instance updated: [ userId, enrolmentId ]
-  Grade item created: [ userId, gradeItemId, courseId ]
-  Grade item updated: [ userId, gradeItemId, courseId ]
-  Group member added: [ userId, targetUserId, groupId ]
-  Role assigned: [ userId, roleId, targetUserId ]
-  Section viewed: [ userId, sectionId ]
-  Tag added to an item: [ userId, tagId ]
-  User enrolled in course: [ userId, targetUserId, enrolmentId, courseId ]
-  User graded: [ userId, gradeId, targetUserId, gradeItemId ]
-  User list viewed: [ userId, courseId ]
-  User profile viewed: [ userId, targetUserId, courseId ]
+  Badge listing viewed:
+    - [userId, courseId]
+  Calendar event created:
+    - [userId, eventId]
+  Calendar event deleted:
+    - [userId, eventId]
+  Calendar event updated:
+    - [userId, eventId]
+  Calendar subscription updated:
+    - [userId]
+  Course activity completion updated:
+    - [userId, moduleId, targetUserId]
+  Course backup created:
+    - [userId, courseId]
+  Course completed:
+    - [userId, courseId]
+  Course completion updated:
+    - [userId, courseId]
+  Course content deleted:
+    - [userId, courseId]
+  Course created:
+    - [userId, courseId]
+  Course module created:
+    - [userId, moduleId]
+  Course module deleted:
+    - [userId, moduleId]
+  Course module instance list viewed:
+    - [userId, courseId]
+  Course module updated:
+    - [userId, moduleId]
+  Course reset ended:
+    - [courseId]
+  Course reset started:
+    - [userId, courseId]
+  Course restored:
+    - [userId, courseId]
+    - [userId, courseId, courseId]
+  Course section created:
+    - [userId, sectionId, courseId]
+  Course section deleted:
+    - [userId, sectionId, courseId]
+  Course section updated:
+    - [userId, sectionId, courseId]
+  Course summary viewed:
+    - [userId, courseId]
+  Course updated:
+    - [userId, courseId]
+  Course user report viewed:
+    - [userId, courseId, targetUserId]
+  Course viewed:
+    - [userId, courseId]
+    - [userId, sectionId, courseId]
+  Enrolment instance created:
+    - [userId, enrolmentId]
+  Enrolment instance updated:
+    - [userId, enrolmentId]
+  Evidence created.:
+    - [userId, evidenceId]
+  Grade deleted:
+    - [userId, gradeId, targetUserId, gradeItemId]
+  Group assigned to grouping:
+    - [userId, groupId, groupingId]
+  Group created:
+    - [userId, groupId]
+  Group deleted:
+    - [userId, groupId]
+  Group member added:
+    - [userId, targetUserId, groupId]
+  Group member removed:
+    - [userId, targetUserId, groupId]
+  Group updated:
+    - [userId, groupId]
+  Grouping deleted:
+    - [userId, groupingId]
+  Note created:
+    - [userId, noteId, targetUserId]
+  Notes viewed:
+    - [userId, courseId]
+  Question category created:
+    - [userId, questionCategoryId, categoryId]
+  Recent activity viewed:
+    - [userId, courseId]
+  Role assigned:
+    - [userId, roleId, targetUserId]
+  Role capabilities updated:
+    - [userId, roleId]
+  Role unassigned:
+    - [userId, roleId, targetUserId]
+  Tag added to an item:
+    - [userId, tagId, itemId]
+  User competency rated in course.:
+    - [userId, userCompetencyId, userCompetencyRating, courseId]
+  User competency viewed in a course.:
+    - [userId, userCompetencyId, courseId]
+  User enrolled in course:
+    - [userId, targetUserId, courseId]
+  User graded:
+    - [userId, gradeId, targetUserId, gradeItemId]
+  User list viewed:
+    - [userId, courseId]
+  User profile viewed:
+    - [userId, targetUserId, courseId]
+  User unenrolled from course:
+    - [userId, targetUserId, courseId]
+Turnitin Assignment 2:
+  Add Submission:
+    - []
+  List Submissions:
+    - [courseId]
+URL:
+  Course module viewed:
+    - [userId, moduleId]
+User report:
+  Grade user report viewed:
+    - [userId]
 User tours:
-  Tour ended: [ userId ]
-  Tour started: [ userId ]
+  Step shown:
+    - [userId, tourId, stepIndex, stepId]
+  Tour ended:
+    - [userId, tourId, stepIndex, stepId]
+  Tour started:
+    - [userId, tourId]
+Wiki:
+  Comment created:
+    - [userId, commentId, pageId, moduleId]
+  Comments viewed:
+    - [userId, pageId, moduleId]
+  Course module viewed:
+    - [userId, moduleId]
+  Wiki history viewed:
+    - [userId, pageId, moduleId]
+  Wiki page created:
+    - [userId, pageId, moduleId]
+  Wiki page locks deleted:
+    - [userId, pageId, moduleId]
+  Wiki page map viewed:
+    - [userId, pageId, moduleId]
+  Wiki page updated:
+    - [userId, pageId, moduleId]
+  Wiki page viewed:
+    - [userId, pageId, moduleId]
+Workshop:
+  A submission has been uploaded.:
+    - [userId, submissionId, moduleId]
+  Assessment evaluated:
+    - [userId, moduleId]
+  Course module instance list viewed:
+    - [userId, courseId]
+  Course module viewed:
+    - [userId, moduleId]
+  Phase switched:
+    - [userId, moduleId]
+  Submission assessed:
+    - [userId, submissionId, targetUserId, moduleId]
+  Submission created:
+    - [userId, submissionId, moduleId]
+  Submission deleted:
+    - [userId, submissionId, moduleId]
+  Submission re-assessed:
+    - [userId, submissionId, targetUserId, moduleId]
+  Submission updated:
+    - [userId, submissionId, moduleId]
+  Submission viewed:
+    - [userId, submissionId, moduleId]
