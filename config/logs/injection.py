@@ -120,7 +120,7 @@ class AttributeInjector:
                 field_name, field_type_keyword = match.groups()
 
                 # Si no se indica tipo, se asume str
-                field_type = FieldType.from_keyword(field_type_keyword or "str")
+                field_type = FieldType.from_keyword(field_type_keyword)
 
                 # Expresión regular del grupo
                 group_regex = (
@@ -156,7 +156,7 @@ class AttributeInjector:
                 (
                     # El patrón de las etiquetas es: {tagName:type}
                     re.compile(
-                        re.sub(r"\{(?:(\w+):)?(int|str|any)?\}", get_group, pattern)
+                        re.sub(r"\[(?:(\w+):)?(int|str|any)?\]", get_group, pattern)
                     ),
                     metadata,
                 )
@@ -366,3 +366,26 @@ def merge_templates(*templates_dicts: TemplatesDict) -> TemplatesDict:
         }
         for component, events in merged_templates.items()
     }
+
+
+def get_ts_type(patterns: list[str]) -> str:
+    regex = re.compile(r"\[(?P<name>\w+):(?P<type>int|str|any)\]")
+
+    ts_types = {
+        "int": "number",
+        "str": "string",
+        "any": "string",
+    }
+
+    fields = set()
+    definition = ""
+
+    for pattern in patterns:
+        for match in regex.finditer(pattern):
+            name, type = match.groups()
+            fields.add((name, ts_types[type]))
+
+    for name, type in sorted(fields):
+        definition += f"\t{name}?: {type}\n"
+
+    return f"{{\n{definition}}}"

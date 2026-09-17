@@ -13,12 +13,18 @@ import org.springframework.stereotype.Component
  */
 @Component
 class LogMapper(
+  logsProperties: LogsProperties,
   private val templateRegistry: TemplateRegistry,
 ) {
   /**
    * Expresión regular para identificar caracteres blancos (\s, \t, \n, \r).
    */
   private val whiteChars = Regex("""\s+""")
+
+  /**
+   * Lista de prefijos de valores booleanos (is, has, ...).
+   */
+  private val booleanPrefixes = logsProperties.booleanPrefixes
 
   /**
    * Parsea atributos desde la descripción de un log.
@@ -31,18 +37,17 @@ class LogMapper(
     description.replace(whiteChars, " ").let { description ->
       templateRegistry[component, event].let { templates ->
         templates.firstNotNullOfOrNull { template ->
-          template.extract(description)?.let {
+          template.extract(description)?.let { map ->
             MappingResult.Mapped(
-              it.mapValues { (key, value) ->
+              map.mapValues { (key, value) ->
                 when {
-                  key.startsWith("is") || key.startsWith("has") -> value == "1"
+                  booleanPrefixes.any { key.startsWith(it) } -> value == "1"
                   else -> value.toIntOrNull() ?: value.toDoubleOrNull() ?: value
                 }
               },
             )
           }
-        }
-          ?: MappingResult.Unmapped(description, templates)
+        } ?: MappingResult.Unmapped(description, templates)
       }
     }
 }

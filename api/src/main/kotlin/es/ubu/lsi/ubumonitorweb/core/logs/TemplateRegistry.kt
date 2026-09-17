@@ -6,6 +6,7 @@
 
 package es.ubu.lsi.ubumonitorweb.core.logs
 
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Component
 import tools.jackson.core.type.TypeReference
 import tools.jackson.databind.ObjectMapper
@@ -31,14 +32,17 @@ import java.io.File
  * tanto usuarios como desarrolladores pueden comprender su estructura y sintaxis.
  */
 @Component
-class TemplateRegistry {
+@EnableConfigurationProperties(LogsProperties::class)
+class TemplateRegistry(
+  logsProperties: LogsProperties,
+) {
   private typealias TemplateMap<T> = Map<String, Map<String, T>>
   private typealias TemplateMMap = MutableMap<String, MutableSet<String>>
 
   /**
    * Nombre de los ficheros, se llaman igual para mantener una convención sólida.
    */
-  private val fileName = "logs-templates.yaml"
+  private val filename = logsProperties.templatesFilename
 
   /**
    * Colección de templates que se hidrata desde ambos ficheros.
@@ -49,12 +53,12 @@ class TemplateRegistry {
 
     // Carga de la colección local disponible en resources, si está disponible
     val internalTemplatesCollection =
-      javaClass.getResourceAsStream("/$fileName")?.use {
+      javaClass.getResourceAsStream("/$filename")?.use {
         mapper.readValue(it, typeReference)
       } ?: emptyMap()
 
     // Carga de la colección externa, si está disponible
-    val externalFile = File(fileName)
+    val externalFile = File(filename)
     val externalTemplatesCollection =
       if (externalFile.exists()) {
         mapper.readValue(externalFile, typeReference)

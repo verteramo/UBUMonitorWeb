@@ -19,6 +19,9 @@ server:
         http-only: true
         same-site: strict
 
+logs:
+  boolean-prefixes: [ is, has ]
+
 client:
   profiles:
     # Perfil con propiedades globales para peticiones GET
@@ -72,7 +75,7 @@ client:
       providers:
         MoodleSession:
           location: cookie
-          bean:  es.ubu.lsi.ubumonitorweb.core.client.ClientCookieProvider
+          bean: es.ubu.lsi.ubumonitorweb.core.client.ClientCookieProvider
 
     # Perfil de los clientes del webservice REST
     webservice-client:

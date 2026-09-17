@@ -1,2 +1,2 @@
-from .injection import (AliasesDict, load_database, load_logs_csv,
+from .injection import (AliasesDict, get_ts_type, load_database, load_logs_csv,
                         merge_templates)

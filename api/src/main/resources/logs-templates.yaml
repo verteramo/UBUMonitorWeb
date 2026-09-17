@@ -36,9 +36,9 @@ Assignment:
   The allocated marker has been updated.:
     - The user with id '(?<userId>-?\d+)?' has set the marker for the user with id '(?<targetUserId>-?\d+)?' to '(?<markerId>-?\d+)?' for the assignment with course module id '(?<moduleId>-?\d+)?'.
   The state of the workflow has been updated.:
-    - The user with id '(?<userId>-?\d+)?' has set the workflow state of the user with id '(?<targetUserId>-?\d+)?' to the state '(?<state>.+?)?' for the assignment with course module id '(?<moduleId>-?\d+)?'.
+    - The user with id '(?<userId>-?\d+)?' has set the workflow state of the user with id '(?<targetUserId>-?\d+)?' to the state '(?<workflowState>.+?)?' for the assignment with course module id '(?<moduleId>-?\d+)?'.
   The status of the submission has been updated.:
-    - The user with id '(?<userId>-?\d+)?' has updated the status of the submission with id '(?<submissionId>-?\d+)?' for the assignment with course module id '(?<moduleId>-?\d+)?' to the status '(?<status>.+?)?'.
+    - The user with id '(?<userId>-?\d+)?' has updated the status of the submission with id '(?<submissionId>-?\d+)?' for the assignment with course module id '(?<moduleId>-?\d+)?' to the status '(?<submissionStatus>.+?)?'.
   The status of the submission has been viewed.:
     - The user with id '(?<userId>-?\d+)?' has viewed the submission status page for the assignment with course module id '(?<moduleId>-?\d+)?'.
   The submission has been graded.:
@@ -150,27 +150,32 @@ Forum:
   Course searched:
     - The user with id '(?<userId>-?\d+)?' has searched the course with id '(?<courseId>-?\d+)?' for forum posts containing "(?<searchTerm>.+?)?".
   Discussion created:
-    - The user with id '(?<userId>-?\d+)?' has created the discussion (?<discussionId1>-?\d+)?with id '(?<discussionId>-?\d+)?' in the forum with course module id '(?<moduleId>-?\d+)?'.
+    - The user with id '(?<userId>-?\d+)?' has created the discussion with id '(?<discussionId>-?\d+)?' in the forum with course module id '(?<moduleId>-?\d+)?'.
   Discussion deleted:
-    - The user with id '(?<userId>-?\d+)?' has deleted the discussion (?<discussionId1>-?\d+)?with id '(?<discussionId>-?\d+)?' in the forum with course module id '(?<moduleId>-?\d+)?'.
+    - The user with id '(?<userId>-?\d+)?' has deleted the discussion with id '(?<discussionId>-?\d+)?' in the forum with course module id '(?<moduleId>-?\d+)?'.
   Discussion moved:
-    - The user with id '(?<userId>-?\d+)?' has moved the discussion (?<discussionId1>-?\d+)?with id '(?<discussionId>-?\d+)?' from the forum with id '(?<forumId>-?\d+)?' to the forum with id '(?<targetForumId>-?\d+)?'.
+    - The user with id '(?<userId>-?\d+)?' has moved the discussion with id '(?<discussionId>-?\d+)?' from the forum with id '(?<forumId>-?\d+)?' to the forum with id '(?<targetForumId>-?\d+)?'.
   Discussion pinned:
     - The user (?<userId>-?\d+)? has pinned the discussion (?<discussionId>-?\d+)? in the forum (?<forumId>-?\d+)?
   Discussion subscription created:
-    - The user with id '(?<userId>-?\d+)?' subscribed the user with id '(?<targetUserId>-?\d+)?' to the discussion (?<discussionId1>-?\d+)?with id '(?<discussionId>-?\d+)?' in the forum with the course module id '(?<moduleId>-?\d+)?'.
+    - The user with id '(?<userId>-?\d+)?' subscribed the user with id '(?<targetUserId>-?\d+)?' to the discussion with id '(?<discussionId>-?\d+)?' in the forum with the course module id '(?<moduleId>-?\d+)?'.
   Discussion subscription deleted:
-    - The user with id '(?<userId>-?\d+)?' unsubscribed the user with id '(?<targetUserId>-?\d+)?' from the discussion (?<discussionId1>-?\d+)?with id '(?<discussionId>-?\d+)?' in the forum with the course module id '(?<moduleId>-?\d+)?'.
+    - The user with id '(?<userId>-?\d+)?' unsubscribed the user with id '(?<targetUserId>-?\d+)?' from the discussion with id '(?<discussionId>-?\d+)?' in the forum with the course module id '(?<moduleId>-?\d+)?'.
   Discussion viewed:
-    - The user with id '(?<userId>-?\d+)?' has viewed the discussion (?<discussionId1>-?\d+)?with id '(?<discussionId>-?\d+)?' in the forum with course module id '(?<moduleId>-?\d+)?'.
+    - The user with id '(?<userId>-?\d+)?' has viewed the discussion with id '(?<discussionId>-?\d+)?' in the forum with course module id '(?<moduleId>-?\d+)?'.
   Post created:
-    - The user with id '(?<userId>-?\d+)?' has created the post with id '(?<postId>-?\d+)?' in the discussion (?<discussionId1>-?\d+)?with id '(?<discussionId>-?\d+)?' in the forum with course module id '(?<moduleId>-?\d+)?'.
+    - The user with id '(?<userId>-?\d+)?' has created the post with id '(?<postId>-?\d+)?' in the discussion with id '(?<discussionId>-?\d+)?' in the forum with course module id '(?<moduleId>-?\d+)?'.
   Post deleted:
-    - The user with id '(?<userId>-?\d+)?' has deleted the post with id '(?<postId>-?\d+)?' in the discussion (?<discussionId1>-?\d+)?with id '(?<discussionId>-?\d+)?' in the forum with course module id '(?<moduleId>-?\d+)?'.
+    - The user with id '(?<userId>-?\d+)?' has deleted the post with id '(?<postId>-?\d+)?' in the discussion with id '(?<discussionId>-?\d+)?' in the forum with course module id '(?<moduleId>-?\d+)?'.
   Post updated:
-    - The user with id '(?<userId>-?\d+)?' has updated the post with id '(?<postId>-?\d+)?' in the discussion (?<discussionId1>-?\d+)?with id '(?<discussionId>-?\d+)?' in the forum with course module id '(?<moduleId>-?\d+)?'.
+    - The user with id '(?<userId>-?\d+)?' has updated the post with id '(?<postId>-?\d+)?' in the discussion with id '(?<discussionId>-?\d+)?' in the forum with course module id '(?<moduleId>-?\d+)?'.
   Some content has been posted.:
-    - The user with id '(?<userId>-?\d+)?' has posted content in the forum post with id '(?<postId>-?\d+)?' in the discussion '(?<discussionId>-?\d+)?' located in the forum with course module id '(?<moduleId>-?\d+)?'.
+    - The user with id '(?<userId>-?\d+)?' has posted content in the forum post with id '(?<postId>-?\d+)?' in the discussion '211' located in the forum with course module id '(?<moduleId>-?\d+)?'.
+    - The user with id '(?<userId>-?\d+)?' has posted content in the forum post with id '(?<postId>-?\d+)?' in the discussion '212' located in the forum with course module id '(?<moduleId>-?\d+)?'.
+    - The user with id '(?<userId>-?\d+)?' has posted content in the forum post with id '(?<postId>-?\d+)?' in the discussion '213' located in the forum with course module id '(?<moduleId>-?\d+)?'.
+    - The user with id '(?<userId>-?\d+)?' has posted content in the forum post with id '(?<postId>-?\d+)?' in the discussion '214' located in the forum with course module id '(?<moduleId>-?\d+)?'.
+    - The user with id '(?<userId>-?\d+)?' has posted content in the forum post with id '(?<postId>-?\d+)?' in the discussion '241' located in the forum with course module id '(?<moduleId>-?\d+)?'.
+    - The user with id '(?<userId>-?\d+)?' has posted content in the forum post with id '(?<postId>-?\d+)?' in the discussion 'INTEGER' located in the forum with course module id '(?<moduleId>-?\d+)?'.
   Subscribers viewed:
     - The user with id '(?<userId>-?\d+)?' has viewed the subscribers list for the forum with course module id '(?<moduleId>-?\d+)?'.
   Subscription created:
