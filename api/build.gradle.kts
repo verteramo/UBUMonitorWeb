@@ -34,6 +34,7 @@ dependencies {
   implementation(libs.spring.boot.starter.actuator)
 
   implementation(libs.jackson.module.kotlin)
+  implementation(libs.jackson.dataformat.csv)
   implementation(libs.jackson.dataformat.xml)
   implementation(libs.jackson.dataformat.yaml)
   implementation(libs.woodstox.core)
