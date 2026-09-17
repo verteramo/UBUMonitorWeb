@@ -6,14 +6,13 @@
 
 package es.ubu.lsi.ubumonitorweb.moodle.dto
 
+import com.fasterxml.jackson.annotation.JsonProperty
+
 data class MoodleLogEntry(
-  val time: String,
-  val userfullname: String,
-  val affecteduser: String,
-  val eventcontext: String,
-  val component: String,
-  val eventname: String,
-  val description: String,
-  val origin: String,
-  val ipaddress: String,
+  @JsonProperty("Time") val time: String,
+  @JsonProperty("Component") val component: String,
+  @JsonProperty("Event name") val eventname: String,
+  @JsonProperty("Description") val description: String,
+  @JsonProperty("Origin") val origin: String,
+  @JsonProperty("IP address") val ipaddress: String,
 )

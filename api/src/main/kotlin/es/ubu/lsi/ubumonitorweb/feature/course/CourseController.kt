@@ -6,6 +6,7 @@
 
 package es.ubu.lsi.ubumonitorweb.feature.course
 
+import es.ubu.lsi.ubumonitorweb.core.logs.LogService
 import es.ubu.lsi.ubumonitorweb.domain.Completion
 import es.ubu.lsi.ubumonitorweb.domain.Course
 import es.ubu.lsi.ubumonitorweb.domain.Event
@@ -27,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/courses")
 class CourseController(
   private val courseService: CourseService,
-  private val logsService: LogsService,
+  private val logService: LogService,
 ) {
   /**
    * Obtiene los cursos, según clasificación, del usuario autenticado.
@@ -72,7 +73,7 @@ class CourseController(
   fun getLogs(
     @AuthenticationPrincipal principal: Principal,
     @PathVariable id: Int,
-  ): List<LogEntry> = logsService.getLogs(id, principal.timezone)
+  ): List<LogEntry> = logService.getLogs(id, principal.timezone)
 
   @GetMapping("{courseId}/completion/{userId}")
   fun getCompletion(

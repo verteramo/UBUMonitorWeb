@@ -49,6 +49,7 @@ spring-boot-starter-webmvc-test = { module = "org.springframework.boot:spring-bo
 spring-boot-devtools = { module = "org.springframework.boot:spring-boot-devtools" }
 spring-security-test = { module = "org.springframework.security:spring-security-test" }
 jackson-module-kotlin = { module = "tools.jackson.module:jackson-module-kotlin" }
+jackson-dataformat-csv = { module = "tools.jackson.dataformat:jackson-dataformat-csv" }
 jackson-dataformat-xml = { module = "tools.jackson.dataformat:jackson-dataformat-xml" }
 jackson-dataformat-yaml = { module = "tools.jackson.dataformat:jackson-dataformat-yaml" }
 woodstox-core = { module = "com.fasterxml.woodstox:woodstox-core" }

@@ -60,12 +60,12 @@ client:
           bean: es.ubu.lsi.ubumonitorweb.core.client.ClientTokenProvider
 
     # Perfil del cliente de reportes de logs
-    report-log-client:
+    log-client:
       inherit: default-get
       endpoint: /report/log/index.php
       params:
         logreader: logstore_standard
-        download: json
+        download: csv
         chooselog: 1
         # Los nombres de los campos son siempre en inglés (para garantizar un mapeado correcto)
         lang: en

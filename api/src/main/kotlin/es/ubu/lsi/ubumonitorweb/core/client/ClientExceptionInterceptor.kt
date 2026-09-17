@@ -50,6 +50,7 @@ class ClientExceptionInterceptor(
       listOf(
         MediaType.IMAGE_PNG,
         MediaType.IMAGE_JPEG,
+        MediaType.parseMediaType("text/csv"),
         MediaType.APPLICATION_XML,
         MediaType.APPLICATION_JSON,
       ).any { headers.contentType?.includes(it) == true }

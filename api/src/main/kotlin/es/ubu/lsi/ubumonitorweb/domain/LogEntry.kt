@@ -14,5 +14,5 @@ data class LogEntry(
   val event: String,
   val origin: String,
   val ipAddress: String,
-  val attributes: MutableMap<String, Int> = mutableMapOf(),
+  val attributes: Map<String, Any>,
 )
