@@ -5,7 +5,7 @@ import { signalStore } from '@ngrx/signals';
 import { ExpansionPanelComponent } from '@shared/components/expansion-panel.component';
 import { TabLogsComponent } from './tab-logs.component';
 
-const Store = signalStore(withTabs(['logs', 'grades', 'activities']));
+const Store = signalStore(withTabs(['logs', 'grades', 'activity-completion']));
 
 @Component({
   selector: 'app-activity-panel',

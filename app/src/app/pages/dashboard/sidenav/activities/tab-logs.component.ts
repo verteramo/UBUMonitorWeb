@@ -2,14 +2,17 @@ import { Component, inject } from '@angular/core';
 import { MatTabsModule } from '@angular/material/tabs';
 import { withTabs } from '@core/stores/features/tab.feature';
 import { signalStore } from '@ngrx/signals';
+import { TabLogsComponentsComponent } from './tab-logs-components.component';
+import { TabLogsEventsComponent } from './tab-logs-events.component';
+import { TabLogsModulesComponent } from './tab-logs-modules.component';
 import { TabLogsSectionsComponent } from './tab-logs-sections.component';
 
-const Store = signalStore(withTabs(['main', 'sections']));
+const Store = signalStore(withTabs(['components', 'events', 'sections', 'modules']));
 
 @Component({
   selector: 'app-tab-logs',
   providers: [Store],
-  imports: [MatTabsModule, TabLogsSectionsComponent],
+  imports: [MatTabsModule, TabLogsSectionsComponent, TabLogsComponentsComponent, TabLogsEventsComponent, TabLogsModulesComponent],
   styles: `
     :host {
       display: flex;
@@ -48,10 +51,17 @@ const Store = signalStore(withTabs(['main', 'sections']));
       [selectedIndex]="store.tabIndex()"
       (selectedIndexChange)="store.setTabIndex($event)"
     >
-      <mat-tab i18n-label label="Main"> </mat-tab>
-
+      <mat-tab i18n-label label="Components">
+        <app-tab-logs-components />
+      </mat-tab>
+      <mat-tab i18n-label label="Events">
+        <app-tab-logs-events />
+      </mat-tab>
       <mat-tab i18n-label label="Sections">
         <app-tab-logs-sections />
+      </mat-tab>
+      <mat-tab i18n-label label="Modules">
+        <app-tab-logs-modules />
       </mat-tab>
     </mat-tab-group>
   `,

@@ -1,48 +1,58 @@
 <app-theme-toggle />
 
-<form novalidate (submit)="onSubmit($event)">
-  <header>
-    <img src="logo1.png" alt="UBUMonitorWeb" />
-    <h2 i18n>Login</h2>
-  </header>
+@if (isLoading()) {
+  <app-progress-spinner i18n>Authenticating...</app-progress-spinner>
+} @else {
+  <form novalidate (submit)="onSubmit($event)">
+    <header>
+      <img src="logo1.png" alt="UBUMonitorWeb" />
+      <h2 i18n>Login</h2>
+    </header>
 
-  <app-text-field
-    i18n-label
-    label="Host"
-    autocomplete="url"
-    suffixIcon="warning"
-    i18n-suffixTitle
-    suffixTitle="Insecure connection"
-    [suffix]="store.insecure()"
-    [list]="store.filteredHosts()"
-    [formField]="loginForm.host"
-  />
+    <app-text-field
+      i18n-label
+      label="Host"
+      autocomplete="url"
+      suffixIcon="warning"
+      i18n-suffixTitle
+      suffixTitle="Insecure connection"
+      [suffix]="store.insecure()"
+      [list]="store.filteredHosts()"
+      [formField]="loginForm.host"
+    />
 
-  <app-text-field
-    i18n-label
-    label="User"
-    autocomplete="username"
-    [list]="store.filteredUsernames()"
-    [formField]="loginForm.username"
-  />
+    <app-text-field
+      i18n-label
+      label="User"
+      autocomplete="username"
+      [list]="store.filteredUsernames()"
+      [formField]="loginForm.username"
+    />
 
-  <app-password-field i18n-label label="Password" [formField]="loginForm.password" />
+    <app-password-field i18n-label label="Password" [formField]="loginForm.password" />
 
-  <fieldset class="checkbox-group">
-    <mat-checkbox [formField]="loginForm.rememberHost" i18n>Remember host</mat-checkbox>
-    <mat-checkbox [formField]="loginForm.rememberUsername" i18n>Remember username</mat-checkbox>
-    <mat-checkbox [formField]="loginForm.offlineMode" i18n>Offline mode</mat-checkbox>
-  </fieldset>
+    <fieldset class="checkbox-group">
+      <mat-checkbox [formField]="loginForm.rememberHost" i18n>Remember host</mat-checkbox>
+      <mat-checkbox [formField]="loginForm.rememberUsername" i18n>Remember username</mat-checkbox>
+      <mat-checkbox [formField]="loginForm.offlineMode" i18n>Offline mode</mat-checkbox>
+    </fieldset>
 
-  <nav class="form-actions">
-    <button matButton="filled" color="primary" type="submit" [disabled]="!loginForm().valid()" i18n>
-      Connect
-    </button>
-    <button matIconButton type="button" (click)="store.restore()" i18n-title title="Restore">
-      <mat-icon>settings_backup_restore</mat-icon>
-    </button>
-    <button matIconButton type="button" (click)="store.clean()" i18n-title title="Clean">
-      <mat-icon>cleaning_services</mat-icon>
-    </button>
-  </nav>
-</form>
+    <nav class="form-actions">
+      <button
+        matButton="filled"
+        color="primary"
+        type="submit"
+        [disabled]="!loginForm().valid()"
+        i18n
+      >
+        Connect
+      </button>
+      <button matIconButton type="button" (click)="store.restore()" i18n-title title="Restore">
+        <mat-icon>settings_backup_restore</mat-icon>
+      </button>
+      <button matIconButton type="button" (click)="store.clean()" i18n-title title="Clean">
+        <mat-icon>cleaning_services</mat-icon>
+      </button>
+    </nav>
+  </form>
+}

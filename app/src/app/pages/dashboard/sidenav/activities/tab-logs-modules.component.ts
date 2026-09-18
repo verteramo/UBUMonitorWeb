@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTreeModule } from '@angular/material/tree';
 import { Module } from '@core/models/module';
@@ -6,25 +6,35 @@ import { Section } from '@core/models/section';
 import { withDatasetSlice } from '@core/stores/features/dataset-slice.feature';
 import { withFilters } from '@core/stores/features/filters.feature';
 import { withSelection } from '@core/stores/features/selection.feature';
-import { signalStore, withFeature } from '@ngrx/signals';
+import { withSettingsSlice } from '@core/stores/features/settings-slice.feature';
+import { signalStore, withComputed, withFeature } from '@ngrx/signals';
 import { FilterControlComponent } from '@shared/components/filter-control.component';
 import ItemComponent from './item.component';
 
 const Store = signalStore(
   withDatasetSlice('sections'),
-  withFeature(({ sections }) =>
-    withFilters<Section, { term: string }>({
+  withComputed(({ sections }) => ({
+    modules: computed(() => [
+      ...new Set(
+        sections()
+          .flatMap(({ modules }) => modules),
+      ),
+    ]),
+  })),
+  withFeature(({ modules }) =>
+    withFilters<Module, { term: string }>({
       filters: { term: '' },
       transformFn: ({ term }) => ({ term: term.trim().toLowerCase() }),
-      items: sections,
-      filterFn: ({ term }, section) => section.name?.toLowerCase().includes(term) ?? false,
+      items: modules,
+      filterFn: ({ term }, module) => module.name.toLowerCase().includes(term),
     }),
   ),
-  withFeature(({ filteredItems }) => withSelection(filteredItems, (section) => section.id)),
+  withFeature(({ filteredItems }) => withSelection(filteredItems, ({ id }) => id)),
+  withSettingsSlice('modules'),
 );
 
 @Component({
-  selector: 'app-tab-logs-sections',
+  selector: 'app-tab-logs-modules',
   providers: [Store],
   imports: [FilterControlComponent, MatTreeModule, MatIconModule, ItemComponent],
   styles: ``,
@@ -43,18 +53,17 @@ const Store = signalStore(
     </header>
 
     <main>
-      @for (section of store.sections(); track $index) {
-          <app-item
-            class="tree-item-content"
-            [item]="section"
-            [selected]="store.isSelected(section.id)"
-            (toggle)="store.toggleItem($event)"
-          />
+      @for (module of store.filteredItems(); track $index) {
+        <app-item
+          [item]="module"
+          [selected]="store.isSelected(module.id)"
+          (toggle)="store.toggleItem($event)"
+        />
       }
     </main>
   `,
 })
-export class TabLogsSectionsComponent {
+export class TabLogsModulesComponent {
   readonly store = inject(Store);
 
   // Devuelve los hijos de un nodo (en este caso, los módulos de una sección)

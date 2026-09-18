@@ -6,19 +6,10 @@
 
 import { Component, input, output } from '@angular/core';
 import { MatCheckbox } from '@angular/material/checkbox';
-import { MatIcon } from '@angular/material/icon';
-
-type Item = {
-  id: number;
-  name: string | null;
-  isVisible: boolean;
-  isUserVisible: boolean;
-  picture?: string;
-};
 
 @Component({
-  selector: 'app-item',
-  imports: [MatIcon, MatCheckbox],
+  selector: 'app-string-item',
+  imports: [MatCheckbox],
   styles: `
     article {
       display: flex;
@@ -47,13 +38,6 @@ type Item = {
       color: var(--mat-sys-on-surface);
     }
 
-    mat-icon {
-      font-size: 18px;
-      width: 18px;
-      height: 18px;
-      color: var(--mat-sys-outline, #757575);
-    }
-
     mat-checkbox {
       height: 32px;
       display: flex;
@@ -61,29 +45,15 @@ type Item = {
     }
   `,
   template: `
-    <article [class.selected]="selected()" (click)="toggle.emit(item().id)">
+    <article [class.selected]="selected()" (click)="toggle.emit(item())">
       <mat-checkbox [checked]="selected()" style="pointer-events: none"></mat-checkbox>
 
-      @if (item().picture) {
-        <img [src]="item().picture" [alt]="item().name" />
-      }
-
-      <span [title]="item().name">{{ item().name }}</span>
-
-      @if (item().isUserVisible) {
-        <mat-icon i18n-title title="Public">public</mat-icon>
-      }
-
-      @if (item().isVisible) {
-        <mat-icon i18n-title title="Visible">visibility</mat-icon>
-      } @else {
-        <mat-icon i18n-title title="Hidden">visibility_off</mat-icon>
-      }
+      <span [title]="item()">{{ item() }}</span>
     </article>
   `,
 })
-export default class ItemComponent {
-  item = input.required<Item>();
+export default class StringItemComponent {
+  item = input.required<string>();
   selected = input<boolean>();
-  toggle = output<number>();
+  toggle = output<string>();
 }

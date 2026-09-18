@@ -16,7 +16,10 @@ Este fichero forma parte de UBUMonitorWeb.
     </div>
 
     <nav>
-      <button mat-icon-button (click)="session.logout()" i18n-title title="Logout">
+      <button matIconButton (click)="store.refresh()" i18n-title title="Refresh">
+        <mat-icon>refresh</mat-icon>
+      </button>
+      <button matIconButton (click)="session.logout()" i18n-title title="Logout">
         <mat-icon>logout</mat-icon>
       </button>
       <app-theme-toggle />
@@ -37,7 +40,7 @@ Este fichero forma parte de UBUMonitorWeb.
         </mat-form-field>
       </div>
 
-      <mat-tab-group [selectedIndex]="store.tab()" (selectedIndexChange)="store.setTab($event)">
+      <mat-tab-group [selectedIndex]="store.tabIndex()" (selectedIndexChange)="store.setTabIndex($event)">
         <mat-tab i18n-label label="All"></mat-tab>
         <mat-tab i18n-label label="Starred"></mat-tab>
         <mat-tab i18n-label label="Recents"></mat-tab>
@@ -103,7 +106,12 @@ Este fichero forma parte de UBUMonitorWeb.
         <mat-checkbox i18n>Grades</mat-checkbox>
         <mat-checkbox i18n>Activity completion</mat-checkbox>
       </div>
-      <button mat-flat-button color="primary" [disabled]="form.courseId().controlValue() === null" i18n>
+      <button
+        mat-flat-button
+        color="primary"
+        [disabled]="form.courseId().controlValue() === null"
+        i18n
+      >
         Select
       </button>
     </footer>

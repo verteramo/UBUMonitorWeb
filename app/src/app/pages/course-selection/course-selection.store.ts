@@ -1,15 +1,16 @@
 import { computed, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { Sort } from '@angular/material/sort';
+import { Course } from '@core/models/course';
 import { CourseClassification, CourseService } from '@core/services/course.service';
+import { withTabs } from '@core/stores/features/tab.feature';
 import {
-  patchState,
   signalStore,
   withComputed,
   withMethods,
-  withProps,
-  withState,
+  withProps
 } from '@ngrx/signals';
+import { of, tap } from 'rxjs';
 
 /**
  * Clasificaciones de las pestañas del componente.
@@ -24,26 +25,12 @@ const classifications: CourseClassification[] = [
 ];
 
 /**
- * Propiedades de estado del componente de selección de curso.
- */
-type CourseSelectionState = {
-  tab: number;
-};
-
-/**
  * Tipo para el modelo del formulario.
  */
 type CourseSelectionModel = {
   term: string;
   sorts: Sort[];
   courseId: number | null;
-};
-
-/**
- * Estado inicial del componente.
- */
-const initialState: CourseSelectionState = {
-  tab: 0,
 };
 
 /**
@@ -64,15 +51,21 @@ const initialModelState: CourseSelectionModel = {
  * Store de propiedades de estado del componente de selección de curso.
  */
 export const CourseSelectionStore = signalStore(
-  withState(initialState),
-  withProps(({ tab }, service = inject(CourseService)) => ({
+  withTabs<CourseClassification>(['all', 'starred', 'recent', 'inprogress', 'future', 'past']),
+  withProps(() => ({
+    _cache: new Map<CourseClassification, Course[]>(),
+  })),
+  withProps(({ _cache, tab }, service = inject(CourseService)) => ({
     /**
      * Recurso con los cursos.
      */
     courses: rxResource({
       defaultValue: [],
-      params: () => classifications[tab()],
-      stream: ({ params }) => service.getCourses(params),
+      params: tab,
+      stream: ({ params: tab }) =>
+        _cache.has(tab)
+          ? of(_cache.get(tab))
+          : service.getCourses(tab).pipe(tap((courses) => _cache.set(tab, courses))),
     }),
 
     /**
@@ -80,11 +73,11 @@ export const CourseSelectionStore = signalStore(
      */
     model: signal(initialModelState),
   })),
-  withComputed(({ model, tab }) => ({
+  withComputed(({ model, tabIndex }) => ({
     /**
      * Estado de la ordenación de las columnas.
      */
-    sort: computed(() => model().sorts[tab()]),
+    sort: computed(() => model().sorts[tabIndex()]),
   })),
   withComputed(({ courses, model, sort }) => ({
     /**
@@ -92,18 +85,19 @@ export const CourseSelectionStore = signalStore(
      */
     selectedCourse: computed(() => {
       const { courseId } = model();
-      return courseId ? courses.value().find(({ id }) => id === courseId) : undefined;
+      return courseId ? courses.value()?.find(({ id }) => id === courseId) : undefined;
     }),
 
     /**
      * Colección de cursos filtrados y ordenados.
      */
     filteredCourses: computed(() => {
+      const currentCourses = courses.value() ?? [];
       const term = model().term.trim().toLowerCase();
 
       const filtered = term
-        ? courses.value().filter(({ name }) => name.toLowerCase().includes(term))
-        : [...courses.value()];
+        ? currentCourses.filter(({ name }) => name.toLowerCase().includes(term))
+        : [...currentCourses];
 
       const { active, direction } = sort();
 
@@ -118,17 +112,7 @@ export const CourseSelectionStore = signalStore(
       return filtered;
     }),
   })),
-  withMethods((store) => ({
-    /**
-     * Establece la pestaña seleccionada.
-     *
-     * @param tab Pestaña.
-     */
-    setTab(tab: number): void {
-      patchState(store, { tab });
-    },
-  })),
-  withMethods(({ model, tab }) => ({
+  withMethods(({ _cache, tabIndex, tab, courses, model }) => ({
     /**
      * Establece el estado de ordenación de una columna determinada.
      *
@@ -137,7 +121,7 @@ export const CourseSelectionStore = signalStore(
     setSort(newSort: Sort) {
       model.update((state) => ({
         ...state,
-        sorts: state.sorts.map((sort, i) => (i === tab() ? newSort : sort)),
+        sorts: state.sorts.map((sort, i) => (i === tabIndex() ? newSort : sort)),
       }));
     },
 
@@ -148,6 +132,11 @@ export const CourseSelectionStore = signalStore(
      */
     setCourseId(id: number) {
       model.update((state) => ({ ...state, courseId: id }));
+    },
+
+    refresh(): void {
+      _cache.delete(tab());
+      courses.reload();
     },
   })),
 );

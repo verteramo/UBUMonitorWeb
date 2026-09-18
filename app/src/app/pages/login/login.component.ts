@@ -4,7 +4,7 @@
  * @author Marcelo Verteramo Pérsico
  */
 
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { form, FormField, required } from '@angular/forms/signals';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -15,8 +15,10 @@ import { AppError } from '@core/interceptors/app-error';
 import { DatasetStore } from '@core/stores/dataset.store';
 import { url } from '@core/validators/url-validator';
 import { PasswordFieldComponent } from '@shared/components/password-field.component';
+import { ProgressSpinnerComponent } from '@shared/components/progress-spinner.component';
 import { InputFieldComponent } from '@shared/components/text-field.component';
 import { ThemeToggleComponent } from '@shared/components/theme-toggle.component';
+import { finalize } from 'rxjs';
 import { LoginStore } from './login.store';
 
 /**
@@ -35,6 +37,7 @@ import { LoginStore } from './login.store';
     ThemeToggleComponent,
     InputFieldComponent,
     PasswordFieldComponent,
+    ProgressSpinnerComponent,
   ],
   providers: [LoginStore],
   templateUrl: './login.component.html',
@@ -44,10 +47,10 @@ export class LoginComponent {
   /** Snack para notificaciones. */
   private snack = useSnack();
 
+  private readonly dataset = inject(DatasetStore);
+
   /** Store del componente. */
   protected readonly store = inject(LoginStore);
-
-  private readonly dataset = inject(DatasetStore);
 
   /** Esquema del formulario. */
   protected readonly loginForm = form(this.store.model, (schema) => {
@@ -57,16 +60,22 @@ export class LoginComponent {
     url(schema.host);
   });
 
+  protected readonly isLoading = signal(false);
+
   /** Procesamiento del formulario. */
   protected onSubmit(event: Event) {
     event.preventDefault();
+    this.isLoading.set(true);
 
-    this.store.login().subscribe({
-      error: (e: AppError) => this.snack(e.message),
-      complete: () => {
-        const { username, password } = this.store.model();
-        this.dataset.computeHash(username, password);
-      },
-    });
+    this.store
+      .login()
+      .pipe(finalize(() => this.isLoading.set(false)))
+      .subscribe({
+        error: (e: AppError) => this.snack(e.message),
+        complete: () => {
+          const { username, password } = this.store.model();
+          this.dataset.computeHash(username, password);
+        },
+      });
   }
 }
