@@ -6,7 +6,8 @@ import { Section } from '@core/models/section';
 import { withDatasetSlice } from '@core/stores/features/dataset-slice.feature';
 import { withFilters } from '@core/stores/features/filters.feature';
 import { withSelection } from '@core/stores/features/selection.feature';
-import { withSettingsSlice } from '@core/stores/features/settings-slice.feature';
+import { withSlice } from '@core/stores/features/slices.feature';
+import { SessionSettingsStore } from '@core/stores/session-settings.store';
 import { signalStore, withComputed, withFeature } from '@ngrx/signals';
 import { FilterControlComponent } from '@shared/components/filter-control.component';
 import StringItemComponent from './string-item.component';
@@ -31,7 +32,7 @@ const Store = signalStore(
     }),
   ),
   withFeature(({ filteredItems }) => withSelection(filteredItems, (component) => component)),
-  withSettingsSlice('components'),
+  withSlice(SessionSettingsStore, 'components'),
 );
 
 @Component({

@@ -6,8 +6,8 @@
 
 package es.ubu.lsi.ubumonitorweb.moodle.client
 
-import es.ubu.lsi.ubumonitorweb.core.client.ClientProfile
-import es.ubu.lsi.ubumonitorweb.core.client.PhpCollection
+import es.ubu.lsi.ubumonitorweb.core.client.Client
+import es.ubu.lsi.ubumonitorweb.core.resolver.PhpCollection
 import es.ubu.lsi.ubumonitorweb.moodle.dto.MoodleCategory
 import es.ubu.lsi.ubumonitorweb.moodle.dto.MoodleCourse
 import es.ubu.lsi.ubumonitorweb.moodle.dto.MoodleSection
@@ -18,7 +18,7 @@ import org.springframework.web.service.annotation.PostExchange
  * Cliente HTTP de obtención de cursos, permite obtener categorías,
  * cursos recientes y cursos clasificados (en progreso, pasados y futuros).
  */
-@ClientProfile("webservice-client")
+@Client("webservice-client")
 interface CoreCourseClient {
   data class EnrolledCoursesByTimelineClassificationResponse(
     val courses: List<MoodleCourse>,

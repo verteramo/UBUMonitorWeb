@@ -1,0 +1,46 @@
+@startuml
+autonumber
+
+actor Usuario
+participant "Frontend React" as Frontend
+participant "Backend Spring Boot" as Backend
+participant "Moodle" as Moodle
+participant "SSO Universidad" as SSO
+
+Usuario -> Frontend: Clic en "Acceder mediante SSO"
+Frontend -> Moodle: Redirección web a Moodle (launch.php)
+note over Frontend, Moodle: El usuario abandona temporalmente la app
+
+Moodle -> SSO: Deriva la petición a la pasarela SAML
+SSO --> Usuario: Muestra formulario web (Usuario + 2FA)
+
+Usuario -> SSO: Introduce credenciales e identidad
+SSO -> Moodle: Confirma identidad exitosa
+Moodle -> Moodle: Genera Token de Web Service interno
+
+== Muro de Seguridad (Bloqueo de localhost) ==
+
+Moodle -[#red]X Backend: Intento de redirección a localhost:8080/api/sso/callback
+note right of Moodle
+  <color:red><b>ERROR FATAL: Invalid Redirect URI</b></color>
+  El servidor aborta la redirección.
+  "localhost" no está registrado en la lista
+  blanca de dominios seguros de la institución.
+end note
+
+Moodle --> Usuario: Muestra pantalla de error de seguridad
+note over Usuario, Frontend
+  <b>Flujo Roto:</b>
+  El usuario se queda atascado en el navegador.
+  Spring Boot sigue esperando en silencio y 
+  React nunca recupera el control.
+end note
+
+== Supuestos pasos de vuelta (Si no hubiera fallo) ==
+
+Moodle -[#gray]-> Backend: <color:gray>Redirige a localhost:8080/api/sso/callback con el token
+Backend -[#gray]-> Backend: <color:gray>Guarda el token en la base de datos local
+Backend -[#gray]-> Frontend: <color:gray>Responde con HTTP 302 hacia /dashboard
+Frontend -[#gray]-> Usuario: <color:gray>Muestra la interfaz principal autenticada
+
+@enduml

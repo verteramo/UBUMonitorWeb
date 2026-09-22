@@ -40,11 +40,7 @@ class SecurityConfiguration(
          * public-routes.
          */
         it.dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
-        it.requestMatchers(*properties.permitAll.toTypedArray()).permitAll()
-        /*
-         * El resto de rutas requieren un usuario autenticado, en caso
-         * contrario fallarán con el error 403 Forbidden.
-         */
+        it.requestMatchers(*properties.publicRoutes.toTypedArray()).permitAll()
         it.anyRequest().authenticated()
       }.build()
 }

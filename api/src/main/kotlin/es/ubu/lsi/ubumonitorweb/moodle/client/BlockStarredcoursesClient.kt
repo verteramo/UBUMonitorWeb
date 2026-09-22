@@ -6,14 +6,14 @@
 
 package es.ubu.lsi.ubumonitorweb.moodle.client
 
-import es.ubu.lsi.ubumonitorweb.core.client.ClientProfile
+import es.ubu.lsi.ubumonitorweb.core.client.Client
 import es.ubu.lsi.ubumonitorweb.moodle.dto.MoodleCourse
 import org.springframework.web.service.annotation.PostExchange
 
 /**
  * Cliente HTTP de obtención de cursos destacados.
  */
-@ClientProfile("webservice-client")
+@Client("webservice-client")
 interface BlockStarredcoursesClient {
   /** Obtiene los curso destacados del usuario autenticado. */
   @PostExchange

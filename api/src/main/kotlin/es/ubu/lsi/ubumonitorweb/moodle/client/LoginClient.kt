@@ -6,7 +6,7 @@
 
 package es.ubu.lsi.ubumonitorweb.moodle.client
 
-import es.ubu.lsi.ubumonitorweb.core.client.ClientProfile
+import es.ubu.lsi.ubumonitorweb.core.client.Client
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -18,7 +18,7 @@ import org.springframework.web.service.annotation.PostExchange
 /**
  * Cliente encargado de las llamadas al formulario de login de Moodle `/login/index.php`.
  */
-@ClientProfile
+@Client("login-client")
 interface LoginClient {
   /**
    * Llamada GET al formulario,

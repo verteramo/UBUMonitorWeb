@@ -6,9 +6,10 @@
 
 package es.ubu.lsi.ubumonitorweb.core.client
 
+import com.fasterxml.jackson.annotation.JsonAlias
 import org.springframework.http.HttpStatus
 import org.springframework.web.ErrorResponseException
-import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty
+import tools.jackson.databind.JsonNode
 
 /**
  * Excepción para el manejo de errores de los servicios de Moodle. Los servicios de Moodle devuelven
@@ -16,45 +17,35 @@ import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty
  * para relanzarlos y manejarlos adecuadamente.
  */
 class ClientException(
-  status: HttpStatus,
-) : ErrorResponseException(status) {
-  /**
-   * Estructura JSON que devuelve el servicio de autenticación de Moodle.
-   * https://github.com/moodle/moodle/blob/main/public/login/token.php#L106
-   */
-  data class AuthError(
-    val errorcode: String,
-    val error: String,
-  )
-
-  /**
-   * Estructura JSON/XML que devuelven los servicios REST de Moodle.
-   * https://github.com/moodle/moodle/blob/main/public/webservice/lib.php
-   */
-  data class RestError(
-    @JacksonXmlProperty(localName = "ERRORCODE") val errorcode: String,
-    @JacksonXmlProperty(localName = "MESSAGE") val message: String,
-  )
-
-  companion object {
-    /** Mapeo de códigos de error de Moodle a códigos de estado HTTP. */
-    private val STATUS_CODES =
-      mapOf(
-        "invalidlogin" to HttpStatus.UNAUTHORIZED,
-        "invalidtoken" to HttpStatus.FORBIDDEN,
-        "nopermissions" to HttpStatus.FORBIDDEN,
-        "invalid_parameter_exception" to HttpStatus.BAD_REQUEST,
-        "sitepolicynotagreed" to HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS, // 21-08-2026 12:00
-      )
+  val error: ClientError,
+  mappings: Map<String, HttpStatus>,
+) : ErrorResponseException(mappings.getOrDefault(error.status, HttpStatus.BAD_REQUEST)) {
+  init {
+    setDetail(error.detail)
   }
 
-  /** Sobrecarga del constructor para errores del servicio de autenticación. */
-  constructor(e: AuthError) : this(STATUS_CODES.getValue(e.errorcode)) {
-    setDetail(e.error)
-  }
+  /**
+   * DTO para mapear errores de Moodle.
+   *
+   * @param code Código de error de Moodle.
+   * @param message Mensaje de error original de Moodle.
+   * @param node
+   */
+  data class ClientError(
+    @JsonAlias("errorcode", "ERRORCODE") val code: String?,
+    @JsonAlias("error", "message", "MESSAGE") val message: String?,
+    @JsonAlias("exception") val node: JsonNode? = null,
+  ) {
+    /**
+     * Resolución del código de estado final.
+     */
+    val status: String?
+      get() = node?.get("errorcode")?.asString() ?: code
 
-  /** Sobrecarga del constructor para errores de los servicios REST. */
-  constructor(e: RestError) : this(STATUS_CODES.getValue(e.errorcode)) {
-    setDetail(e.message)
+    /**
+     * Resolución del mensaje de error final.
+     */
+    val detail: String?
+      get() = node?.get("message")?.asString() ?: message
   }
 }

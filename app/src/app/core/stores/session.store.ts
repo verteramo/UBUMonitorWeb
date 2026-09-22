@@ -8,9 +8,8 @@ import { computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Course } from '@core/models/course';
 import { Principal } from '@core/models/principal';
-import { AuthService, LoginParams } from '@core/services/auth.service';
+import { AuthService } from '@core/services/auth.service';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
-import { Observable, tap } from 'rxjs';
 import { withStorage } from './features/storage.feature';
 
 /**
@@ -86,25 +85,6 @@ export const SessionStore = signalStore(
   })),
   withMethods((store, service = inject(AuthService)) => ({
     /**
-     * Inicio de sesión e hidratación del principal del store.
-     *
-     * @param params Datos de inicio de sesión.
-     */
-    login(params: LoginParams): Observable<Principal> {
-      return service.login(params).pipe(
-        tap({
-          next(principal): void {
-            store.setPrincipal(principal);
-          },
-
-          error(e): void {
-            console.error(e);
-          },
-        }),
-      );
-    },
-
-    /**
      * Cierre de sesión.
      */
     logout(): void {
@@ -112,5 +92,6 @@ export const SessionStore = signalStore(
       service.logout();
     },
   })),
+  // Se almacena en sessionStorage
   withStorage(sessionStorage, 'session'),
 );

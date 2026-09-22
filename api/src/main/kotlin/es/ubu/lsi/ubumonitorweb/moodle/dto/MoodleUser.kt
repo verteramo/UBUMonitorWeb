@@ -6,7 +6,7 @@
 
 package es.ubu.lsi.ubumonitorweb.moodle.dto
 
-import es.ubu.lsi.ubumonitorweb.core.client.ResourceUrlConverter
+import es.ubu.lsi.ubumonitorweb.core.resolver.ResourceUrlConverter
 import es.ubu.lsi.ubumonitorweb.domain.User
 import tools.jackson.databind.annotation.JsonDeserialize
 

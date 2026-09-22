@@ -6,12 +6,12 @@
 
 package es.ubu.lsi.ubumonitorweb.moodle.client
 
-import es.ubu.lsi.ubumonitorweb.core.client.ClientProfile
+import es.ubu.lsi.ubumonitorweb.core.client.Client
 import es.ubu.lsi.ubumonitorweb.moodle.dto.MoodleUserGrade
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.service.annotation.PostExchange
 
-@ClientProfile("webservice-client")
+@Client("webservice-client")
 interface GradereportUserClient {
   data class GradeItemsResponse(
     val usergrades: List<MoodleUserGrade>,

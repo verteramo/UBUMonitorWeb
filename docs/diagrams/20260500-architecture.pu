@@ -1,0 +1,49 @@
+@startuml Architecture
+
+package "Capa cliente" as ClientLayer #EAECEE {
+    actor "Usuario" as User
+    component "Navegador web" as Browser
+
+    Browser <-right-> User: Interacción
+}
+
+rectangle "Aplicación Autocontenida (Local)" as SystemBoundary #line.dashed {
+
+    package "Capa presentación: Frontend (React)" as PresentationLayer #D6EAF8 {
+        component "Vistas UI" as PresentationViews
+        component "Lógica y estado" as PresentationLogic
+        component "Clientes REST" as PresentationClients
+        
+        PresentationViews <-right-> PresentationLogic
+        PresentationLogic <-right-> PresentationClients
+    }
+
+    package "Capa negocio: Backend (Spring Boot)" as BusinessLayer #D5F5E3 {
+        component "Controladores\nEndpoints REST" as BusinessControllers
+        component "Servicios\nLógica y negocio" as BusinessServices
+        component "Repositorios JPA" as BusinessRepositories
+        component "Clientes REST" as BusinessClients
+        component "Scrapers HTML" as BusinessScrapers
+        
+        BusinessControllers <-left-> BusinessServices
+        BusinessServices <-down-> BusinessRepositories
+        BusinessServices <-down-> BusinessClients
+        BusinessServices <-down-> BusinessScrapers
+    }
+
+    package "Capa datos: Persistencia (H2)" as DataLayer #FCF3CF {
+        database "Base de datos local" as Database
+    }
+}
+
+package "Servicios externos" as ExternalServicesLayer #F5EEF8 {
+    cloud "Moodle" as Moodle
+}
+
+Browser <.down.> PresentationViews
+PresentationClients <.down.> BusinessControllers : JSON
+BusinessClients <.down.> Moodle : XML/JSON
+BusinessScrapers <.down.> Moodle : HTML
+BusinessRepositories <.down.> Database : SQL
+
+@enduml

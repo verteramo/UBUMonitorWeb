@@ -6,8 +6,10 @@
 
 package es.ubu.lsi.ubumonitorweb.moodle.dto
 
-import es.ubu.lsi.ubumonitorweb.core.client.ResourceUrlConverter
+import es.ubu.lsi.ubumonitorweb.core.resolver.ResourceUrlConverter
+import es.ubu.lsi.ubumonitorweb.domain.Principal
 import tools.jackson.databind.annotation.JsonDeserialize
+import java.time.ZoneId
 
 data class MoodleSiteInfo(
   val sitename: String,
@@ -22,4 +24,27 @@ data class MoodleSiteInfo(
   val userissiteadmin: Boolean?,
   val version: String?,
   val release: String?,
-)
+) {
+  /**
+   * Mapea los datos del Principal.
+   */
+  fun toPrincipal(
+    timezone: ZoneId,
+    siteTimezone: ZoneId,
+  ) = Principal(
+    id = userid,
+    username = username,
+    isAdmin = userissiteadmin == true,
+    language = lang,
+    firstName = firstname,
+    lastName = lastname,
+    fullName = fullname,
+    picture = userpictureurl,
+    timezone = timezone,
+    siteUrl = siteurl,
+    siteName = sitename,
+    siteVersion = version,
+    siteRelease = release,
+    siteTimezone = siteTimezone,
+  )
+}

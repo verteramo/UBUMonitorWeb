@@ -6,6 +6,7 @@
 
 package es.ubu.lsi.ubumonitorweb.core.security
 
+import es.ubu.lsi.ubumonitorweb.domain.AuthConfig
 import es.ubu.lsi.ubumonitorweb.domain.Principal
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -28,8 +29,12 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/auth")
 class AuthController(
-  private val manager: AuthenticationManager,
+  private val authManager: AuthenticationManager,
+  private val authService: AuthService,
 ) {
+  /**
+   * Parámetros de login.
+   */
   data class LoginParams(
     val username: String,
     val password: String,
@@ -38,7 +43,10 @@ class AuthController(
   /**
    * Repositorio de la sesión HTTP en memoria.
    */
-  private val session = HttpSessionSecurityContextRepository()
+  private val sessionRepository = HttpSessionSecurityContextRepository()
+
+  @GetMapping("/discover")
+  fun discover(): AuthConfig? = authService.discover()
 
   /**
    * Realiza el inicio de sesión.
@@ -49,7 +57,7 @@ class AuthController(
     response: HttpServletResponse,
     @RequestBody loginParams: LoginParams,
   ): Principal =
-    manager
+    authManager
       .authenticate(
         UsernamePasswordAuthenticationToken(
           loginParams.username,
@@ -57,7 +65,7 @@ class AuthController(
         ),
       ).let {
         // Almacenamiento de la sesión HTTP en memoria
-        session.saveContext(
+        sessionRepository.saveContext(
           SecurityContextHolder
             .createEmptyContext()
             .apply { authentication = it }

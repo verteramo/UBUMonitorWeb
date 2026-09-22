@@ -19,52 +19,88 @@ server:
         http-only: true
         same-site: strict
 
+
 logs:
   boolean-prefixes: [ is, has ]
 
-client:
-  profiles:
-    # Perfil con propiedades globales para peticiones GET
-    default-get:
-      host: es.ubu.lsi.ubumonitorweb.core.client.ClientHostProvider
-      forward-headers:
-        - Accept-Language
+clients:
+  error-mappings:
+    invalidlogin: unauthorized
+    invalidtoken: forbidden
+    nopermissions: forbidden
+    codingerror: bad_request
+    invalid_parameter: bad_request
+    sitepolicynotagreed: unavailable_for_legal_reasons
 
-    # Perfil con propiedades globales para peticiones GET
-    default-post:
-      inherit: default-get
-      headers:
-        Content-Type: application/x-www-form-urlencoded
+  profiles:
+    ################################################################
+    # Perfiles de autenticación
+    ################################################################
+    default:
+      host: es.ubu.lsi.ubumonitorweb.core.provider.HostProvider
 
     # Perfil del cliente de obtención del token
     token-client:
-      inherit: default-post
+      inherit: default
       endpoint: /login/token.php
+      headers:
+        Content-Type: application/x-www-form-urlencoded
       params:
         service: moodle_mobile_app
 
     # Perfil del cliente del formulario de login
     login-client:
-      inherit: default-get
+      inherit: default
       endpoint: /login/index.php
 
     # Perfil del cliente del formulario de edición del perfil
     user-edit-client:
-      inherit: default-get
+      inherit: default
       endpoint: /user/edit.php
+
+    webservice-client:
+      inherit: default
+      endpoint: /webservice/rest/server.php
+      headers:
+        Content-Type: application/x-www-form-urlencoded
+      params:
+        moodlewsrestformat: json
+      providers:
+        wstoken:
+          location: param
+          bean: es.ubu.lsi.ubumonitorweb.core.provider.TokenProvider
+        wsfunction:
+          location: param
+          bean: es.ubu.lsi.ubumonitorweb.core.provider.FunctionProvider
+
+    ajax-client:
+      inherit: default
+      endpoint: /lib/ajax/service.php
+      multiple: true
+      headers:
+        Content-Type: application/json
+      params:
+        index: 0
+      providers:
+        args:
+          location: param
+          bean: es.ubu.lsi.ubumonitorweb.core.provider.ArgsProvider
+        methodname:
+          location: param
+          bean: es.ubu.lsi.ubumonitorweb.core.provider.FunctionProvider
 
     # Perfil del cliente de recursos que requerirían cookies de sesión (usando token)
     resource-client:
-      inherit: default-get
+      inherit: default
       endpoint: /webservice/pluginfile.php
       providers:
         token:
           location: param
-          bean: es.ubu.lsi.ubumonitorweb.core.client.ClientTokenProvider
+          bean: es.ubu.lsi.ubumonitorweb.core.provider.TokenProvider
 
     # Perfil del cliente de reportes de logs
     log-client:
-      inherit: default-get
+      inherit: default
       endpoint: /report/log/index.php
       params:
         logreader: logstore_standard
@@ -73,20 +109,6 @@ client:
         # Los nombres de los campos son siempre en inglés (para garantizar un mapeado correcto)
         lang: en
       providers:
-        MoodleSession:
-          location: cookie
-          bean: es.ubu.lsi.ubumonitorweb.core.client.ClientCookieProvider
-
-    # Perfil de los clientes del webservice REST
-    webservice-client:
-      inherit: default-post
-      endpoint: /webservice/rest/server.php
-      params:
-        moodlewsrestformat: json
-      providers:
-        wstoken:
-          location: param
-          bean: es.ubu.lsi.ubumonitorweb.core.client.ClientTokenProvider
-        wsfunction:
-          location: param
-          bean: es.ubu.lsi.ubumonitorweb.core.client.ClientFunctionProvider
+        Cookie:
+          location: header
+          bean: es.ubu.lsi.ubumonitorweb.core.provider.CookieProvider

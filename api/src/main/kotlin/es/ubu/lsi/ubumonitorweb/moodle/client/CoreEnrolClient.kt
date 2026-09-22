@@ -6,8 +6,8 @@
 
 package es.ubu.lsi.ubumonitorweb.moodle.client
 
-import es.ubu.lsi.ubumonitorweb.core.client.ClientProfile
-import es.ubu.lsi.ubumonitorweb.core.client.PhpCollection
+import es.ubu.lsi.ubumonitorweb.core.client.Client
+import es.ubu.lsi.ubumonitorweb.core.resolver.PhpCollection
 import es.ubu.lsi.ubumonitorweb.moodle.dto.MoodleCourse
 import es.ubu.lsi.ubumonitorweb.moodle.dto.MoodleUser
 import org.springframework.web.bind.annotation.RequestParam
@@ -18,7 +18,7 @@ import org.springframework.web.service.annotation.PostExchange
  * - Todos los cursos de un usuario determinado
  * - Usuarios matriculados en un curso determinado
  */
-@ClientProfile("webservice-client")
+@Client("webservice-client")
 interface CoreEnrolClient {
   /** Obtiene todos los cursos para el ID de usuario especificado. */
   @PostExchange

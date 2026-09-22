@@ -30,14 +30,18 @@ class AuthProvider(
    * Realiza el procedimiento de autenticación.
    */
   override fun authenticate(authentication: Authentication): Authentication? {
-    // Obtención del usuario/contraseña desde el token de Spring Security
+    /*
+     * Obtención del usuario/contraseña desde el token de Spring Security
+     */
     val username = authentication.name
     val password = authentication.credentials.toString()
 
     val credentials = authService.getCredentials(username, password)
     val principal = authService.getPrincipal(credentials)
 
-    // Construcción y retorno del objeto Authentication para Spring Security
+    /*
+     * Construcción y retorno del objeto Authentication para Spring Security
+     */
     return object : AbstractAuthenticationToken(emptyList()) {
       init {
         super.isAuthenticated = true

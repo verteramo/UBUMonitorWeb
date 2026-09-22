@@ -6,11 +6,11 @@
 
 package es.ubu.lsi.ubumonitorweb.moodle.client
 
-import es.ubu.lsi.ubumonitorweb.core.client.ClientProfile
+import es.ubu.lsi.ubumonitorweb.core.client.Client
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.service.annotation.GetExchange
 
-@ClientProfile
+@Client("resource-client")
 interface ResourceClient {
   @GetExchange("/{id}/user/icon/{size}")
   fun getUserIcon(

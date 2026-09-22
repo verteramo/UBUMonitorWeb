@@ -9,7 +9,8 @@ import { User } from '@core/models/user';
 import { withDatasetSlice } from '@core/stores/features/dataset-slice.feature';
 import { withFilters } from '@core/stores/features/filters.feature';
 import { withSelection } from '@core/stores/features/selection.feature';
-import { withSettingsSlice } from '@core/stores/features/settings-slice.feature';
+import { withSlice } from '@core/stores/features/slices.feature';
+import { SessionSettingsStore } from '@core/stores/session-settings.store';
 import { signalStore, withComputed, withFeature } from '@ngrx/signals';
 
 /**
@@ -79,5 +80,5 @@ export const UsersStore = signalStore(
    * Habilitación de la funcionalidad de selección para el store.
    */
   withFeature(({ filteredItems }) => withSelection(filteredItems, (user) => user.id)),
-  withSettingsSlice('users'),
+  withSlice(SessionSettingsStore, 'users'),
 );

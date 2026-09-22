@@ -6,12 +6,12 @@
 
 package es.ubu.lsi.ubumonitorweb.moodle.client
 
-import es.ubu.lsi.ubumonitorweb.core.client.ClientProfile
-import es.ubu.lsi.ubumonitorweb.core.client.PhpMap
+import es.ubu.lsi.ubumonitorweb.core.client.Client
+import es.ubu.lsi.ubumonitorweb.core.resolver.PhpMap
 import es.ubu.lsi.ubumonitorweb.moodle.dto.MoodleCalendarEvent
 import org.springframework.web.service.annotation.PostExchange
 
-@ClientProfile("webservice-client")
+@Client("webservice-client")
 interface CoreCalendarClient {
   data class CalendarEventsResponse(
     val events: List<MoodleCalendarEvent>,

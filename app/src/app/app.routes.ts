@@ -9,7 +9,7 @@ import { sessionGuard } from '@core/guards/session-guard';
 import { CourseSelectionComponent } from '@pages/course-selection/course-selection.component';
 import { DashboardComponent } from '@pages/dashboard/dashboard.component';
 import { LoginComponent } from '@pages/login/login.component';
-import { LoginStore } from '@pages/login/login.store';
+import { SsoCallbackComponent } from '@pages/sso.component';
 
 /**
  * Configuración de las rutas de la aplicación.
@@ -26,7 +26,6 @@ export const routes: Routes = [
   {
     path: 'login',
     title: $localize`Login`,
-    providers: [LoginStore],
     component: LoginComponent,
     canActivate: [sessionGuard],
   },
@@ -41,5 +40,9 @@ export const routes: Routes = [
     title: $localize`Dashboard`,
     component: DashboardComponent,
     canActivate: [sessionGuard],
+  },
+  {
+    path: 'sso-callback',
+    component: SsoCallbackComponent,
   },
 ];

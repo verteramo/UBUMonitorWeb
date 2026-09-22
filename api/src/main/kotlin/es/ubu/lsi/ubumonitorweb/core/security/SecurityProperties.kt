@@ -11,9 +11,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 /**
  * Propiedades de configuración de seguridad.
  *
- * @param permitAll Conjunto de rutas públicas.
+ * @param publicRoutes Conjunto de rutas públicas.
  */
 @ConfigurationProperties("security")
 data class SecurityProperties(
-  val permitAll: Set<String> = emptySet(),
+  val publicRoutes: Set<String> = emptySet(),
 )

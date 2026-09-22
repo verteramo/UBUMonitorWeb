@@ -3,9 +3,10 @@ logging:
     es.ubu.lsi.ubumonitorweb: debug
 
 security:
-  permit-all:
-    - /api/auth/login
+  public-routes:
     - /
+    - /api/auth/discover
+    - /api/auth/login
     - /index.html
     - /*.js
     - /*.css
