@@ -5,6 +5,7 @@ import { AuthService } from '@core/services/auth.service';
 import { DatasetStore } from '@core/stores/dataset.store';
 import { SessionStore } from '@core/stores/session.store';
 import { resolveRelativeLinks } from '@core/utils/string.utils';
+import { environment as env } from '@env/environment';
 import {
   patchState,
   signalStore,
@@ -13,7 +14,7 @@ import {
   withProps,
   withState,
 } from '@ngrx/signals';
-import { finalize, Observable, tap } from 'rxjs';
+import { finalize, Observable, of, tap } from 'rxjs';
 import { LoginPreferencesStore } from './login-preferences.store';
 
 /**
@@ -210,7 +211,7 @@ export const LoginFormStore = signalStore(
           tap({
             next(principal): void {
               session.setPrincipal(principal);
-              dataset.computeHash(username, password);
+              dataset.computeHash(`${username}:${password}`);
               prefs.saveUsernamePreferences(username, rememberUsername);
             },
 
@@ -222,11 +223,35 @@ export const LoginFormStore = signalStore(
         );
       },
 
-      loginViaBrowser(url: string): void {
-        const host = store.model().host.trim();
-        const passport = Math.random().toString(36).substring(2, 15);
-        const callbackScheme = 'ubumonitor';
-        window.location.href = `${host}/admin/tool/mobile/launch.php?service=moodle_mobile_app&urlscheme=${callbackScheme}&passport=${passport}`;
+      loginSso(token: string): Observable<Principal> {
+        const { host } = store.model();
+
+        patchState(store, { loading: true });
+
+        return service.loginSso({ host, credentials: { token } }).pipe(
+          tap({
+            next(principal): void {
+              session.setPrincipal(principal);
+              dataset.computeHash(token);
+            },
+            error(e): void {
+              console.error(e);
+            },
+          }),
+          finalize(() => patchState(store, { loading: false })),
+        );
+      },
+
+      loginViaBrowser(): void {
+        const url = store.loginOptions()?.loginUrl;
+        const scheme = encodeURIComponent(env.scheme);
+        const finalUrl = `${url}?service=moodle_mobile_app&passport=1&urlscheme=${scheme}`;
+        console.log('Llamando a:', finalUrl);
+        window.location.href = finalUrl;
+      },
+
+      sendToken(token: string): Observable<Principal | null> {
+        return of(null);
       },
     };
   }),

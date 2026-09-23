@@ -68,16 +68,14 @@ class ExceptionInterceptor(
     requestExecution: ClientHttpRequestExecution,
   ): ClientHttpResponse =
     requestExecution.execute(request, requestBody).apply {
-      request.takeUnless { it.attributes["skipExceptionInterceptor"] == true }?.let {
-        headers.contentType?.mapper?.let { mapper ->
-          mapper
-            .readTree(body)
-            .let { if (it.isArray) it.firstOrNull() else it }
-            ?.takeIf { it.isObject }
-            ?.let { mapper.treeToValue<ClientException.ClientError>(it) }
-            ?.takeIf { it.status != null }
-            ?.let { throw ClientException(it, properties.errorMappings) }
-        }
+      headers.contentType?.mapper?.let { mapper ->
+        mapper
+          .readTree(body)
+          .let { if (it.isArray) it.firstOrNull() else it }
+          ?.takeIf { it.isObject }
+          ?.let { mapper.treeToValue<ClientException.ClientError>(it) }
+          ?.takeIf { it.status != null }
+          ?.let { throw ClientException(it, properties.errorMappings) }
       }
     }
 }

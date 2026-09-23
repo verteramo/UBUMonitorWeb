@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.service.invoker.HttpRequestValues
 import org.springframework.web.util.DefaultUriBuilderFactory
+import java.lang.reflect.AnnotatedElement
 import java.lang.reflect.Method
 
 /**
@@ -35,6 +36,9 @@ class ClientProcessor(
    * Expresión regular para la identificación de cambios de minúscula a mayúscula.
    */
   private val regex = Regex("(?<=[a-z])(?=[A-Z])")
+
+  private val AnnotatedElement.profile: String?
+    get() = AnnotatedElementUtils.getMergedAnnotation(this, Client::class.java)?.profile
 
   /**
    * Nombre del perfil para el cliente.
@@ -55,16 +59,7 @@ class ClientProcessor(
    *
    * En cuyo caso el nombre del perfil será `my-client`.
    */
-  private val Method.profile: String
-    get() =
-      AnnotatedElementUtils
-        .getMergedAnnotation(
-          declaringClass,
-          Client::class.java,
-        )?.profile
-        ?.takeIf {
-          it.isNotBlank()
-        } ?: declaringClass.simpleName.replace(regex, "-").lowercase()
+  private fun Method.getProfile(): String = profile ?: declaringClass.profile ?: declaringClass.simpleName.replace(regex, "-").lowercase()
 
   /**
    * Resuelve el Content-Type a partir de los parámetros y argumentos del método;
@@ -144,7 +139,7 @@ class ClientProcessor(
      * aplicación no debe ni siquiera arrancar, se puede entender
      * como un error de compilación.
      */
-    method.profile.let { context.getBean<ClientProperties>()[it] }?.let { profile ->
+    method.getProfile().let { context.getBean<ClientProperties>()[it] }?.let { profile ->
       // Contexto para los providers
       val methodContext =
         PropertyProvider.MethodAware.MethodContext(
@@ -235,6 +230,6 @@ class ClientProcessor(
       }
 
       requestValues.addAttribute("Method", method)
-    } ?: error(Message.ERROR_PROFILE_NOT_FOUND(method.profile))
+    } ?: error(Message.ERROR_PROFILE_NOT_FOUND(method.getProfile()))
   }
 }

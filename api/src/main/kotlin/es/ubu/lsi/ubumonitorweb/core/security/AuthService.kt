@@ -10,15 +10,28 @@ import es.ubu.lsi.ubumonitorweb.moodle.client.LoginClient
 import es.ubu.lsi.ubumonitorweb.moodle.client.TokenClient
 import es.ubu.lsi.ubumonitorweb.moodle.client.ToolMobileClient
 import es.ubu.lsi.ubumonitorweb.moodle.client.UserEditClient
+import es.ubu.lsi.ubumonitorweb.moodle.dto.MoodleToken
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.jsoup.Jsoup
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.service.annotation.GetExchange
 import org.springframework.web.service.registry.ImportHttpServices
+import org.springframework.web.util.DefaultUriBuilderFactory
+import org.springframework.web.util.UriBuilderFactory
 import java.time.ZoneId
 import java.time.ZoneOffset
+
+interface AutologinClient {
+  @GetExchange
+  fun autologin(
+    url: UriBuilderFactory,
+    @RequestParam key: String,
+  ): ResponseEntity<String>
+}
 
 /**
  * Servicio de autenticación que realiza todas las consultas necesarias a los distintos endpoints de Moodle para
@@ -26,6 +39,7 @@ import java.time.ZoneOffset
  */
 @Service
 @ImportHttpServices(
+  AutologinClient::class,
   ToolMobileClient::class,
   LoginClient::class,
   TokenClient::class,
@@ -34,6 +48,7 @@ import java.time.ZoneOffset
   UserEditClient::class,
 )
 class AuthService(
+  private val autologinClient: AutologinClient,
   private val toolMobileClient: ToolMobileClient,
   private val loginClient: LoginClient,
   private val tokenClient: TokenClient,
@@ -125,6 +140,60 @@ class AuthService(
 
     // En caso de no lograrse la extracción de alguno de todos estos datos
     // se puede determinar como un error de login inválido
+    throw Message.ERROR_INVALID_LOGIN(HttpStatus.UNAUTHORIZED)
+  }
+
+  fun getCredentials(token: String): Credentials {
+    val decodedBytes =
+      try {
+        // Si la URL ha escapado caracteres, los decodificamos protegiendo los '+' del Base64
+        val cleanToken =
+          java.net.URLDecoder
+            .decode(token.trimEnd('/'), Charsets.UTF_8.name())
+            .replace(' ', '+')
+
+        try {
+          java.util.Base64
+            .getDecoder()
+            .decode(cleanToken)
+        } catch (e: IllegalArgumentException) {
+          // Fallback defensivo a Base64 URL-safe
+          java.util.Base64
+            .getUrlDecoder()
+            .decode(cleanToken)
+        }
+      } catch (e: Exception) {
+        throw IllegalArgumentException("Token SSO de Moodle inválido", e)
+      }
+
+    val parts = String(decodedBytes, Charsets.UTF_8).split(":::")
+    if (parts.size < 2 || parts[1].isBlank()) {
+      throw IllegalArgumentException("Token de WebService de Moodle faltante")
+    }
+
+    val moodleToken =
+      MoodleToken(
+        token = parts[1],
+        privatetoken = parts[2],
+      )
+
+    val moodleAutologinKey = toolMobileClient.getAutologinKey(moodleToken.token, moodleToken.privatetoken)
+
+    val autologinResponse =
+      autologinClient.autologin(
+        DefaultUriBuilderFactory(
+          moodleAutologinKey.autologinurl,
+        ),
+        moodleAutologinKey.key,
+      )
+
+    val sessionKey = autologinResponse.sessionKey
+    val sessionCookie = autologinResponse.sessionCookie
+
+    if (sessionKey is String && sessionCookie is String) {
+      return moodleToken.toCredentials(sessionKey, sessionCookie)
+    }
+
     throw Message.ERROR_INVALID_LOGIN(HttpStatus.UNAUTHORIZED)
   }
 

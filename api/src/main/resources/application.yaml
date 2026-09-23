@@ -28,9 +28,11 @@ clients:
     invalidlogin: unauthorized
     invalidtoken: forbidden
     nopermissions: forbidden
+    apprequired: forbidden
     codingerror: bad_request
     invalid_parameter: bad_request
     sitepolicynotagreed: unavailable_for_legal_reasons
+    autologinkeygenerationlockout: too_many_requests
 
   profiles:
     ################################################################
@@ -62,6 +64,7 @@ clients:
       inherit: default
       endpoint: /webservice/rest/server.php
       headers:
+        User-Agent: MoodleMobile
         Content-Type: application/x-www-form-urlencoded
       params:
         moodlewsrestformat: json

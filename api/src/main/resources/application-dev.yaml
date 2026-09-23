@@ -1,11 +1,8 @@
-logging:
-  level:
-    es.ubu.lsi.ubumonitorweb: debug
-
 security:
   public-routes:
     - /
     - /api/auth/discover
+    - /api/auth/login-sso
     - /api/auth/login
     - /index.html
     - /*.js
@@ -23,3 +20,7 @@ security:
     # Springdoc
     - /v3/api-docs
     - /swagger-ui/**
+
+logging:
+  level:
+    es.ubu.lsi.ubumonitorweb: debug

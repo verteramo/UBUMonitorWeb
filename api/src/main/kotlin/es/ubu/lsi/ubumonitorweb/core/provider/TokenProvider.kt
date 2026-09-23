@@ -7,8 +7,6 @@
 package es.ubu.lsi.ubumonitorweb.core.provider
 
 import es.ubu.lsi.ubumonitorweb.core.client.PropertyProvider
-import es.ubu.lsi.ubumonitorweb.domain.Credentials
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 
 /**

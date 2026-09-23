@@ -13,6 +13,8 @@ import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository
@@ -35,15 +37,39 @@ class AuthController(
   /**
    * Parámetros de login.
    */
-  data class LoginParams(
+  data class UsernamePasswordLoginParams(
     val username: String,
     val password: String,
   )
+
+  data class TokenLoginParams(
+    val token: String,
+  )
+
+  private fun HttpSessionSecurityContextRepository.saveAuthentication(
+    authentication: Authentication,
+    request: HttpServletRequest,
+    response: HttpServletResponse,
+  ) {
+    saveContext(
+      SecurityContextHolder
+        .createEmptyContext()
+        .also { it.authentication = authentication }
+        .also { SecurityContextHolder.setContext(it) },
+      request,
+      response,
+    )
+  }
 
   /**
    * Repositorio de la sesión HTTP en memoria.
    */
   private val sessionRepository = HttpSessionSecurityContextRepository()
+
+  @GetMapping("/principal")
+  fun getPrincipal(
+    @AuthenticationPrincipal principal: Principal,
+  ): Principal = principal
 
   @GetMapping("/discover")
   fun discover(): AuthConfig? = authService.discover()
@@ -55,27 +81,23 @@ class AuthController(
   fun login(
     request: HttpServletRequest,
     response: HttpServletResponse,
-    @RequestBody loginParams: LoginParams,
+    @RequestBody loginParams: UsernamePasswordLoginParams,
   ): Principal =
-    authManager
-      .authenticate(
-        UsernamePasswordAuthenticationToken(
-          loginParams.username,
-          loginParams.password,
-        ),
-      ).let {
-        // Almacenamiento de la sesión HTTP en memoria
-        sessionRepository.saveContext(
-          SecurityContextHolder
-            .createEmptyContext()
-            .apply { authentication = it }
-            .apply(SecurityContextHolder::setContext),
-          request,
-          response,
-        )
+    authManager.authenticate(UsernamePasswordAuthenticationToken(loginParams.username, loginParams.password)).let {
+      sessionRepository.saveAuthentication(it, request, response)
+      it.principal as Principal
+    }
 
-        it.principal as Principal
-      }
+  @PostMapping("/login-sso")
+  fun login(
+    request: HttpServletRequest,
+    response: HttpServletResponse,
+    @RequestBody loginParams: TokenLoginParams,
+  ): Principal =
+    authManager.authenticate(SsoAuthenticationToken(loginParams.token)).let {
+      sessionRepository.saveAuthentication(it, request, response)
+      it.principal as Principal
+    }
 
   /**
    * Realiza el cierre de sesión.

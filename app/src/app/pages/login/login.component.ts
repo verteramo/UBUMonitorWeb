@@ -10,8 +10,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { ActivatedRoute } from '@angular/router';
 import { useSnack } from '@core/composables/snack';
 import { AppError } from '@core/interceptors/app-error';
+import { LoginType } from '@core/models/login-options';
 import { url } from '@core/validators/url-validator';
 import { PasswordFieldComponent } from '@shared/components/password-field.component';
 import { ProgressSpinnerComponent } from '@shared/components/progress-spinner.component';
@@ -42,8 +44,29 @@ import { LoginFormStore } from './login-form.store';
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
+  protected readonly LoginType = LoginType;
+
   private snack = useSnack();
+  private route = inject(ActivatedRoute);
   protected readonly store = inject(LoginFormStore);
+
+  constructor() {
+    this.route.queryParams.subscribe((params) => {
+      console.log(params);
+      const resdirectParam = params['redirect'];
+
+      if (resdirectParam) {
+        const fullUrl = decodeURIComponent(resdirectParam);
+        const tokenMatch = fullUrl.split('token=')[1];
+
+        if (tokenMatch) {
+          const token = tokenMatch.split('&')[0];
+          console.log('Token capturado desde el constructor:', token);
+          this.store.loginSso(token).subscribe({ error: (e: AppError) => this.snack(e.message) });
+        }
+      }
+    });
+  }
 
   /**
    * Esquema del formulario.
@@ -79,5 +102,10 @@ export class LoginComponent {
     } else {
       this.onLogin();
     }
+  }
+
+  protected onSsoLogin(event: Event): void {
+    event.preventDefault();
+    this.store.loginViaBrowser();
   }
 }

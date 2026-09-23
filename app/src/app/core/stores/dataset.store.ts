@@ -74,9 +74,9 @@ export const DatasetStore = signalStore(
      * @param username Nombre de usuario.
      * @param password Contraseña.
      */
-    computeHash(username: string, password: string) {
+    computeHash(secret: string) {
       patchState(store, {
-        hash: sha256(`${username}:${password}`),
+        hash: sha256(secret),
       });
     },
   })),

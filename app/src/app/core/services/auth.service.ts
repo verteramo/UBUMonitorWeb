@@ -14,11 +14,18 @@ import { Observable } from 'rxjs';
 /**
  * Parámetros de inicio de sesión para el método `login`.
  */
-export type LoginParams = {
+export type UsernamePasswordLoginParams = {
   host: string;
   credentials: {
     username: string;
     password: string;
+  };
+};
+
+export type TokenLoginParams = {
+  host: string;
+  credentials: {
+    token: string;
   };
 };
 
@@ -46,8 +53,15 @@ export class AuthService {
   /**
    * Inicio de sesión en el backend.
    */
-  login({ host, credentials }: LoginParams): Observable<Principal> {
+  login({ host, credentials }: UsernamePasswordLoginParams): Observable<Principal> {
     return this.http.post<Principal>(env.endpoints.login, credentials, {
+      context: new HttpContext().set(AuthToken, host),
+    });
+  }
+
+  loginSso({ host, credentials }: TokenLoginParams): Observable<Principal> {
+    console.log('Llamando a AuthService con:', host, credentials);
+    return this.http.post<Principal>(env.endpoints.loginSso, credentials, {
       context: new HttpContext().set(AuthToken, host),
     });
   }

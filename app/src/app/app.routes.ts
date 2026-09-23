@@ -9,8 +9,6 @@ import { sessionGuard } from '@core/guards/session-guard';
 import { CourseSelectionComponent } from '@pages/course-selection/course-selection.component';
 import { DashboardComponent } from '@pages/dashboard/dashboard.component';
 import { LoginComponent } from '@pages/login/login.component';
-import { SsoCallbackComponent } from '@pages/sso.component';
-
 /**
  * Configuración de las rutas de la aplicación.
  * Aquí se pueden configurar las rutas, títulos, componentes y guardas.
@@ -40,9 +38,5 @@ export const routes: Routes = [
     title: $localize`Dashboard`,
     component: DashboardComponent,
     canActivate: [sessionGuard],
-  },
-  {
-    path: 'sso-callback',
-    component: SsoCallbackComponent,
   },
 ];

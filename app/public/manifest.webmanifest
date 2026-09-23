@@ -1,13 +1,16 @@
 {
   "name": "UBUMonitorWeb",
   "short_name": "UBUMonitorWeb",
+  "display": "browser",
   "protocol_handlers": [
     {
-      "protocol": "web+umw",
-      "url": "/sso?url=%s"
+      "protocol": "web+ubumonitorweb",
+      "url": "/#/login?redirect=%s"
     }
   ],
-  "display": "standalone",
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
   "scope": "./",
   "start_url": "./",
   "icons": [

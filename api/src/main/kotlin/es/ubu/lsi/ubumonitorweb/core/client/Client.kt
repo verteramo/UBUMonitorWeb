@@ -24,7 +24,7 @@ package es.ubu.lsi.ubumonitorweb.core.client
  * @Client("my-profile")
  * ```
  */
-@Target(AnnotationTarget.CLASS)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 annotation class Client(
   val profile: String = "",
 )

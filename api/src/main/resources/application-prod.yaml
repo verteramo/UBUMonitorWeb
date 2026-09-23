@@ -2,6 +2,7 @@ security:
   public-routes:
     - /
     - /api/auth/discover
+    - /api/auth/login-sso
     - /api/auth/login
     - /index.html
     - /*.js

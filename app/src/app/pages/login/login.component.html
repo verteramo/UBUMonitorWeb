@@ -94,24 +94,14 @@
             </fieldset>
           }
 
-          @if (loginOptions.loginInstructions) {
-            <div class="login-instructions" [innerHTML]="store.parsedLoginInstructions()"></div>
-          }
-
-          @if (loginOptions.idProviders.length > 0) {
-            <div class="idp-block">
-              <span class="idp-divider" i18n>Connect with</span>
-              @for (provider of loginOptions.idProviders; track provider.name) {
-                <button
-                  type="button"
-                  class="idp-button"
-                  [title]="provider.name"
-                  (click)="store.loginViaBrowser(provider.url)"
-                >
-                  {{ provider.name }}
-                </button>
-              }
-            </div>
+          @if (loginOptions.loginType !== LoginType.APP) {
+            <button
+              type="button"
+              class="sso-button"
+              (click)="onSsoLogin($event)"
+            >
+              SSO Access
+            </button>
           }
         }
       }
