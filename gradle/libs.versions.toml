@@ -10,6 +10,7 @@ graalvmNative = "1.1.9"
 springdoc = "3.0.0"
 kotlinLogging = "7.0.3"
 jsoup = "1.23.2"
+httpclient5 = "5.6.4"
 ###############################################
 # Versiones App Angular
 ###############################################
@@ -56,3 +57,5 @@ woodstox-core = { module = "com.fasterxml.woodstox:woodstox-core" }
 springdoc-openapi = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "springdoc" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
+httpclient5 = { group = "org.apache.httpcomponents.client5", name = "httpclient5", version.ref = "httpclient5" }
+

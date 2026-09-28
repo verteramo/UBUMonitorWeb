@@ -59,7 +59,7 @@ class AuthenticationTest {
   }
 
   @Test
-  @DisplayName("Should reject invalid credentials with 401 and ProblemDetail")
+  @DisplayName("Should reject invalid keychain with 401 and ProblemDetail")
   fun shouldRejectInvalidCredentials() {
     val requestBody =
       LinkedMultiValueMap<String, String>().apply {

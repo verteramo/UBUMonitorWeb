@@ -15,8 +15,8 @@ const MESSAGE_FALLBACK = $localize`Unknown error`;
  * Mapa de mensajes de error normalizados y localizados.
  */
 const MESSAGES: Record<number, string> = {
-  401: $localize`Invalid login`,
-  403: $localize`Session expired`,
+  401: $localize`Session expired`,
+  403: $localize`Access denied`,
   502: $localize`Server unreachable`,
 };
 

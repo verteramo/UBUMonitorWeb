@@ -37,7 +37,7 @@ import { MatInputModule } from '@angular/material/input';
         <mat-icon matIconSuffix [title]="suffixTitle()">{{ suffixIcon() }}</mat-icon>
       }
 
-      <mat-autocomplete #auto="matAutocomplete">
+      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="value.set($event.option.value)">
         @for (value of list(); track $index) {
           <mat-option [value]="value">{{ value }}</mat-option>
         }
@@ -57,7 +57,7 @@ export class InputFieldComponent implements FormValueControl<string> {
   readonly suffixIcon = input<string>();
   readonly suffixTitle = input<string>();
 
-    /* Gestión de errores */
+  /* Gestión de errores */
   readonly touch = output<void>();
   readonly invalid = input<boolean>(false);
   readonly touched = input<boolean>(false);

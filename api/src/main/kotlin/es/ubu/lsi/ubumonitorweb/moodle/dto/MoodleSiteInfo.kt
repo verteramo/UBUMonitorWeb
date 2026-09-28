@@ -6,7 +6,7 @@
 
 package es.ubu.lsi.ubumonitorweb.moodle.dto
 
-import es.ubu.lsi.ubumonitorweb.core.client.ResourceUrlConverter
+import es.ubu.lsi.ubumonitorweb.core.converter.UrlConverter
 import tools.jackson.databind.annotation.JsonDeserialize
 
 data class MoodleSiteInfo(
@@ -18,7 +18,7 @@ data class MoodleSiteInfo(
   val lang: String,
   val userid: Int,
   val siteurl: String,
-  @JsonDeserialize(converter = ResourceUrlConverter::class) val userpictureurl: String?,
+  @JsonDeserialize(converter = UrlConverter::class) val userpictureurl: String?,
   val userissiteadmin: Boolean?,
   val version: String?,
   val release: String?,

@@ -5,7 +5,8 @@
  */
 
 import { computed } from '@angular/core';
-import { withSettingsSlice } from '@core/stores/features/settings-slice.feature';
+import { withSlice } from '@core/stores/features/slices.feature';
+import { SessionSettingsStore } from '@core/stores/session-settings.store';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 
 /**
@@ -24,7 +25,7 @@ type Tab = 'visual' | 'compare' | 'forums' | 'risk' | 'enrollment' | 'events' | 
 type DashboardState = {
   tab: Tab;
   sidenavOpened: boolean;
-  panels: Partial<Record<Panel, boolean>>
+  panels: Partial<Record<Panel, boolean>>;
 };
 
 /**
@@ -108,5 +109,5 @@ export const DashboardStore = signalStore(
       patchState(store, ({ panels }) => ({ panels: { ...panels, [panel]: expanded } }));
     },
   })),
-  withSettingsSlice('dashboard'),
+  withSlice(SessionSettingsStore, 'dashboard'),
 );

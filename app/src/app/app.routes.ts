@@ -9,8 +9,6 @@ import { sessionGuard } from '@core/guards/session-guard';
 import { CourseSelectionComponent } from '@pages/course-selection/course-selection.component';
 import { DashboardComponent } from '@pages/dashboard/dashboard.component';
 import { LoginComponent } from '@pages/login/login.component';
-import { LoginStore } from '@pages/login/login.store';
-
 /**
  * Configuración de las rutas de la aplicación.
  * Aquí se pueden configurar las rutas, títulos, componentes y guardas.
@@ -26,7 +24,6 @@ export const routes: Routes = [
   {
     path: 'login',
     title: $localize`Login`,
-    providers: [LoginStore],
     component: LoginComponent,
     canActivate: [sessionGuard],
   },

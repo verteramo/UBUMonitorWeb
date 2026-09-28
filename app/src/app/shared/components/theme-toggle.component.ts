@@ -4,17 +4,22 @@
  * @author Marcelo Verteramo Pérsico
  */
 
-import { Component, computed, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { AppStore } from '@core/stores/app.store';
+
 /** Botón para cambiar el Theme. */
 @Component({
   selector: 'app-theme-toggle',
   standalone: true,
   imports: [MatButtonModule, MatIconModule],
   template: `
-    <button mat-icon-button (click)="store.toggleTheme()" [title]="title()">
+    <button
+      mat-icon-button
+      (click)="store.toggleTheme()"
+      title="Switch to {{ store.nextTheme() }} mode"
+    >
       <mat-icon>{{ icons[store.theme()] }}</mat-icon>
     </button>
   `,
@@ -29,9 +34,4 @@ export class ThemeToggleComponent {
     light: 'light_mode',
     dark: 'dark_mode',
   };
-
-  /** Título del botón para cambiar de theme. */
-  title = computed(() => {
-    return $localize`Switch to ${this.store.nextTheme()} mode`;
-  });
 }

@@ -349,7 +349,7 @@ System:
   Calendar event updated:
     - The user with id '(?<userId>-?\d+)?' updated the event '(?<eventName>.+?)?' with id '(?<eventId>-?\d+)?'.
   Calendar subscription updated:
-    - User (?<userId>-?\d+)? has updated a calendar subscription with id (?<subscriptionId>-?\d+)? of event type course.
+    - Participant (?<userId>-?\d+)? has updated a calendar subscription with id (?<subscriptionId>-?\d+)? of event type course.
   Course activities overview page viewed:
     - The user with id '(?<userId>-?\d+)?' viewed the course activity overview for the course with id '(?<courseId>-?\d+)?'.
   Course activity completion updated:

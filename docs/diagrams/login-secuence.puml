@@ -1,0 +1,110 @@
+@startuml Login
+autonumber
+skinparam maxMessageSize 200
+skinparam ParticipantPadding 20
+skinparam BoxPadding 10
+
+actor User
+participant PWA
+participant API
+participant Moodle
+participant IdP
+database Disk
+
+' note right of User
+'     Login - Paso 1:
+'     <img:login-step1.jpg{scale=0.3}>
+' end note
+User -> PWA ++: Introducción del host
+PWA -> API ++: ""GET /api/auth/discover""
+return ""{ loginOptions }""
+return Formulario o link SSO - ruta ""/#/login""
+
+alt Procedimiento con credenciales (usuario y contraseña)
+    User -> PWA ++: Introduccion de credenciales
+    PWA -> API ++: ""POST /api/auth/login""\n""Moodle-Host: {...}""\n\n""{ username, password }""
+    API -> Moodle ++: ""GET /login/index.php""
+    return ""200 Ok""\n""Set-Cookie MoodleSession={...}""\n\n""HTML con logintoken y sesskey""
+    API -> Moodle ++: ""POST /login/index.php""\n""Cookie: MoodleSession={...}""\n\n""username={...}&password={...}&logintoken={...}""
+    return ""303 Redirect""\n""Set-Cookie MoodleSession={...}""
+    API -> API: <b><back:yellow>Guarda llavero en el contexto de seguridad: ""{ token, privateToken, cookie, sesskey }""</back></b>
+    API -> Moodle ++: ""POST /webservice/rest/server.php""\n\n""wsfunction=core_webservices_get_site_info""
+    return ""200 Ok""\n\n""{ siteInfo }""
+    alt Ok
+        API --> PWA: ""{ principal }""
+        PWA --> User: Redireccion al Dashboard
+    else Error
+        API --> PWA: ""{ problemDetail }""
+        PWA --> User: SnackBar: "Credenciales inválidas"
+    end
+    deactivate API
+    deactivate PWA
+
+    newpage
+
+else Procedimiento mediante SSO
+    User -> PWA ++: Clic en "Acceder"
+    return Redirección a ""loginOptions.loginUrl""
+    User -> IdP ++: Autenticación (Ej: Certificado digital)
+    alt Ok
+        IdP --> Moodle: Ok
+        deactivate IdP
+        activate Moodle
+        Moodle --> PWA: ""web+umw://token={...}""
+        deactivate Moodle
+        activate PWA
+        PWA -> API ++: ""POST /api/auth/login""\n""Moodle-Host: {...}""\n\n""{ token }""
+        API -[#blue]> Disk ++: <b><color:blue>""readCookie(token)""
+        note right of Disk
+            El token SSO tiene una duración superior a la restricción temporal,
+            por lo que cifra/descifra la cookie. Si no existe o el token
+            caducó y cambió, devuelve null.
+        end note
+        Disk --> API --: cookieOrNull
+
+        opt Si existe la cookie en disco
+            API -> Moodle ++: ""GET /my""\n""MoodleSession={cookie_guardada}""
+            alt  Ok
+                Moodle -[#green]-> API: <b><color:green>""200 Ok""\n\n<b><color:green>""HTML con sesskey""
+            else Error
+                Moodle -[#red]-> API --: <b><color:red>""4xx Client Error""
+            end
+        end
+
+        alt Cookie guardada válida
+            API -> API: Continúa el flujo con el ""sesskey"" recuperado en el primer intento
+        else cookie == null o Status == 4xx (Cookie caducada)
+            API -> Moodle ++: ""POST /webservice/rest/server.php""\n\n""wsfunction=tool_mobile_get_autologin_key""
+            Moodle --> API --: ""{ autologinurl, key }""
+
+            API -> Moodle ++: ""GET ${autologinurl}?key={...}&userid={...}""
+            Moodle -[#green]-> API --: <b><color:green>""200 Ok""\n<b><color:green>""MoodleSession={nueva_cookie}""
+
+            API -[#blue]> Disk ++: <b><color:blue>""writeCookie(token, nueva_cookie)""
+            note right of Disk: Una vez obtenida la nueva cookie, se cifra utilizando el token SSO.
+            Disk --> API --: Ok
+
+            API -> Moodle ++: ""GET /my""\n""MoodleSession={nueva_cookie}""
+            Moodle --> API --: <b><color:green>""200 Ok""\n\n<b><color:green>""HTML con sesskey""
+        end
+        API -> Moodle ++: ""GET /my""\n""MoodleSession={...}""
+        Moodle --> API: ""200 Ok""\n\n""HTML con sesskey""
+        API -> API: <b><back:yellow>Guarda llavero en el contexto de seguridad: ""{ token, privateToken, cookie, sesskey }""</back></b>
+        API -> Moodle ++: ""POST /webservice/rest/server.php""\n\n""wsfunction=core_webservices_get_site_info""
+        return ""200 Ok""\n\n""{ siteInfo }""
+        alt Ok
+            API --> PWA: ""{ principal }""
+            PWA --> User: Redireccion al Dashboard
+        else Error
+            API --> PWA: ""{ problemDetail }""
+            PWA --> User: SnackBar: "Credenciales inválidas"
+        end
+        deactivate API
+        deactivate PWA
+    else Error
+        IdP --> Moodle: Error
+        Moodle --> PWA: Error
+        PWA --> User: SnackBar "Credenciales invalidas"
+    end
+end
+@enduml

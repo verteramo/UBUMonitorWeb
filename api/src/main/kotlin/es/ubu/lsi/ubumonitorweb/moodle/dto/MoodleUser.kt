@@ -6,8 +6,8 @@
 
 package es.ubu.lsi.ubumonitorweb.moodle.dto
 
-import es.ubu.lsi.ubumonitorweb.core.client.ResourceUrlConverter
-import es.ubu.lsi.ubumonitorweb.domain.User
+import es.ubu.lsi.ubumonitorweb.core.converter.UrlConverter
+import es.ubu.lsi.ubumonitorweb.domain.Participant
 import tools.jackson.databind.annotation.JsonDeserialize
 
 data class MoodleUser(
@@ -33,15 +33,15 @@ data class MoodleUser(
   val city: String?,
   val country: String?,
   val timezone: String?,
-  @JsonDeserialize(converter = ResourceUrlConverter::class) val profileimageurl: String?,
+  @JsonDeserialize(converter = UrlConverter::class) val profileimageurl: String?,
   val customfields: List<MoodleCustomField>?,
   val groups: List<MoodleGroup>?,
   val roles: List<MoodleRole>?,
   val preferences: List<MoodlePreference>?,
   val enrolledcourses: List<MoodleEnrolledCourse>?,
 ) {
-  fun toUser() =
-    User(
+  fun toParticipant() =
+    Participant(
       id = id,
       username = username,
       email = email,

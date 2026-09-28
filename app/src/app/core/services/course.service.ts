@@ -4,15 +4,16 @@
  * @author Marcelo Verteramo Pérsico
  */
 
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpStatusCode } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { CalendarEvent } from '@core/models/calendar-event';
 import { Completion } from '@core/models/completion';
 import { Course } from '@core/models/course';
 import { Grade } from '@core/models/grade';
 import { LogEntry } from '@core/models/log-entry';
+import { Participant } from '@core/models/participant';
 import { Section } from '@core/models/section';
-import { User } from '@core/models/user';
+import { defaultIfStatus } from '@core/operators/default-if-status.operator';
 import { environment as env } from '@env/environment';
 import { Observable } from 'rxjs';
 
@@ -34,8 +35,10 @@ export class CourseService {
    * @param endpoint Subruta.
    * @returns Observable con la información solicitada.
    */
-  private getData<T>(endpoint: string): Observable<T> {
-    return this.http.get<T>(`${env.endpoints.courses}/${endpoint}`);
+  private getData<T>(endpoint: string, defaultValue: T): Observable<T> {
+    return this.http.get<T>(`${env.endpoints.courses}/${endpoint}`).pipe(
+      defaultIfStatus(HttpStatusCode.Forbidden, defaultValue)
+    );
   }
 
   /**
@@ -45,17 +48,17 @@ export class CourseService {
    * @returns Lista de cursos.
    */
   getCourses(classification: CourseClassification): Observable<Course[]> {
-    return this.getData<Course[]>(classification);
+    return this.getData<Course[]>(classification, []);
   }
 
   /**
-   * Obtiene la lista de usuarios de un curso determinado.
+   * Obtiene la lista de participantes de un curso determinado.
    *
    * @param id ID del curso.
-   * @returns Lista de usuarios del curso.
+   * @returns Lista de participantes del curso.
    */
-  getUsers(id: number): Observable<User[]> {
-    return this.getData<User[]>(`${id}/users`);
+  getParticipants(id: number): Observable<Participant[]> {
+    return this.getData<Participant[]>(`${id}/participants`, []);
   }
 
   /**
@@ -64,7 +67,7 @@ export class CourseService {
    * @returns Lista de secciones del curso.
    */
   getSections(id: number): Observable<Section[]> {
-    return this.getData<Section[]>(`${id}/sections`);
+    return this.getData<Section[]>(`${id}/sections`, []);
   }
 
   /**
@@ -73,7 +76,7 @@ export class CourseService {
    * @returns Lista de calificaciones del curso.
    */
   getGrades(id: number): Observable<Grade[]> {
-    return this.getData<Grade[]>(`${id}/grades`);
+    return this.getData<Grade[]>(`${id}/grades`, []);
   }
 
   /**
@@ -82,7 +85,7 @@ export class CourseService {
    * @returns Lista de logs del curso.
    */
   getLogs(id: number): Observable<LogEntry[]> {
-    return this.getData<LogEntry[]>(`${id}/logs`);
+    return this.getData<LogEntry[]>(`${id}/logs`, []);
   }
 
   /**
@@ -91,7 +94,7 @@ export class CourseService {
    * @returns Lista de eventos del curso.
    */
   getCalendarEvents(id: number): Observable<CalendarEvent[]> {
-    return this.getData<CalendarEvent[]>(`${id}/events`);
+    return this.getData<CalendarEvent[]>(`${id}/events`, []);
   }
 
   /**
@@ -101,6 +104,6 @@ export class CourseService {
    * @returns Estado de finalización de actividades del usuario.
    */
   getCompletion(courseId: number, userId: number): Observable<Completion[]> {
-    return this.getData<Completion[]>(`${courseId}/completion/${userId}`);
+    return this.getData<Completion[]>(`${courseId}/completion/${userId}`, []);
   }
 }

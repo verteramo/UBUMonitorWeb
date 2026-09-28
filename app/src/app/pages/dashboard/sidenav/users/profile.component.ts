@@ -10,7 +10,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
-import { User } from '@core/models/user';
+import { Participant } from '@core/models/participant';
 import { TimeAgoPipe } from '@core/pipes/time-ago.pipe';
 
 /** Componente de visualización del perfil de los usuarios. */
@@ -142,5 +142,5 @@ import { TimeAgoPipe } from '@core/pipes/time-ago.pipe';
   `,
 })
 export class ProfileComponent {
-  user = inject<User>(MAT_DIALOG_DATA);
+  user = inject<Participant>(MAT_DIALOG_DATA);
 }

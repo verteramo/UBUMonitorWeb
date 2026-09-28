@@ -5,11 +5,12 @@
  */
 
 import { computed } from '@angular/core';
-import { User } from '@core/models/user';
+import { Participant } from '@core/models/participant';
 import { withDatasetSlice } from '@core/stores/features/dataset-slice.feature';
 import { withFilters } from '@core/stores/features/filters.feature';
 import { withSelection } from '@core/stores/features/selection.feature';
-import { withSettingsSlice } from '@core/stores/features/settings-slice.feature';
+import { withSlice } from '@core/stores/features/slices.feature';
+import { SessionSettingsStore } from '@core/stores/session-settings.store';
 import { signalStore, withComputed, withFeature } from '@ngrx/signals';
 
 /**
@@ -31,16 +32,16 @@ type TransformedFilters = {
  * Store de las propiedades de estado del panel de usuarios.
  */
 export const UsersStore = signalStore(
-  withDatasetSlice('users'),
-  withFeature(({ users }) =>
-    withFilters<User, Filters, TransformedFilters>({
+  withDatasetSlice('participants'),
+  withFeature(({ participants }) =>
+    withFilters<Participant, Filters, TransformedFilters>({
       filters: { term: '', roles: [], groups: [] },
       transformFn: ({ term, roles, groups }) => ({
         term: term.trim().toLowerCase(),
         roles: new Set(roles),
         groups: new Set(groups),
       }),
-      items: users,
+      items: participants,
       filterFn: ({ term, roles, groups }, user) => {
         return (
           (!term || user.fullName.toLowerCase().includes(term)) &&
@@ -54,13 +55,13 @@ export const UsersStore = signalStore(
       countableFilters: ['roles', 'groups'],
     }),
   ),
-  withComputed(({ users }) => ({
+  withComputed(({ participants }) => ({
     /**
      * Roles disponibles.
      */
     availableRoles: computed(() => {
-      const values = users()
-        .flatMap((user) => user.roles)
+      const values = participants()
+        .flatMap((current) => current.roles)
         .filter(Boolean);
       return [...new Set(values)];
     }),
@@ -69,8 +70,8 @@ export const UsersStore = signalStore(
      * Grupos disponibles.
      */
     availableGroups: computed(() => {
-      const values = users()
-        .flatMap((user) => user.groups)
+      const values = participants()
+        .flatMap((current) => current.groups)
         .filter(Boolean);
       return [...new Set(values)];
     }),
@@ -79,5 +80,5 @@ export const UsersStore = signalStore(
    * Habilitación de la funcionalidad de selección para el store.
    */
   withFeature(({ filteredItems }) => withSelection(filteredItems, (user) => user.id)),
-  withSettingsSlice('users'),
+  withSlice(SessionSettingsStore, 'users'),
 );

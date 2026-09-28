@@ -10,8 +10,8 @@ import es.ubu.lsi.ubumonitorweb.domain.Completion
 import es.ubu.lsi.ubumonitorweb.domain.Course
 import es.ubu.lsi.ubumonitorweb.domain.Event
 import es.ubu.lsi.ubumonitorweb.domain.Grade
+import es.ubu.lsi.ubumonitorweb.domain.Participant
 import es.ubu.lsi.ubumonitorweb.domain.Section
-import es.ubu.lsi.ubumonitorweb.domain.User
 import es.ubu.lsi.ubumonitorweb.moodle.client.BlockStarredcoursesClient
 import es.ubu.lsi.ubumonitorweb.moodle.client.CoreCalendarClient
 import es.ubu.lsi.ubumonitorweb.moodle.client.CoreCompletionClient
@@ -151,7 +151,7 @@ class CourseService(
       it.coursecategory
     }
 
-  fun getUsers(id: Int): List<User> = coreEnrolClient.getEnrolledUsers(id).map { it.toUser() }
+  fun getParticipants(id: Int): List<Participant> = coreEnrolClient.getEnrolledUsers(id).map { it.toParticipant() }
 
   fun getSections(id: Int): List<Section> = coreCourseClient.getContents(id).map { it.toSection() }
 

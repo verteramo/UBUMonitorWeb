@@ -8,8 +8,8 @@ import { inject } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { Grade } from '@core/models/grade';
 import { LogEntry } from '@core/models/log-entry';
+import { Participant } from '@core/models/participant';
 import { Section } from '@core/models/section';
-import { User } from '@core/models/user';
 import { CourseService } from '@core/services/course.service';
 import { decryptAes, encryptAes, sha256 } from '@core/utils/crypto.utils';
 import { patchState, signalStore, withMethods, withProps, withState } from '@ngrx/signals';
@@ -20,7 +20,7 @@ import { SessionStore } from './session.store';
  * Propiedades de estado del dataset.
  */
 export type DatasetState = {
-  users: User[];
+  participants: Participant[];
   logs: LogEntry[];
   sections: Section[];
   grades: Grade[];
@@ -30,7 +30,7 @@ export type DatasetState = {
  * Estado inicial.
  */
 const initialState: DatasetState = {
-  users: [],
+  participants: [],
   logs: [],
   sections: [],
   grades: [],
@@ -58,7 +58,7 @@ export const DatasetStore = signalStore(
         return (
           course &&
           forkJoin({
-            users: service.getUsers(course.id),
+            participants: service.getParticipants(course.id),
             logs: service.getLogs(course.id),
             sections: service.getSections(course.id),
             grades: service.getGrades(course.id),
@@ -74,9 +74,9 @@ export const DatasetStore = signalStore(
      * @param username Nombre de usuario.
      * @param password Contraseña.
      */
-    computeHash(username: string, password: string) {
+    computeHash(secret: string) {
       patchState(store, {
-        hash: sha256(`${username}:${password}`),
+        hash: sha256(secret),
       });
     },
   })),

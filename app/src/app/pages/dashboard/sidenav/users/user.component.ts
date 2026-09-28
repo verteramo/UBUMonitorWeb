@@ -8,7 +8,7 @@ import { Component, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
-import { User } from '@core/models/user';
+import { Participant } from '@core/models/participant';
 import { TimeAgoPipe } from '@core/pipes/time-ago.pipe';
 
 @Component({
@@ -126,11 +126,11 @@ import { TimeAgoPipe } from '@core/pipes/time-ago.pipe';
   `,
 })
 export class UserComponent {
-  user = input.required<User>();
+  user = input.required<Participant>();
   selected = input<boolean>();
 
   toggle = output<number>();
-  openProfile = output<User>();
+  openProfile = output<Participant>();
 
   onProfileClick(event: MouseEvent): void {
     event.stopPropagation();

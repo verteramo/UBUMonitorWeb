@@ -12,7 +12,7 @@ import es.ubu.lsi.ubumonitorweb.domain.Course
 import es.ubu.lsi.ubumonitorweb.domain.Event
 import es.ubu.lsi.ubumonitorweb.domain.Grade
 import es.ubu.lsi.ubumonitorweb.domain.LogEntry
-import es.ubu.lsi.ubumonitorweb.domain.Principal
+import es.ubu.lsi.ubumonitorweb.domain.Participant
 import es.ubu.lsi.ubumonitorweb.domain.Section
 import es.ubu.lsi.ubumonitorweb.domain.User
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -33,26 +33,26 @@ class CourseController(
   /**
    * Obtiene los cursos, según clasificación, del usuario autenticado.
    *
-   * @param principal Usuario autenticado.
+   * @param user Usuario autenticado.
    * @param classification Clasificación de los cursos solicitados.
    * @return Cursos solicitados normalizados.
    */
   @GetMapping("/{classification:all|recent|starred|past|future|inprogress}")
   fun getCourses(
-    @AuthenticationPrincipal principal: Principal,
+    @AuthenticationPrincipal user: User,
     @PathVariable classification: String,
   ): List<Course> =
     when (classification) {
-      "all" -> courseService.getAllCourses(principal.id)
-      "recent" -> courseService.getRecentCourses(principal.id)
+      "all" -> courseService.getAllCourses(user.id)
+      "recent" -> courseService.getRecentCourses(user.id)
       "starred" -> courseService.getStarredCourses()
       else -> courseService.getClassifiedCourses(classification)
     }
 
-  @GetMapping("/{id}/users")
-  fun getUsers(
+  @GetMapping("/{id}/participants")
+  fun getParticipants(
     @PathVariable id: Int,
-  ): List<User> = courseService.getUsers(id)
+  ): List<Participant> = courseService.getParticipants(id)
 
   @GetMapping("/{id}/sections")
   fun getSections(
@@ -71,9 +71,9 @@ class CourseController(
 
   @GetMapping("/{id}/logs")
   fun getLogs(
-    @AuthenticationPrincipal principal: Principal,
+    @AuthenticationPrincipal user: User,
     @PathVariable id: Int,
-  ): List<LogEntry> = logService.getLogs(id, principal.timezone)
+  ): List<LogEntry> = logService.getLogs(id, user.timezone)
 
   @GetMapping("{courseId}/completion/{userId}")
   fun getCompletion(
