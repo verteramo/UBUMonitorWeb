@@ -17,7 +17,7 @@ interface GradereportUserClient {
     val usergrades: List<MoodleUserGrade>,
   )
 
-  @PostExchange
+  @Client
   fun getGradeItems(
     @RequestParam courseid: Int,
   ): GradeItemsResponse

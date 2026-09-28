@@ -12,46 +12,41 @@ import org.springframework.web.service.invoker.HttpRequestValues
 import org.springframework.web.service.invoker.HttpServiceArgumentResolver
 
 /**
- * Resolver de argumentos HTTP que procesa colecciones anotadas con [PhpCollection].
+ * Resolver de argumentos HTTP que serializa colecciones en parámetros indexados de PHP.
  *
- * Transforma listas de objetos en parámetros de consulta o de formulario
- * utilizando la sintaxis de arrays indexados nativa de PHP. Los datos enviados
- * se estructuran como:
- *
- * ```
- * paramName[index][keyName]=keyValue&paramName[index][valueName]=itemValue
- * ```
+ * @see PhpCollection
  */
 @Component
 class PhpCollectionArgumentResolver : HttpServiceArgumentResolver {
-  /** Invocador del resolver. */
+  /**
+   * Resuelve y añade los elementos de la colección a la petición HTTP.
+   *
+   * @param argument Valor de la colección recibido como argumento.
+   * @param parameter Metadatos del parámetro interceptado.
+   * @param requestValues Constructor mutable de la petición HTTP.
+   * @return `true` si el argumento fue procesado, `false` en caso contrario.
+   */
   override fun resolve(
     argument: Any?,
     parameter: MethodParameter,
     requestValues: HttpRequestValues.Builder,
   ): Boolean =
-    parameter.getParameterAnnotation(PhpCollection::class.java)?.let { collection ->
-      when (argument) {
-        is Map<*, *> -> argument.toList()
-        is Collection<*> -> argument.filterIsInstance<Pair<*, *>>()
-        else -> null
-      }?.run {
-        val paramName = collection.name.ifBlank { parameter.parameterName }
+    parameter
+      .getParameterAnnotation(PhpCollection::class.java)
+      ?.run { name.ifBlank { parameter.parameterName } }
+      ?.let { name ->
+        require(argument is Collection<*>) {
+          "Parameter '$parameter' annotated with @PhpCollection must be a Collection."
+        }
 
-        forEachIndexed { index, (key, value) ->
-          val itemKey = key?.toString()
-          val itemValue = value?.toString()
+        argument.forEachIndexed { index, value ->
+          val stringValue = value?.toString()
 
-          if (!itemKey.isNullOrBlank() && !itemValue.isNullOrBlank()) {
-            val itemKeyName = "$paramName[$index][${collection.keyName}]"
-            val itemValueName = "$paramName[$index][${collection.valueName}]"
-
-            requestValues.addRequestParameter(itemKeyName, itemKey)
-            requestValues.addRequestParameter(itemValueName, itemValue)
+          if (!stringValue.isNullOrBlank()) {
+            requestValues.addRequestParameter("$name[$index]", stringValue)
           }
         }
 
         true
-      }
-    } ?: false
+      } ?: false
 }

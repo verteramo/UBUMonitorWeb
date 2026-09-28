@@ -17,7 +17,7 @@ interface CoreCompletionClient {
     val statuses: List<MoodleActivityCompletion>,
   )
 
-  @PostExchange
+  @Client
   fun getActivitiesCompletionStatus(
     @RequestParam courseid: Int,
     @RequestParam userid: Int,

@@ -7,12 +7,11 @@
 package es.ubu.lsi.ubumonitorweb.moodle.client
 
 import es.ubu.lsi.ubumonitorweb.core.client.Client
-import es.ubu.lsi.ubumonitorweb.core.resolver.PhpCollection
+import es.ubu.lsi.ubumonitorweb.core.resolver.PhpMap
 import es.ubu.lsi.ubumonitorweb.moodle.dto.MoodleCategory
 import es.ubu.lsi.ubumonitorweb.moodle.dto.MoodleCourse
 import es.ubu.lsi.ubumonitorweb.moodle.dto.MoodleSection
 import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.service.annotation.PostExchange
 
 /**
  * Cliente HTTP de obtención de cursos, permite obtener categorías,
@@ -24,26 +23,34 @@ interface CoreCourseClient {
     val courses: List<MoodleCourse>,
   )
 
-  /** Obtiene los cursos recientes para el ID de usuario especificado. */
-  @PostExchange
+  /**
+   * Obtiene los cursos recientes para el ID de usuario especificado.
+   */
+  @Client
   fun getRecentCourses(
     @RequestParam userid: Int,
   ): List<MoodleCourse>
 
-  /** Obtiene los cursos clasificados para el usuario autenticado. */
-  @PostExchange
+  /**
+   * Obtiene los cursos clasificados para el usuario autenticado.
+   */
+  @Client
   fun getEnrolledCoursesByTimelineClassification(
     @RequestParam classification: String,
   ): EnrolledCoursesByTimelineClassificationResponse
 
-  /** Obtiene las categorías de cursos que cumplan con los criterios especificados. */
-  @PostExchange
+  /**
+   * Obtiene las categorías de cursos que cumplan con los criterios especificados.
+   */
+  @Client
   fun getCategories(
-    @PhpCollection criteria: List<Pair<String, Any>>,
+    @PhpMap criteria: List<Pair<String, Any>>,
   ): List<MoodleCategory>
 
-  /** Obtiene los contenidos (lista de secciones) para el ID del curso especificado. */
-  @PostExchange
+  /**
+   * Obtiene los contenidos (lista de secciones) para el ID del curso especificado.
+   */
+  @Client
   fun getContents(
     @RequestParam courseid: Int,
   ): List<MoodleSection>

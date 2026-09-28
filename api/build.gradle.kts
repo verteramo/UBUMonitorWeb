@@ -41,6 +41,7 @@ dependencies {
   implementation(libs.springdoc.openapi)
   implementation(libs.kotlin.logging)
   implementation(libs.jsoup)
+  implementation(libs.httpclient5)
 
   providedRuntime(libs.spring.boot.starter.tomcat.runtime)
   testImplementation(libs.kotlin.test.junit5)

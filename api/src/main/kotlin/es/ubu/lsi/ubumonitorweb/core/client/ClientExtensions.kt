@@ -7,30 +7,41 @@
 package es.ubu.lsi.ubumonitorweb.core.client
 
 import org.springframework.core.MethodParameter
+import org.springframework.http.HttpHeaders
 import org.springframework.web.bind.annotation.CookieValue
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestParam
-import kotlin.text.ifEmpty
 
 /**
- * Extensiones de utilidad para las clases del paquete client.
+ * Utilidades de resolución para metadatos de parámetros en clientes HTTP.
+ * Si recopilan aquí para utilizarse en varios contextos.
  */
 object ClientExtensions {
   /**
-   * Resuelve el nombre que tendrá el parámetro una vez inyectado en la solicitud HTTP.
-   * Por ejemplo, si el parámetro estuviera anotado como:
+   * Resuelve el nombre del parámetro para su inyección en la petición HTTP.
+   *
+   * Intenta inferir el nombre desde las anotaciones [RequestHeader], [RequestParam] y [CookieValue],
+   * se utiliza como fallback el nombre del propio parámetro [MethodParameter.getParameterName].
    *
    * ```kotlin
-   * @RequestParam("httpParamName") paramName
+   * @RequestParam("httpParamName") paramName: String // -> "httpParamName"
+   * @RequestParam paramName: String                  // -> "paramName"
    * ```
    */
-  internal val MethodParameter.httpParamName: String?
+  val MethodParameter.httpParamName: String?
     get() =
-      getParameterAnnotation(RequestHeader::class.java)?.let {
-        it.name.ifEmpty { it.value }.ifEmpty { parameterName }
-      } ?: getParameterAnnotation(RequestParam::class.java)?.let {
-        it.name.ifEmpty { it.value }.ifEmpty { parameterName }
-      } ?: getParameterAnnotation(CookieValue::class.java)?.let {
-        it.name.ifEmpty { it.value }.ifEmpty { parameterName }
-      } ?: parameterName
+      (
+        getParameterAnnotation(RequestHeader::class.java)?.run { name.ifBlank { value } }
+          ?: getParameterAnnotation(RequestParam::class.java)?.run { name.ifBlank { value } }
+          ?: getParameterAnnotation(CookieValue::class.java)?.run { name.ifBlank { value } }
+      )?.takeIf { it.isNotBlank() } ?: parameterName
+
+  /**
+   * Indica si el parámetro del método es una cabecera `Content-Type`.
+   */
+  val MethodParameter.isContentType: Boolean
+    get() =
+      getParameterAnnotation(RequestHeader::class.java)
+        ?.let { it.value.ifBlank { it.name }.ifBlank { parameterName } }
+        .equals(HttpHeaders.CONTENT_TYPE, true)
 }

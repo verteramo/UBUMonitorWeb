@@ -4,8 +4,8 @@
   "display": "browser",
   "protocol_handlers": [
     {
-      "protocol": "web+ubumonitorweb",
-      "url": "/#/login?redirect=%s"
+      "protocol": "web+umw",
+      "url": "/#/login?deepLink=%s"
     }
   ],
   "launch_handler": {

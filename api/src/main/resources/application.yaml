@@ -19,12 +19,14 @@ server:
         http-only: true
         same-site: strict
 
+security:
+  cookies-directory: ${user.home}/.umw/
 
 logs:
   boolean-prefixes: [ is, has ]
 
 clients:
-  error-mappings:
+  service-error-mappings:
     invalidlogin: unauthorized
     invalidtoken: forbidden
     nopermissions: forbidden
@@ -34,16 +36,23 @@ clients:
     sitepolicynotagreed: unavailable_for_legal_reasons
     autologinkeygenerationlockout: too_many_requests
 
+  scraping-error-mappings:
+    not-found:
+      status: forbidden
+      detail-selector: .errormessage
+
   profiles:
-    ################################################################
-    # Perfiles de autenticación
-    ################################################################
-    default:
+    default-get:
       host: es.ubu.lsi.ubumonitorweb.core.provider.HostProvider
+      method: GET
+
+    default-post:
+      host: es.ubu.lsi.ubumonitorweb.core.provider.HostProvider
+      method: POST
 
     # Perfil del cliente de obtención del token
-    token-client:
-      inherit: default
+    login-token-client:
+      inherit: default-post
       endpoint: /login/token.php
       headers:
         Content-Type: application/x-www-form-urlencoded
@@ -51,20 +60,27 @@ clients:
         service: moodle_mobile_app
 
     # Perfil del cliente del formulario de login
-    login-client:
-      inherit: default
+    login-index-get-client:
+      inherit: default-get
       endpoint: /login/index.php
+
+    login-index-post-client:
+      inherit: default-post
+      endpoint: /login/index.php
+      headers:
+        Content-Type: application/x-www-form-urlencoded
 
     # Perfil del cliente del formulario de edición del perfil
     user-edit-client:
-      inherit: default
+      inherit: default-get
       endpoint: /user/edit.php
+      params:
+        lang: en
 
     webservice-client:
-      inherit: default
+      inherit: default-post
       endpoint: /webservice/rest/server.php
       headers:
-        User-Agent: MoodleMobile
         Content-Type: application/x-www-form-urlencoded
       params:
         moodlewsrestformat: json
@@ -76,8 +92,13 @@ clients:
           location: param
           bean: es.ubu.lsi.ubumonitorweb.core.provider.FunctionProvider
 
+    autologin-client:
+      inherit: webservice-client
+      headers:
+        User-Agent: MoodleMobile
+
     ajax-client:
-      inherit: default
+      inherit: default-post
       endpoint: /lib/ajax/service.php
       multiple: true
       headers:
@@ -94,7 +115,7 @@ clients:
 
     # Perfil del cliente de recursos que requerirían cookies de sesión (usando token)
     resource-client:
-      inherit: default
+      inherit: default-get
       endpoint: /webservice/pluginfile.php
       providers:
         token:
@@ -103,7 +124,7 @@ clients:
 
     # Perfil del cliente de reportes de logs
     log-client:
-      inherit: default
+      inherit: default-get
       endpoint: /report/log/index.php
       params:
         logreader: logstore_standard
@@ -111,7 +132,3 @@ clients:
         chooselog: 1
         # Los nombres de los campos son siempre en inglés (para garantizar un mapeado correcto)
         lang: en
-      providers:
-        Cookie:
-          location: header
-          bean: es.ubu.lsi.ubumonitorweb.core.provider.CookieProvider

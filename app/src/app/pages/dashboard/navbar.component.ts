@@ -10,7 +10,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { Principal } from '@core/models/principal';
+import { User } from '@core/models/user';
 import { ThemeToggleComponent } from '@shared/components/theme-toggle.component';
 
 /** Componente de la barra de navegación del dashboard. */
@@ -162,7 +162,7 @@ import { ThemeToggleComponent } from '@shared/components/theme-toggle.component'
 })
 export class NavbarComponent {
   /** Usuario autenticado. */
-  principal = input.required<Principal>();
+  principal = input.required<User>();
 
   /** Evento de cambio de curso. */
   changeCourse = output<void>();

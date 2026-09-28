@@ -6,7 +6,7 @@
 
 import { computed, inject } from '@angular/core';
 import { Course } from '@core/models/course';
-import { Principal } from '@core/models/principal';
+import { User } from '@core/models/user';
 import { SessionStore } from '@core/stores/session.store';
 import { sha256 } from '@core/utils/crypto.utils';
 import { signalStore, withFeature } from '@ngrx/signals';
@@ -20,7 +20,7 @@ import { withSignalStorage } from './features/storage.feature';
  * @param principal Usuario de sesión.
  * @returns Identificador único.
  */
-function getKey(principal: Principal, course: Course): string {
+function getKey(principal: User, course: Course): string {
   const uniqueToken = `${principal.siteUrl}:${principal.id}:${course.id}`;
   const uniqueId = sha256(uniqueToken).substring(0, 16);
   return `settings-${uniqueId}`;

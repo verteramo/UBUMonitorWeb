@@ -277,7 +277,7 @@ class AttributeInjector:
 def load_database(patterns: list[str], aliases: AliasesDict = None) -> TemplatesDict:
     """
     Carga en memoria el fichero `Componentes y eventos.json` de UBUMonitor desktop,
-    considerado como "la base de datos" por la cantidad de plantillas anonimizadas
+    considerado como "la base de datos" por la cantidad de templates anonimizados
     disponibles, se recorre y se le inyectan grupos de captura,
     retornando un diccionario de templates.
     """

@@ -6,25 +6,35 @@
 
 package es.ubu.lsi.ubumonitorweb.core.client
 
+import org.springframework.web.service.annotation.HttpExchange
+
 /**
- * Anotación para clientes en la que se indica el perfil que contiene sus propiedades y metadatos,
- * en el fichero de configuración de la aplicación. Por ejemplo:
+ * Vincula una interfaz o método de cliente HTTP declarativo con un perfil de configuración.
+ *
+ * Configuración en YAML:
  * ```yaml
  * clients:
  *   profiles:
  *     my-profile:
- *       host: {...}
+ *       host: { ... }
  *       headers:
  *         Accept-Language: en
  *         Content-Type: application/x-www-form-urlencoded
  * ```
  *
- * Posteriormente, se anotan los clientes indicando el nombre del perfil:
+ * Uso en clientes:
  * ```kotlin
  * @Client("my-profile")
+ * interface MyClient
  * ```
+ *
+ * Anotada con [HttpExchange] para poder ser interceptada por interceptors, resolvers y processors.
+ * @see ClientProcessor
+ *
+ * @property profile Nombre del perfil.
  */
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
+@HttpExchange
 annotation class Client(
   val profile: String = "",
 )

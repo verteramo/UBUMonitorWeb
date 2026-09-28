@@ -6,7 +6,7 @@
 
 /** Propiedades de entorno comunes para desarrollo y producción. */
 export const environment = {
-  scheme: 'web+ubumonitorweb',
+  scheme: encodeURIComponent('web+umw'),
   hostHeader: 'Moodle-Host',
   endpoints: {
     discover: '/api/auth/discover',

@@ -1,0 +1,58 @@
+@startuml
+skinparam DefaultTextAlignment center
+skinparam ActivityBackgroundColor #F9F9F9
+skinparam ArrowColor #333333
+
+start
+case
+
+
+
+:Disponer de `MoodleToken` y `userId`;
+:Consultar **CookieRepository** (Sistema de Ficheros);
+
+if (¿Existe fichero de cookie cifrada?) then (Sí)
+  :Leer bytes y descifrar con **CipherStrategy**;
+  if (¿Deserialización JSON o migración de formato legado?) then (Éxito)
+    :Reconstruir **PersistedCookie**\n(name, value, domain, path, secure);
+    :Inyectar en **BasicCookieStore**\n(Configurando atributos de validación);
+    :Validar sesión activa (`loginClient.getMy()`);
+
+    if (¿Respuesta HTTP 2xx OK?) then (Sí)
+      :¡Sesión válida recuperada de disco!;
+      stop
+    else (No / Caducada)
+      :Descartar cookie obsoleta;
+    endif
+  else (Fallo)
+    :Descartar archivo inválido;
+  endif
+else (No existe)
+endif
+
+:Limpiar **BasicCookieStore** (`clear()`);
+:Solicitar clave de autologin\n(`ToolMobileClient.getAutologinKey`);
+
+:Invocar Autologin con **URI Absoluta**\n(`AutologinClient.autologin(URI, key, userId)`);
+
+note right
+  **Apache HttpClient 5** gestiona
+  de forma transparente las redirecciones
+  encadenadas (**303 See Other**)
+end note
+
+:Inspeccionar cookies capturadas\nen el `BasicCookieStore`;
+:Filtrar cookie que cumpla `startsWith("MoodleSession")`;
+
+if (¿Se obtuvo una cookie válida?) then (Sí)
+  :Mapear atributos reales (Domain, Path, Secure);
+  :Cifrar y persistir en disco\n(`CookieRepository.writeCookie`);
+  :Inyectar en el cliente HTTP;
+  :Flujo completado con éxito;
+  stop
+else (No)
+  :Lanzar error de estabilización de sesión;
+  stop
+endif
+
+@enduml

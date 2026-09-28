@@ -15,7 +15,9 @@ import org.springframework.web.service.annotation.PostExchange
  */
 @Client("webservice-client")
 interface BlockStarredcoursesClient {
-  /** Obtiene los curso destacados del usuario autenticado. */
-  @PostExchange
+  /**
+   * Obtiene los curso destacados del usuario autenticado.
+   */
+  @Client
   fun getStarredCourses(): List<MoodleCourse>
 }

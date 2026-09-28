@@ -10,13 +10,14 @@ import es.ubu.lsi.ubumonitorweb.core.client.PropertyProvider
 import org.springframework.stereotype.Component
 
 /**
- * Proveedor que extrae y entrega el token necesario para el parámetro `wstoken` desde el
- * contexto de seguridad.
+ * Proveedor que extrae y entrega el token necesario para el parámetro `wstoken` desde el contexto de la sesión.
  */
 @Component
 class TokenProvider : PropertyProvider.Static<String?>() {
   /**
-   * Invocador del provider.
+   * Obtiene el token de los webservices de Moodle desde el keychain del contexto de la sesión.
+   *
+   * @return Token de los webservices de Moodle.
    */
-  override fun invoke(): String? = sessionContext?.credentials?.token
+  override fun invoke(): String? = keychain?.token
 }

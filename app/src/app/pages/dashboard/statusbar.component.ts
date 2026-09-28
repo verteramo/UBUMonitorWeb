@@ -8,7 +8,7 @@ import { Component, DestroyRef, inject, input, output, signal } from '@angular/c
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Course } from '@core/models/course';
-import { Principal } from '@core/models/principal';
+import { User } from '@core/models/user';
 import { TimeAgoPipe } from '../../core/pipes/time-ago.pipe';
 
 /** Componente de la barra de estado del dashboard. */
@@ -94,7 +94,7 @@ export class StatusbarComponent {
   private destroyRef = inject(DestroyRef);
 
   /** Plataforma Moodle de inicio de sesión. */
-  principal = input.required<Principal>();
+  principal = input.required<User>();
 
   /** Curso seleccionado. */
   course = input.required<Course>();

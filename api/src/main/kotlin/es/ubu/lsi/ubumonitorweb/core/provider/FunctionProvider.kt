@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 import java.lang.reflect.Method
 
 /**
- * Proveedor que obtiene el nombre de las funciones del webservice de Moodle, de acuerdo con la
+ * Provider que resuelve el nombre de las funciones del webservice de Moodle de acuerdo con la
  * [convención](https://docs.moodle.org/dev/Web_service_API_functions#Web_service_functions).
  *
  * Por ejemplo:
@@ -23,14 +23,16 @@ import java.lang.reflect.Method
  * }
  * ```
  *
- * El procesador del cliente utiliza el proveedor para transformar
- * `CoreUserClient.getUserPreferences` en `core_user_get_user_preferences` y, posteriormente,
- * inyecta en la solicitud saliente el parámetro `wsfunction` con el valor obtenido.
+ * El ClientProcessor utiliza este provider para transformar `CoreUserClient.getUserPreferences` en
+ * `core_user_get_user_preferences` y, posteriormente, inyectar en la solicitud saliente el parámetro
+ * `wsfunction` con el valor obtenido.
+ *
+ * @see es.ubu.lsi.ubumonitorweb.core.client.ClientProcessor
  */
 @Component
 class FunctionProvider : PropertyProvider.MethodAware<String?>() {
   /**
-   * Sufijo del nombre de los clientes HTTP.
+   * Sufijo del nombre de las interfaces HTTP.
    */
   private val suffix = "Client"
 
@@ -52,7 +54,10 @@ class FunctionProvider : PropertyProvider.MethodAware<String?>() {
     get() = "${declaringClass.clientName}_$name".replace(regex, "_").lowercase()
 
   /**
-   * Invocador del provider.
+   * Resuelve el nombre de la función del webservice de Moodle.
+   *
+   * @param methodContext Contexto del método cliente HTTP ejecutado.
+   * @return Nombre de la función del webservice de Moodle.
    */
   override fun invoke(methodContext: MethodContext) = methodContext.method.functionName
 }

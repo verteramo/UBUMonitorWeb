@@ -6,25 +6,13 @@
 
 package es.ubu.lsi.ubumonitorweb.moodle.dto
 
-import es.ubu.lsi.ubumonitorweb.domain.Credentials
-
 /**
- * Objeto de credenciales de Moodle.
+ * Representa las credenciales de acceso devueltas por los webservices de Moodle.
+ *
+ * @property token Token principal para autorizar las peticiones a la API.
+ * @property privatetoken Token secundario para operaciones específicas como el autologin.
  */
 data class MoodleToken(
   val token: String,
   val privatetoken: String,
-) {
-  /**
-   * Mapea un token de Moodle, junto con la 'sesskey' y la cookie de sesión a un objeto Credentials.
-   */
-  fun toCredentials(
-    key: String,
-    cookie: String,
-  ) = Credentials(
-    token = token,
-    privateToken = privatetoken,
-    sessionKey = key,
-    sessionCookie = cookie,
-  )
-}
+)

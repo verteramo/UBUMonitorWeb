@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { User } from '@core/models/user';
+import { Participant } from '@core/models/participant';
 import { ExpansionPanelComponent } from '@shared/components/expansion-panel.component';
 import { FilterControlComponent } from '@shared/components/filter-control.component';
 import { ProfileComponent } from './profile.component';
@@ -100,7 +100,7 @@ export class UserPanelComponent {
   readonly dialog = inject(MatDialog);
   readonly store = inject(UsersStore);
 
-  openProfile(user: User) {
+  openProfile(user: Participant) {
     this.dialog.open(ProfileComponent, { data: user });
   }
 }

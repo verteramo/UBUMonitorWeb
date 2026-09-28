@@ -12,13 +12,15 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.service.annotation.PostExchange
 
 /**
- * Cliente HTTP que obtiene los datos del principal, se hidrata desde el perfil `principal` definido
+ * Cliente HTTP que obtiene los datos del user, se hidrata desde el perfil `user` definido
  * en el fichero de configuración de la aplicación.
  */
 @Client("webservice-client")
 interface CoreWebserviceClient {
-  /** Solicitud de los datos del principal. */
-  @PostExchange
+  /**
+   * Solicitud de los datos del user.
+   */
+  @Client
   fun getSiteInfo(
     @RequestParam wstoken: String,
   ): MoodleSiteInfo

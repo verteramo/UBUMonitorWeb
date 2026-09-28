@@ -7,7 +7,7 @@
 import { computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Course } from '@core/models/course';
-import { Principal } from '@core/models/principal';
+import { User } from '@core/models/user';
 import { AuthService } from '@core/services/auth.service';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { withStorage } from './features/storage.feature';
@@ -16,7 +16,7 @@ import { withStorage } from './features/storage.feature';
  * Propiedades de estado de la sesión.
  */
 type SessionState = {
-  principal: Principal | null;
+  principal: User | null;
   course: Course | null;
 };
 
@@ -54,7 +54,7 @@ export const SessionStore = signalStore(
     /**
      * Establece el principal.
      */
-    setPrincipal(principal: Principal): void {
+    setPrincipal(principal: User): void {
       patchState(store, { principal });
       router.navigate(['/course']);
     },
@@ -88,8 +88,10 @@ export const SessionStore = signalStore(
      * Cierre de sesión.
      */
     logout(): void {
-      store.clear();
-      service.logout();
+      service.logout().subscribe({
+        complete: () => store.clear(),
+        error: () => store.clear(),
+      });
     },
   })),
   // Se almacena en sessionStorage

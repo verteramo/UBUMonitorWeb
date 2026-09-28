@@ -7,7 +7,7 @@
 import { HttpClient, HttpContext, HttpContextToken } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { LoginOptions } from '@core/models/login-options';
-import { Principal } from '@core/models/principal';
+import { User } from '@core/models/user';
 import { environment as env } from '@env/environment';
 import { Observable } from 'rxjs';
 
@@ -53,15 +53,15 @@ export class AuthService {
   /**
    * Inicio de sesión en el backend.
    */
-  login({ host, credentials }: UsernamePasswordLoginParams): Observable<Principal> {
-    return this.http.post<Principal>(env.endpoints.login, credentials, {
+  login({ host, credentials }: UsernamePasswordLoginParams): Observable<User> {
+    return this.http.post<User>(env.endpoints.login, credentials, {
       context: new HttpContext().set(AuthToken, host),
     });
   }
 
-  loginSso({ host, credentials }: TokenLoginParams): Observable<Principal> {
+  loginSso({ host, credentials }: TokenLoginParams): Observable<User> {
     console.log('Llamando a AuthService con:', host, credentials);
-    return this.http.post<Principal>(env.endpoints.loginSso, credentials, {
+    return this.http.post<User>(env.endpoints.loginSso, credentials, {
       context: new HttpContext().set(AuthToken, host),
     });
   }
@@ -69,7 +69,7 @@ export class AuthService {
   /**
    * Cierre de sesión en el backend.
    */
-  logout(): void {
-    this.http.get(env.endpoints.logout);
+  logout(): Observable<void> {
+    return this.http.get<void>(env.endpoints.logout);
   }
 }

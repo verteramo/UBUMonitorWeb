@@ -1,11 +1,10 @@
 import { computed, inject, linkedSignal } from '@angular/core';
 import { LoginOptions } from '@core/models/login-options';
-import { Principal } from '@core/models/principal';
+import { User } from '@core/models/user';
 import { AuthService } from '@core/services/auth.service';
 import { DatasetStore } from '@core/stores/dataset.store';
 import { SessionStore } from '@core/stores/session.store';
 import { resolveRelativeLinks } from '@core/utils/string.utils';
-import { environment as env } from '@env/environment';
 import {
   patchState,
   signalStore,
@@ -14,7 +13,7 @@ import {
   withProps,
   withState,
 } from '@ngrx/signals';
-import { finalize, Observable, of, tap } from 'rxjs';
+import { finalize, Observable, tap } from 'rxjs';
 import { LoginPreferencesStore } from './login-preferences.store';
 
 /**
@@ -202,7 +201,7 @@ export const LoginFormStore = signalStore(
        * computa el hash para el dataset y salva las preferencias
        * seleccionadas para el campo del nombre de usuario.
        */
-      login(): Observable<Principal> {
+      login(): Observable<User> {
         const { host, username, password, rememberUsername } = store.model();
 
         patchState(store, { loading: true });
@@ -223,7 +222,7 @@ export const LoginFormStore = signalStore(
         );
       },
 
-      loginSso(token: string): Observable<Principal> {
+      loginSso(token: string): Observable<User> {
         const { host } = store.model();
 
         patchState(store, { loading: true });
@@ -240,18 +239,6 @@ export const LoginFormStore = signalStore(
           }),
           finalize(() => patchState(store, { loading: false })),
         );
-      },
-
-      loginViaBrowser(): void {
-        const url = store.loginOptions()?.loginUrl;
-        const scheme = encodeURIComponent(env.scheme);
-        const finalUrl = `${url}?service=moodle_mobile_app&passport=1&urlscheme=${scheme}`;
-        console.log('Llamando a:', finalUrl);
-        window.location.href = finalUrl;
-      },
-
-      sendToken(token: string): Observable<Principal | null> {
-        return of(null);
       },
     };
   }),

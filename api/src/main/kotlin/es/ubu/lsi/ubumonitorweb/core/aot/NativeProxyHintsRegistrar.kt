@@ -13,17 +13,25 @@ import org.springframework.aot.hint.RuntimeHintsRegistrar
 import org.springframework.aot.hint.TypeReference
 
 /**
- * Implementación del registrador de "pistas" (hints).
+ * Implementación del registrador de hints (pistas).
  *
  * Indica al compilador nativo GraalVM qué proxies o reflexiones debe
  * construir de antemano para llevarlo al binario final.
  */
 class NativeProxyHintsRegistrar : RuntimeHintsRegistrar {
+  /**
+   * Registra el proxies dinámicos y reglas de reflexión para clases generadas.
+   *
+   * @param hints Registro central de hints de ejecución.
+   * @param classLoader Cargador de clases de la aplicación.
+   */
   override fun registerHints(
     hints: RuntimeHints,
     classLoader: ClassLoader?,
   ) {
-    // Registra el proxy dinámico de la interfaz para que GraalVM lo incluya en el binario
+    /*
+     * Registra el proxy dinámico de la interfaz para que GraalVM lo incluya en el binario.
+     */
     hints.proxies().registerJdkProxy(HttpServletRequest::class.java)
 
     /*
@@ -35,9 +43,10 @@ class NativeProxyHintsRegistrar : RuntimeHintsRegistrar {
     hints.reflection().registerType(
       TypeReference.of($$$"org.springdoc.core.providers.SpringWebProvider$$SpringCGLIB$$0"),
     ) { typeHint ->
-      typeHint.withField($$"CGLIB$FACTORY_DATA")
-      typeHint.withField($$"CGLIB$CALLBACK_FILTER")
-      typeHint.withMembers(MemberCategory.INVOKE_DECLARED_METHODS)
+      typeHint
+        .withField($$"CGLIB$FACTORY_DATA")
+        .withField($$"CGLIB$CALLBACK_FILTER")
+        .withMembers(MemberCategory.INVOKE_DECLARED_METHODS)
     }
   }
 }

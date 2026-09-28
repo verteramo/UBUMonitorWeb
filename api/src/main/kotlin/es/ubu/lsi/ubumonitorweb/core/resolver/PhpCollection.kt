@@ -7,16 +7,18 @@
 package es.ubu.lsi.ubumonitorweb.core.resolver
 
 /**
- * Anotación que indica cómo serializar una colección de parámetros para un servidor PHP.
+ * Anotación que indica cómo serializar una colección para servidores PHP.
  *
- * Indica al cliente HTTP que formatee los elementos
- * utilizando la notación de corchetes. Esto garantiza la compatibilidad de la petición con
- * el formato de decodificación nativo de PHP para rellenar variables como `$_REQUEST`, `$_GET` o
- * `$_POST`.
+ * ```
+ * @PhpCollection(name = "status")
+ * listOf("activo", "pendiente") --> status[0]=activo&status[1]=pendiente
+ * ```
+ *
+ * @property name Nombre explícito del parámetro en la petición HTTP.
+ *
+ * @see PhpCollectionArgumentResolver
  */
 @Target(AnnotationTarget.VALUE_PARAMETER)
 annotation class PhpCollection(
   val name: String = "",
-  val keyName: String = "key",
-  val valueName: String = "value",
 )

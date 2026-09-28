@@ -23,4 +23,5 @@ security:
 
 logging:
   level:
-    es.ubu.lsi.ubumonitorweb: debug
+    es.ubu.lsi.ubumonitorweb: trace
+    org.apache.hc.client5.http.headers: DEBUG

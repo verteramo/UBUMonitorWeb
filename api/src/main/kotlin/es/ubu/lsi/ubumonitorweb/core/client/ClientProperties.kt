@@ -8,57 +8,58 @@ package es.ubu.lsi.ubumonitorweb.core.client
 
 import es.ubu.lsi.ubumonitorweb.core.locale.Message
 import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import java.time.Duration
-import kotlin.time.Duration.Companion.seconds
 
 /**
- * Propiedades de configuración de los clientes.
+ * Propiedades de configuración de la capa de clientes HTTP.
  *
- *
- * @param profiles Perfiles de clientes, más detalles en su definición (más abajo).
- * @param errorMappings Mapa de códigos de error de moodle a códigos de estado HTTP.
+ * @property factory Propiedades de configuración de la factoría.
+ * @property profiles Perfiles de clientes, más detalles en su definición.
+ * @property serviceErrorMappings Mapa de códigos de error de moodle a códigos de estado HTTP.
+ * @property scrapingErrorMappings Mapa de códigos de estado HTTP del frontend de Moodle a códigos de estado HTTP y
+ *                                 selector CSS del elemento HTML que contiene el mensaje de error.
  */
 @ConfigurationProperties("clients")
 data class ClientProperties(
-  val chunkSize: Int = 4096,
-  val readTimeout: Duration = Duration.ofSeconds(15),
-  val connectionTimeout: Duration = Duration.ofSeconds(3),
+  val factory: FactoryProperties = FactoryProperties(),
   val profiles: Map<String, Profile> = emptyMap(),
-  val errorMappings: Map<String, HttpStatus> = emptyMap(),
+  val serviceErrorMappings: Map<String, HttpStatus> = emptyMap(),
+  val scrapingErrorMappings: Map<HttpStatus, ScrappingError> = emptyMap(),
 ) {
   /**
-   * Propiedades de configuración de los perfiles.
+   * Propiedades de configuración de los perfiles de clientes HTTP.
    *
-   * @param inherit Nombre de otro perfil del cual se heredan sus propiedades.
-   * @param endpoint Path del servicio al que se realiza la solicitud.
-   * @param multiple Indica si el body se envía como un array `[{...}, {...}, ...]`.
-   * @param host Clase del bean que resuelve el host.
-   * @param params Parámetros estáticos de la solicitud, no se resuelven dinámicamente, sino que van tal cual se definen,
-   * cabe destacar que si el `Content-Type` es `application/x-www-form-urlencoded`, Spring los codifica y los adjunta en
-   * el body, por ejemplo: `param1=value1&param2=value2&paramN=valueN`.
-   * @param headers Igual que params, pero para adjuntar cabeceras.
-   * @param cookies Igual que params y headers, pero para adjuntar cookies.
-   * @param providers Similar a los anteriores, pero con parámetros que son resueltos por beans, se debe especificar la
-   * ubicación donde se inyectará el valor (`param, header, cookie`) y el bean que lo resuelve.
-   * @param forwardHeaders Permite reenviar cabecera desde la solicitud entrante hacia la solicitud saliente, por ejemplo
-   * podría ser útil reenviar la cabecera `Accept-Language`, para que Moodle genere las respuestas en el lenguaje que
-   * utiliza el usuario en el cliente.
+   * @property inherit Nombre de otro perfil del cual se heredan sus propiedades.
+   * @property method Método HTTP.
+   * @property endpoint Path del servicio al que se realiza la solicitud.
+   * @property multiple Indica si el body se envía como un array `[{...}, {...}, ...]`.
+   * @property host Clase del bean que resuelve el host.
+   * @property params Parámetros estáticos de la solicitud, no se resuelven dinámicamente, sino que van tal cual se definen.
+   * @property headers Igual que params, pero para adjuntar cabeceras.
+   * @property cookies Igual que params y headers, pero para adjuntar cookies.
+   * @property providers Similar a los anteriores, pero con parámetros que son resueltos por beans, se debe especificar la
+   *                     ubicación donde se inyectará el valor (`param, header, cookie`) y el bean que lo resuelve.
+   * @property forwardHeaders Permite reenviar cabeceras desde la solicitud entrante hacia la solicitud saliente, por ejemplo
+   *                          podría ser útil reenviar la cabecera `Accept-Language`, para que Moodle genere las respuestas
+   *                          en el lenguaje que utiliza el usuario en el cliente.
    *
    * Ejemplo:
    * ```yaml
    * clients:
    *   profiles:
    *     profile1:
+   *       method: GET
    *       endpoint: /login/index.php
    *       host: es.ubu.lsi.ubumonitorweb.MyHostProvider
-   *       params:
-   *         param1: value1
    *       headers:
-   *         Content-Type: application/x-www-form-urlencoded
    *         Header1: value1
+   *         Content-Type: application/x-www-form-urlencoded
    *       cookies:
    *         Cookie1: value1
+   *       params:
+   *         param1: value1
    *       providers:
    *         provided-value1:
    *           location: param
@@ -70,19 +71,19 @@ data class ClientProperties(
    * El [ClientProcessor] intercepta la llamada y compone una solicitud saliente como la siguiente:
    *
    * ```http
-   * VERB ${host}/login/index.php // <-- Host resuelto por el bean, que lo puede buscar en una cabecera o donde sea.
+   * GET ${host}/login/index.php          // <-- Host resuelto por el provider
    * Content-Type: application/x-www-form-urlencoded
-   * Header1: value1
    * Set-Cookie: Cookie1=value1
-   * Accept-Language: {...} // <-- El valor de la cabecera en la solicitud entrante.
+   * Accept-Language: {...}               // <-- El valor de la cabecera en la solicitud entrante
    *
-   * param1=value1&provided-value1={...} // <-- Valor resuelto por el proveedor, que podría ser un token guardado en memoria.
+   * param1=value1&provided-value1={...}  // <-- Valor resuelto por el provider
    * ```
    */
   data class Profile(
     val inherit: String = "",
+    val method: HttpMethod? = null,
     val endpoint: String = "",
-    val multiple: Boolean = false,
+    val multiple: Boolean? = null,
     val host: Class<out PropertyProvider<*>>? = null,
     val params: Map<String, Any?> = emptyMap(),
     val headers: Map<String, String> = emptyMap(),
@@ -91,35 +92,38 @@ data class ClientProperties(
     val forwardHeaders: Set<String> = emptySet(),
   ) {
     /**
-     * Propiedades de configuración de los proveedores.
+     * Propiedades de configuración de los providers.
      *
-     * @param location Ubicación final donde se inyectará el valor resuelto por el proveedor.
-     * @param bean Clase del bean/component que resuelve el valor.
+     * @property location Ubicación final donde se inyectará el valor resuelto.
+     * @property bean Clase del bean/component que resuelve el valor.
      */
     data class Provider(
       val location: Location,
       val bean: Class<out PropertyProvider<*>>,
     ) {
       /**
-       * Ubicaciones posibles de los valores resueltos por los proveedores.
+       * Ubicaciones posibles de los valores resueltos por los providers.
        */
       enum class Location { PARAM, HEADER, COOKIE }
     }
 
     /**
-     * Fusiona dos perfiles; en el caso de Strings tomando los valores del perfil de la derecha si
-     * los valores son vacíos, en el caso de los conjuntos se produce una unión y, en el caso de
-     * los mapas, se produce una fusión. Por ejemplo:
+     * Fusiona dos perfiles; en el caso de Strings vacíos tomando los valores del perfil de la derecha si,
+     * en el caso de los conjuntos se produce una unión y, en el caso de los mapas, se produce una fusión.
      *
      * ```kotlin
      * val profile3 = profile1 merge profile2
      * ```
+     *
+     * @param parent Perfil de la derecha (o del cual se "hereda").
+     * @return Nuevo perfil resultado de la fusión.
      */
     infix fun merge(parent: Profile) =
       Profile(
         inherit = inherit,
+        method = method ?: parent.method ?: HttpMethod.GET,
         endpoint = endpoint.ifBlank { parent.endpoint },
-        multiple = multiple || parent.multiple,
+        multiple = multiple ?: parent.multiple ?: false,
         host = host ?: parent.host,
         params = parent.params + params,
         headers = parent.headers + headers,
@@ -128,6 +132,45 @@ data class ClientProperties(
         forwardHeaders = parent.forwardHeaders union forwardHeaders,
       )
   }
+
+  /**
+   * Configuración de la factoría de conexiones HTTP.
+   *
+   * @property chunkSize Tamaño en bytes por bloque en transferencias fragmentadas.
+   * @property readTimeout Tiempo máximo de espera entre paquetes de datos recibidos.
+   * @property connectionTimeout Tiempo máximo para establecer la conexión TCP con el servidor.
+   */
+  data class FactoryProperties(
+    val chunkSize: Int = 4096,
+    val readTimeout: Duration = Duration.ofSeconds(15),
+    val connectionTimeout: Duration = Duration.ofSeconds(3),
+  )
+
+  /**
+   * Patrón de error semántico detectado mediante análisis de contenido HTML.
+   *
+   * @property status Código HTTP asociado al error detectado.
+   * @property detailSelector Selector CSS para extraer la descripción del fallo del DOM.
+   */
+  data class ScrappingError(
+    val status: HttpStatus,
+    val detailSelector: String,
+  )
+
+  /**
+   * Resuelve un perfil fusionando recursivamente las propiedades de sus antecesores.
+   *
+   * @param name Identificador del perfil a buscar.
+   * @param visited Nombres procesados en la traza para prevenir ciclos de recursión.
+   * @return Perfil combinado con sus jerarquías, o `null` si no existe o genera una referencia circular.
+   */
+  fun resolveProfile(
+    name: String,
+    visited: Set<String> = emptySet(),
+  ): Profile? =
+    name.takeUnless { it.isBlank() || it in visited }?.let { profiles[it] }?.let {
+      resolveProfile(it.inherit, visited + name)?.let { parent -> it merge parent } ?: it
+    }
 
   init {
     /*
@@ -144,19 +187,8 @@ data class ClientProperties(
      */
     profiles.forEach { (name, profile) ->
       profile.inherit.takeIf { it.isNotBlank() && it !in profiles }?.let { parent ->
-        error(Message.ERROR_PROFILE_INHERIT(name, parent))
+        error(Message.ERROR_PROFILE_INHERITANCE(name, parent))
       }
     }
   }
-
-  /**
-   * Permite acceder al mapa de perfiles con notación de arreglo/corchetes: `profiles["profile-name"]`
-   */
-  operator fun get(
-    name: String,
-    visited: Set<String> = emptySet(),
-  ): Profile? =
-    name.takeUnless { it.isBlank() || it in visited }?.let { profiles[it] }?.let {
-      get(it.inherit, visited + name)?.let { parent -> it merge parent } ?: it
-    }
 }
