@@ -58,6 +58,7 @@ class AuthController(
    */
   data class SsoTokenLoginRequest(
     val token: String,
+    val privateToken: String,
   )
 
   /**
@@ -121,19 +122,19 @@ class AuthController(
    *
    * @param request Petición HTTP entrante.
    * @param response Respuesta HTTP.
-   * @param params Credenciales enviadas en el cuerpo JSON de la petición.
+   * @param credentials Credenciales enviadas en el cuerpo JSON de la petición.
    * @return Usuario autenticado con su contexto asociado.
    */
   @PostMapping("/login")
   fun login(
     request: HttpServletRequest,
     response: HttpServletResponse,
-    @RequestBody params: CredentialsLoginRequest,
+    @RequestBody credentials: CredentialsLoginRequest,
   ): User =
     authenticateAndSave(
       UsernamePasswordAuthenticationToken.unauthenticated(
-        params.username,
-        params.password,
+        credentials.username,
+        credentials.password,
       ),
       request,
       response,
@@ -144,15 +145,15 @@ class AuthController(
    *
    * @param request Petición HTTP entrante.
    * @param response Respuesta HTTP.
-   * @param params Token de acceso enviado en el cuerpo JSON de la petición.
+   * @param ssoToken Token de acceso enviado en el cuerpo JSON de la petición.
    * @return Usuario autenticado con su contexto asociado.
    */
   @PostMapping("/login-sso")
   fun login(
     request: HttpServletRequest,
     response: HttpServletResponse,
-    @RequestBody params: SsoTokenLoginRequest,
-  ): User = authenticateAndSave(PreAuthenticatedAuthenticationToken(params.token, null), request, response)
+    @RequestBody ssoToken: SsoTokenLoginRequest,
+  ): User = authenticateAndSave(PreAuthenticatedAuthenticationToken(ssoToken, null), request, response)
 
   /**
    * Cierra la sesión activa destruyendo el contexto de seguridad.

@@ -1,7 +1,7 @@
 import { computed, inject, linkedSignal } from '@angular/core';
 import { LoginOptions } from '@core/models/login-options';
 import { User } from '@core/models/user';
-import { AuthService } from '@core/services/auth.service';
+import { AuthService, SsoTokenLoginRequest } from '@core/services/auth.service';
 import { DatasetStore } from '@core/stores/dataset.store';
 import { SessionStore } from '@core/stores/session.store';
 import { resolveRelativeLinks } from '@core/utils/string.utils';
@@ -206,7 +206,7 @@ export const LoginFormStore = signalStore(
 
         patchState(store, { loading: true });
 
-        return service.login({ host, credentials: { username, password } }).pipe(
+        return service.login({ host, payload: { username, password } }).pipe(
           tap({
             next(principal): void {
               session.setPrincipal(principal);
@@ -222,16 +222,14 @@ export const LoginFormStore = signalStore(
         );
       },
 
-      loginSso(token: string): Observable<User> {
-        const { host } = store.model();
-
+      loginSso(host: string, payload: SsoTokenLoginRequest['payload']): Observable<User> {
         patchState(store, { loading: true });
 
-        return service.loginSso({ host, credentials: { token } }).pipe(
+        return service.loginSso({ host, payload }).pipe(
           tap({
             next(principal): void {
               session.setPrincipal(principal);
-              dataset.computeHash(token);
+              dataset.computeHash(payload.token);
             },
             error(e): void {
               console.error(e);

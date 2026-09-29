@@ -37,23 +37,23 @@ class CookieService(
   /**
    * Asegura la disponibilidad de una cookie de sesión válida en el almacén global.
    *
-   * @param moodleToken Credenciales de acceso de Moodle.
+   * @param ssoToken Credenciales de acceso de Moodle.
    * @param userId Identificador único del usuario.
    * @throws AuthenticationServiceException Si no es posible obtener o estabilizar la cookie.
    */
   fun getOrFetchCookie(
-    moodleToken: MoodleToken,
+    ssoToken: AuthController.SsoTokenLoginRequest,
     userId: Int,
   ) {
     cookieStore.clear()
 
-    cookieRepository.readCookie(moodleToken.token)?.takeIf { isValid(it) }?.also {
+    cookieRepository.readCookie(ssoToken.token)?.takeIf { isValid(it) }?.also {
       logger.info { "Cookie loaded from repository is valid" }
     } ?: run {
       logger.info { "Cookie is missing, invalid or read failed" }
 
-      autologin(moodleToken, userId).let { newCookie ->
-        cookieRepository.writeCookie(newCookie, moodleToken.token)
+      autologin(ssoToken, userId).let { newCookie ->
+        cookieRepository.writeCookie(newCookie, ssoToken.token)
         logger.info { "New cookie saved to repository" }
       }
     }
@@ -87,21 +87,21 @@ class CookieService(
   /**
    * Ejecuta el flujo de autologin para obtener una nueva cookie.
    *
-   * @param moodleToken Credenciales de acceso de Moodle.
+   * @param ssoToken Credenciales de acceso de Moodle.
    * @param userId Identificador único del usuario.
    * @return Cookie nueva extraída del store.
    *
    * @throws AuthenticationServiceException Si falla la obtención de la cookie de sesión.
    */
   private fun autologin(
-    moodleToken: MoodleToken,
+    ssoToken: AuthController.SsoTokenLoginRequest,
     userId: Int,
   ): CookieRepository.Cookie {
     cookieStore.clear()
 
     logger.info { "Starting autologin sequence (tool_mobile_get_autologin_key)" }
 
-    toolMobileClient.getAutologinKey(moodleToken.token, moodleToken.privatetoken).let {
+    toolMobileClient.getAutologinKey(ssoToken.token, ssoToken.privateToken).let {
       logger.debug { "Autologin key: '$it'" }
       toolMobileClient.autologin(URI(it.autologinurl), it.key, userId)
     }

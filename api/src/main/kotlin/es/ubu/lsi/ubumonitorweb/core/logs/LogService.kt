@@ -9,6 +9,8 @@ package es.ubu.lsi.ubumonitorweb.core.logs
 import es.ubu.lsi.ubumonitorweb.domain.LogEntry
 import es.ubu.lsi.ubumonitorweb.moodle.dto.MoodleLogEntry
 import io.github.oshai.kotlinlogging.KotlinLogging
+import org.springframework.aot.hint.MemberCategory
+import org.springframework.aot.hint.annotation.RegisterReflection
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.web.service.registry.ImportHttpServices
@@ -26,6 +28,10 @@ import java.time.format.DateTimeFormatter
  * @property csvMapper Servicio de mapping de text CSV.
  */
 @Service
+@RegisterReflection(
+  classes = [MoodleLogEntry::class],
+  memberCategories = [MemberCategory.INVOKE_PUBLIC_CONSTRUCTORS],
+)
 @ImportHttpServices(LogClient::class)
 class LogService(
   private val logClient: LogClient,

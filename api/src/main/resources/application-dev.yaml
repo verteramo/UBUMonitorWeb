@@ -13,6 +13,7 @@ security:
     - /*.png
     - /*.jpg
     - /*.jpeg
+    - /*.webmanifest
 
     # Actuator
     - /actuator**

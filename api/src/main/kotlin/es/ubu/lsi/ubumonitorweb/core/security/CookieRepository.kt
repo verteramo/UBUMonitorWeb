@@ -4,6 +4,8 @@ import es.ubu.lsi.ubumonitorweb.core.crypto.CipherStrategy
 import es.ubu.lsi.ubumonitorweb.core.crypto.DigestService
 import es.ubu.lsi.ubumonitorweb.core.crypto.DigestService.Companion.asString
 import io.github.oshai.kotlinlogging.KotlinLogging
+import org.springframework.aot.hint.MemberCategory
+import org.springframework.aot.hint.annotation.RegisterReflection
 import org.springframework.stereotype.Repository
 import tools.jackson.databind.ObjectMapper
 import tools.jackson.module.kotlin.readValue
@@ -21,6 +23,10 @@ import java.io.File
  * @property jsonMapper Instancia de Jackson para la serialización de las cookies.
  */
 @Repository
+@RegisterReflection(
+  classes = [CookieRepository.Cookie::class],
+  memberCategories = [MemberCategory.INVOKE_PUBLIC_CONSTRUCTORS],
+)
 class CookieRepository(
   private val properties: SecurityProperties,
   private val digestService: DigestService,
