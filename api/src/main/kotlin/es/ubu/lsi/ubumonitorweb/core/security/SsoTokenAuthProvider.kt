@@ -10,7 +10,6 @@ import es.ubu.lsi.ubumonitorweb.core.system.ScrapingExtensions.sessionKey
 import es.ubu.lsi.ubumonitorweb.domain.Keychain
 import es.ubu.lsi.ubumonitorweb.moodle.client.CoreWebserviceClient
 import es.ubu.lsi.ubumonitorweb.moodle.client.LoginClient
-import es.ubu.lsi.ubumonitorweb.moodle.dto.MoodleToken
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.AuthenticationServiceException
@@ -18,8 +17,6 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
 import org.springframework.stereotype.Component
 import org.springframework.web.service.registry.ImportHttpServices
-import java.net.URLDecoder
-import kotlin.io.encoding.Base64
 
 /**
  * Proveedor de autenticación SSO para validar tokens pre-cargados desde el frontend.
@@ -55,25 +52,14 @@ class SsoTokenAuthProvider(
    * @return Objeto de autenticación con el contexto de sesión.
    */
   override fun authenticate(authentication: Authentication): Authentication {
-    val token = authentication.principal.toString()
+    val ssoToken = authentication.principal as AuthController.SsoTokenLoginRequest
 
     logger.info { "Starting SSO authentication" }
-    logger.debug { "SSO Token: '$token'" }
+    logger.debug { "SSO Token: '$ssoToken'" }
 
-    /*
-     * Decodificación del token SSO:
-     * URL decode --> Base64 decode --> <hash>:::<token>[:::<privatetoken>]
-     */
-    val moodleToken =
-      token
-        .let { URLDecoder.decode(it, Charsets.UTF_8) }
-        .let { Base64.decode(it).decodeToString() }
-        .split(":::")
-        .run { MoodleToken(token = get(1), privatetoken = getOrNull(2) ?: "") }
+    val moodleSiteInfo = coreWebserviceClient.getSiteInfo(ssoToken.token)
 
-    val moodleSiteInfo = coreWebserviceClient.getSiteInfo(moodleToken.token)
-
-    cookieService.getOrFetchCookie(moodleToken, moodleSiteInfo.userid)
+    cookieService.getOrFetchCookie(ssoToken, moodleSiteInfo.userid)
 
     val sessionKey = loginClient.getUserEditForm().sessionKey
 
@@ -87,8 +73,8 @@ class SsoTokenAuthProvider(
      */
     val keychain =
       Keychain(
-        token = moodleToken.token,
-        privateToken = moodleToken.privatetoken,
+        token = ssoToken.token,
+        privateToken = ssoToken.privateToken,
         sessionKey = sessionKey,
       )
 

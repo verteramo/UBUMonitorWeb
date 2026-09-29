@@ -157,14 +157,7 @@ class CourseService(
 
   fun getGrades(id: Int): List<Grade> = gradereportUserClient.getGradeItems(id).usergrades.map { it.toGrade() }
 
-  fun getEvents(id: Int): List<Event> =
-    coreCalendarClient
-      .getCalendarEvents(
-        mapOf(
-          "courseids" to listOf(id),
-        ),
-      ).events
-      .map { it.toEvent() }
+  fun getEvents(id: Int): List<Event> = coreCalendarClient.getCalendarEvents(mapOf("courseids" to listOf(id))).events.map { it.toEvent() }
 
   fun getCompletion(
     courseId: Int,

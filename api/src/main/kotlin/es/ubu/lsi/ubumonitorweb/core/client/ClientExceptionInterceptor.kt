@@ -29,17 +29,8 @@ import tools.jackson.module.kotlin.treeToValue
  */
 @Component
 @RegisterReflection(
-  /*
-   * Registro de las clases que se pueden llegar a instanciar mediante reflexión,
-   * para que GraalVM guarde el camino estático a las mismas.
-   */
-  classes = [
-    ClientException::class,
-    ClientException.ClientError::class,
-  ],
-  memberCategories = [
-    MemberCategory.INVOKE_PUBLIC_CONSTRUCTORS,
-  ],
+  classes = [ClientException::class, ClientException.ClientError::class],
+  memberCategories = [MemberCategory.INVOKE_PUBLIC_CONSTRUCTORS],
 )
 class ClientExceptionInterceptor(
   private val properties: ClientProperties,

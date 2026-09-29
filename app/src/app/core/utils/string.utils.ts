@@ -4,6 +4,7 @@
  * @author Marcelo Verteramo Pérsico
  */
 
+
 /**
  * Convierte un string a PascalCase.
  *
@@ -25,11 +26,19 @@ export function toPascalCase(value: string): string {
   });
 }
 
+export function cleanHost(host: string): string {
+  return host.replace(/\/$/, '');
+}
+
 /**
  * Analiza un string HTML, resuelve las URLs relativas utilizando un host base
  * y añade target="_blank" para abrirlas de forma segura en una nueva pestaña.
  */
-export function resolveRelativeLinks(baseUrl: string, html: string, target: string = '_self'): string {
+export function resolveRelativeLinks(
+  baseUrl: string,
+  html: string,
+  target: string = '_self',
+): string {
   const cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
   const doc = new DOMParser().parseFromString(html, 'text/html');
 
@@ -43,4 +52,27 @@ export function resolveRelativeLinks(baseUrl: string, html: string, target: stri
   });
 
   return doc.body.innerHTML;
+}
+
+/**
+ * Extrae y decodifica el token y el passport a partir del deep link devuelto por Moodle.
+ *
+ * @param deepLink URL capturada por la PWA (ej: web+umw://token=QmFzZTY0...)
+ */
+export function parseDeepLink(deepLink: string) {
+  /*
+   * 1. Decodificar URL
+   * 2. Eliminar '/' final
+   * 3. Aislar token: web+umw://token=|QmFzZTY0...|&
+   * 4. Decodificar Base64
+   * 5. Partir por delimitador ':::'
+   */
+  const payload = cleanHost(decodeURIComponent(deepLink)).split('token=')[1]?.split('&')[0];
+  const [hash, token, privateToken] = atob(payload).split(':::');
+
+  if (!hash || !token) {
+    throw new Error(`Malformed SSO token\nDeepLink: '${deepLink}'\nPayload: ${payload}`);
+  }
+
+  return { hash, token, privateToken };
 }

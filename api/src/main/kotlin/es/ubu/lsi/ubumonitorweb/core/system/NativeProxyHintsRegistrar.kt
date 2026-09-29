@@ -4,13 +4,19 @@
  * @author Marcelo Verteramo Pérsico
  */
 
-package es.ubu.lsi.ubumonitorweb.core.aot
+package es.ubu.lsi.ubumonitorweb.core.system
 
 import jakarta.servlet.http.HttpServletRequest
+import org.springframework.aop.SpringProxy
+import org.springframework.aop.framework.Advised
 import org.springframework.aot.hint.MemberCategory
 import org.springframework.aot.hint.RuntimeHints
 import org.springframework.aot.hint.RuntimeHintsRegistrar
 import org.springframework.aot.hint.TypeReference
+import org.springframework.beans.factory.InitializingBean
+import org.springframework.context.MessageSourceAware
+import org.springframework.core.DecoratingProxy
+import org.springframework.security.authentication.AuthenticationManager
 
 /**
  * Implementación del registrador de hints (pistas).
@@ -30,9 +36,32 @@ class NativeProxyHintsRegistrar : RuntimeHintsRegistrar {
     classLoader: ClassLoader?,
   ) {
     /*
-     * Registra el proxy dinámico de la interfaz para que GraalVM lo incluya en el binario.
+     * Registra los proxies dinámicos de las interfaces para que GraalVM los incluya en el binario.
      */
     hints.proxies().registerJdkProxy(HttpServletRequest::class.java)
+
+    hints.proxies().registerJdkProxy(
+      AuthenticationManager::class.java,
+      MessageSourceAware::class.java,
+      InitializingBean::class.java,
+      SpringProxy::class.java,
+      Advised::class.java,
+      DecoratingProxy::class.java,
+    )
+
+    hints.reflection().let {
+      it.registerType(
+        TypeReference.of("kotlin.collections.EmptyMap"),
+        MemberCategory.INVOKE_DECLARED_CONSTRUCTORS,
+        MemberCategory.INVOKE_PUBLIC_CONSTRUCTORS,
+      )
+
+      it.registerType(
+        TypeReference.of("kotlin.collections.EmptyList"),
+        MemberCategory.INVOKE_DECLARED_CONSTRUCTORS,
+        MemberCategory.INVOKE_PUBLIC_CONSTRUCTORS,
+      )
+    }
 
     /*
      * Regla para el proxy CGLIB de Springdoc
