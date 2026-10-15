@@ -26,15 +26,20 @@ logs:
   boolean-prefixes: [ is, has ]
 
 clients:
+  factory:
+    ssl-trust-strategy: trust_all
+
   service-error-mappings:
     invalidlogin: unauthorized
-    invalidtoken: forbidden
+    invalidtoken: unauthorized
+    invalidresponse: service_unavailable
     nopermissions: forbidden
     apprequired: forbidden
     codingerror: bad_request
     invalid_parameter: bad_request
     sitepolicynotagreed: unavailable_for_legal_reasons
     autologinkeygenerationlockout: too_many_requests
+    redirecterrordetected: internal_server_error
 
   scraping-error-mappings:
     not-found:
@@ -43,11 +48,11 @@ clients:
 
   profiles:
     default-get:
-      host: es.ubu.lsi.ubumonitorweb.core.provider.HostProvider
+      site-url: es.ubu.lsi.ubumonitorweb.core.provider.SiteUrlProvider
       method: GET
 
     default-post:
-      host: es.ubu.lsi.ubumonitorweb.core.provider.HostProvider
+      site-url: es.ubu.lsi.ubumonitorweb.core.provider.SiteUrlProvider
       method: POST
 
     # Perfil del cliente de obtención del token

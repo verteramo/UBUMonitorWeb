@@ -1,7 +1,16 @@
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 import { Component, input, model } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { ProgressSpinnerComponent } from '@shared/components/progress-spinner.component';
 
+/**
+ * Componente de panel de expansión personalizado con soporte para estado de carga y diseño adaptable.
+ */
 @Component({
   selector: 'app-expansion-panel',
   imports: [MatExpansionModule, ProgressSpinnerComponent],
@@ -95,7 +104,18 @@ import { ProgressSpinnerComponent } from '@shared/components/progress-spinner.co
   `,
 })
 export class ExpansionPanelComponent {
+  /**
+   * Título descriptivo que se muestra en la cabecera del panel.
+   */
   readonly title = input.required<string>();
+
+  /**
+   * Estado que indica si el panel se encuentra expandido o contraído.
+   */
   readonly expanded = model.required<boolean>();
+
+  /**
+   * Indica si el contenido del panel se encuentra cargando.
+   */
   readonly loading = input.required<boolean>();
 }

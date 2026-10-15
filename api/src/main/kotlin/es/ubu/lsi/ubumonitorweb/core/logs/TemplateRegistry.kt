@@ -56,7 +56,7 @@ class TemplateRegistry(
     // Carga de la colección local disponible en resources
     val internalCollection =
       javaClass
-        .getResourceAsStream("/${properties.filename}")
+        .getResourceAsStream("/logs-templates.yaml")
         ?.use { yamlMapper.readValue<TemplateMap<List<String>>>(it) } ?: emptyMap()
 
     // Carga de la colección externa, si está disponible

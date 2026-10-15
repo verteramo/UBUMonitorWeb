@@ -1,11 +1,12 @@
-import { Component, inject, input, model } from '@angular/core';
+import { Component, inject, model } from '@angular/core';
 import { MatTabsModule } from '@angular/material/tabs';
+import { DatasetStore } from '@core/stores/dataset.store';
 import { withTabs } from '@core/stores/features/tab.feature';
 import { signalStore } from '@ngrx/signals';
 import { ExpansionPanelComponent } from '@shared/components/expansion-panel.component';
-import { TabLogsComponent } from './tab-logs.component';
+import { TabLogsComponent } from './tab-logs/tab-logs.component';
 
-const Store = signalStore(withTabs(['logs', 'grades', 'activity-completion']));
+const Store = signalStore(withTabs('logs', 'grades', 'activity-completion'));
 
 @Component({
   selector: 'app-activity-panel',
@@ -60,7 +61,7 @@ const Store = signalStore(withTabs(['logs', 'grades', 'activity-completion']));
       i18n-title
       title="Activities"
       [(expanded)]="expanded"
-      [loading]="loading()"
+      [loading]="dataset.data.isLoading()"
     >
       <main>
         <mat-tab-group
@@ -80,7 +81,8 @@ const Store = signalStore(withTabs(['logs', 'grades', 'activity-completion']));
   `,
 })
 export class ActivityPanelComponent {
-  readonly store = inject(Store);
-  readonly loading = input<boolean>(false);
+  protected readonly store = inject(Store);
+  protected readonly dataset = inject(DatasetStore);
+
   readonly expanded = model.required<boolean>();
 }

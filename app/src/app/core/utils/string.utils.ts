@@ -4,7 +4,6 @@
  * @author Marcelo Verteramo Pérsico
  */
 
-
 /**
  * Convierte un string a PascalCase.
  *
@@ -26,27 +25,37 @@ export function toPascalCase(value: string): string {
   });
 }
 
-export function cleanHost(host: string): string {
-  return host.replace(/\/$/, '');
+/**
+ * Elimina la barra final de una URL, si existe.
+ *
+ * @param url URL que se desea limpiar.
+ * @returns URL limpia sin barra final.
+ */
+export function cleanUrl(url: string): string {
+  return url.replace(/\/$/, '');
 }
 
 /**
  * Analiza un string HTML, resuelve las URLs relativas utilizando un host base
- * y añade target="_blank" para abrirlas de forma segura en una nueva pestaña.
+ * y añade el atributo target especificado para abrirlas de forma segura.
+ *
+ * @param html Contenido HTML que se va a procesar.
+ * @param baseUrl URL base para resolver las rutas relativas.
+ * @param target Destino de los enlaces.
+ * @returns HTML procesado con las URLs relativas resueltas.
  */
 export function resolveRelativeLinks(
-  baseUrl: string,
   html: string,
+  baseUrl: string,
   target: string = '_self',
 ): string {
-  const cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
   const doc = new DOMParser().parseFromString(html, 'text/html');
 
   doc.querySelectorAll('a').forEach((anchor) => {
     const href = anchor.getAttribute('href');
     if (href && !href.startsWith('http://') && !href.startsWith('https://')) {
       const separator = href.startsWith('/') ? '' : '/';
-      anchor.setAttribute('href', `${cleanBaseUrl}${separator}${href}`);
+      anchor.setAttribute('href', `${cleanUrl(baseUrl)}${separator}${href}`);
       anchor.setAttribute('target', target);
     }
   });
@@ -55,24 +64,13 @@ export function resolveRelativeLinks(
 }
 
 /**
- * Extrae y decodifica el token y el passport a partir del deep link devuelto por Moodle.
+ * Obtiene el valor de un parámetro determinado de una URI,
+ * por ejemplo: 'param1=value1&param2=value2&...' -> value.
  *
- * @param deepLink URL capturada por la PWA (ej: web+umw://token=QmFzZTY0...)
+ * @param uri URI.
+ * @param paramName Nombre del parámetro.
+ * @returns Valor del parámetro si existe.
  */
-export function parseDeepLink(deepLink: string) {
-  /*
-   * 1. Decodificar URL
-   * 2. Eliminar '/' final
-   * 3. Aislar token: web+umw://token=|QmFzZTY0...|&
-   * 4. Decodificar Base64
-   * 5. Partir por delimitador ':::'
-   */
-  const payload = cleanHost(decodeURIComponent(deepLink)).split('token=')[1]?.split('&')[0];
-  const [hash, token, privateToken] = atob(payload).split(':::');
-
-  if (!hash || !token) {
-    throw new Error(`Malformed SSO token\nDeepLink: '${deepLink}'\nPayload: ${payload}`);
-  }
-
-  return { hash, token, privateToken };
+export function getURIParam(uri: string, paramName: string): string | undefined {
+  return decodeURIComponent(uri).match(new RegExp(`${paramName}=([^&/]+)`))?.[1];
 }

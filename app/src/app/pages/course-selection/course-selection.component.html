@@ -8,9 +8,9 @@ Este fichero forma parte de UBUMonitorWeb.
   <header>
     <div class="user-info">
       <h1 i18n>Course selection</h1>
-      <h2>{{ session.currentPrincipal().fullName }}</h2>
-      <a [href]="session.currentPrincipal().siteUrl" target="_blank">
-        {{ session.currentPrincipal().siteName }}
+      <h2>{{ session.currentUser().fullName }}</h2>
+      <a [href]="session.currentUser().siteUrl" target="_blank">
+        {{ session.currentUser().siteName }}
         <mat-icon inline="true">open_in_new</mat-icon>
       </a>
     </div>

@@ -38,6 +38,12 @@ type Item = {
       background-color: var(--mat-sys-primary-container, rgba(0, 0, 0, 0.08));
     }
 
+    img {
+      width: 24px;
+      height: 24px;
+      object-fit: cover;
+    }
+
     span {
       flex: 1;
       font-size: 13px;

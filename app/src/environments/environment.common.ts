@@ -4,10 +4,12 @@
  * @author Marcelo Verteramo Pérsico
  */
 
-/** Propiedades de entorno comunes para desarrollo y producción. */
+/**
+ * Propiedades de entorno comunes para desarrollo y producción.
+ */
 export const environment = {
-  scheme: encodeURIComponent('web+umw'),
-  hostHeader: 'Moodle-Host',
+  scheme: 'web+umw',
+  siteHeader: 'Moodle-Site',
   endpoints: {
     discover: '/api/auth/discover',
     login: '/api/auth/login',

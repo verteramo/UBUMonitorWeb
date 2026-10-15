@@ -94,8 +94,10 @@ class CredentialsAuthProvider(
     logger.debug { "Login token: '$loginToken' | Session key: '$sessionKey'" }
     logger.info { "Calling POST /login/index.php" }
 
-    if (loginClient.postIndex(username, password, loginToken).select("body#page-my-index").isEmpty()) {
-      throw BadCredentialsException("Invalid credentials")
+    loginClient.postIndex(username, password, loginToken).let {
+      if (it.select("body#page-my-index, body#page-site-index").isEmpty()) {
+        throw BadCredentialsException("Invalid credentials")
+      }
     }
 
     logger.debug { "Session cookie: '${cookieStore.first("MoodleSession")}'" }

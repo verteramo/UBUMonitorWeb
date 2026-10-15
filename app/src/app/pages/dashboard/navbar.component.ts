@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { User } from '@core/models/user';
+import { AvatarComponent } from '@shared/components/avatar.component';
 import { ThemeToggleComponent } from '@shared/components/theme-toggle.component';
 
 /** Componente de la barra de navegación del dashboard. */
@@ -24,6 +25,7 @@ import { ThemeToggleComponent } from '@shared/components/theme-toggle.component'
     MatMenuModule,
     MatDividerModule,
     ThemeToggleComponent,
+    AvatarComponent,
   ],
   styles: `
     :host {
@@ -53,13 +55,6 @@ import { ThemeToggleComponent } from '@shared/components/theme-toggle.component'
       font-weight: 500;
     }
 
-    .picture {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-
     .picture-button {
       display: inline-flex;
       align-items: center;
@@ -75,7 +70,7 @@ import { ThemeToggleComponent } from '@shared/components/theme-toggle.component'
         <mat-icon>menu</mat-icon>
       </button>
 
-      <img src="logo2.png" alt="UBUMonitorWeb" class="logo" />
+      <img src="logo-alt.png" alt="UBUMonitorWeb" class="logo" />
       <span class="title">UBUMonitorWeb</span>
 
       <span class="spacer"></span>
@@ -138,15 +133,11 @@ import { ThemeToggleComponent } from '@shared/components/theme-toggle.component'
       <app-theme-toggle />
 
       <button mat-icon-button [matMenuTriggerFor]="userMenu" class="picture-button">
-        <img
-          [src]="principal().picture ?? 'user_blank.png'"
-          [alt]="principal().fullName"
-          class="picture"
-        />
+        <app-avatar [data]="user()" />
       </button>
 
       <mat-menu #userMenu>
-        <h3>{{ principal().fullName }}</h3>
+        <h3>{{ user().fullName }}</h3>
         <mat-divider></mat-divider>
         <button mat-menu-item (click)="changeCourse.emit()">
           <mat-icon>swap_horiz</mat-icon>
@@ -162,7 +153,7 @@ import { ThemeToggleComponent } from '@shared/components/theme-toggle.component'
 })
 export class NavbarComponent {
   /** Usuario autenticado. */
-  principal = input.required<User>();
+  user = input.required<User>();
 
   /** Evento de cambio de curso. */
   changeCourse = output<void>();

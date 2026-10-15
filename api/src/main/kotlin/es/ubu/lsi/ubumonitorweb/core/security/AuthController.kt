@@ -6,7 +6,7 @@
 
 package es.ubu.lsi.ubumonitorweb.core.security
 
-import es.ubu.lsi.ubumonitorweb.domain.AuthConfig
+import es.ubu.lsi.ubumonitorweb.domain.SiteConfig
 import es.ubu.lsi.ubumonitorweb.domain.User
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -115,7 +115,7 @@ class AuthController(
    * @return Parámetros de descubrimiento del servicio.
    */
   @GetMapping("/discover")
-  fun discover(): AuthConfig? = authService.discover()
+  fun discover(): SiteConfig? = authService.discover()
 
   /**
    * Inicia sesión validando credenciales de usuario y contraseña.

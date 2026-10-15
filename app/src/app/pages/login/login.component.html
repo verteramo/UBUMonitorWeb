@@ -3,137 +3,155 @@
 @if (store.loading()) {
   <app-progress-spinner i18n>Loading...</app-progress-spinner>
 } @else {
-  <form novalidate (submit)="onSubmit($event)">
-    <header>
-      @if (store.loginOptions(); as loginOptions) {
-        <img [src]="loginOptions.siteLogo || 'logo1.png'" [alt]="loginOptions.siteName" />
-        <h2>{{ loginOptions.siteName }}</h2>
-      } @else {
-        <img src="logo1.png" alt="UBUMonitorWeb" />
+  @if (!store.siteConfig()) {
+    <!-- ================= 1. DESCUBRIMIENTO ================= -->
+    <form novalidate (submit)="onDiscover($event)">
+      <header>
+        <img src="logo.png" alt="UBUMonitorWeb" />
         <h2 i18n>Login</h2>
-      }
-    </header>
+      </header>
 
-    <div class="form-content">
-      <!-- ================= PASO 1 ================= -->
-      @if (store.step() == 'host') {
+      <div class="form-content">
         <app-text-field
           i18n-label
-          label="Host"
+          label="Site"
           autocomplete="url"
           suffixIcon="warning"
           i18n-suffixTitle
           suffixTitle="Insecure connection"
           [suffix]="store.insecure()"
-          [list]="store.filteredHosts()"
-          [formField]="loginForm.host"
+          [list]="store.filteredSites()"
+          [formField]="loginForm.site"
         />
-
         <fieldset class="options-row">
-          <mat-checkbox [formField]="loginForm.rememberHost" i18n>Remember host</mat-checkbox>
-
+          <mat-checkbox [formField]="loginForm.rememberSite" i18n>Remember site</mat-checkbox>
           <div class="action-icons">
             <button
               matIconButton
               type="button"
-              (click)="store.restore()"
+              (click)="store.restoreSite()"
               i18n-title
               title="Restore"
             >
               <mat-icon>settings_backup_restore</mat-icon>
             </button>
-            <button matIconButton type="button" (click)="store.clean()" i18n-title title="Clean">
+            <button
+              matIconButton
+              type="button"
+              (click)="store.cleanSite()"
+              i18n-title
+              title="Clean"
+            >
               <mat-icon>cleaning_services</mat-icon>
             </button>
           </div>
         </fieldset>
-      }
+      </div>
 
-      <!-- ================= PASO 2 ================= -->
-      @else {
-        @let loginOptions = store.loginOptions()!;
-
-        @if (loginOptions.isMaintenanceMode) {
-          <div class="maintenance-alert" [innerHTML]="store.parsedMaintenanceMessage()"></div>
-        } @else {
-          @if (loginOptions.loginType === LoginType.APP && loginOptions.isLoginFormEnabled) {
-            <app-text-field
-              i18n-label
-              label="User"
-              autocomplete="username"
-              [list]="store.filteredUsernames()"
-              [formField]="loginForm.username"
-            />
-            <app-password-field i18n-label label="Password" [formField]="loginForm.password" />
-
-            <fieldset class="options-row">
-              <mat-checkbox [formField]="loginForm.rememberUsername" i18n
-                >Remember user</mat-checkbox
-              >
-
-              <div class="action-icons">
-                <button
-                  matIconButton
-                  type="button"
-                  (click)="store.restore()"
-                  i18n-title
-                  title="Restore"
-                >
-                  <mat-icon>settings_backup_restore</mat-icon>
-                </button>
-                <button
-                  matIconButton
-                  type="button"
-                  (click)="store.clean()"
-                  i18n-title
-                  title="Clean"
-                >
-                  <mat-icon>cleaning_services</mat-icon>
-                </button>
-              </div>
-            </fieldset>
-          }
-
-          @if (loginOptions.loginType !== LoginType.APP) {
-            <button
-              type="button"
-              class="sso-button"
-              (click)="onSsoLogin($event)"
-            >
-              SSO Access
-              <mat-icon>open_in_new</mat-icon>
-            </button>
-          }
-        }
-      }
-    </div>
-
-    <!-- Navegación inferior -->
-    <nav class="form-actions">
-      @if (store.step() == 'host') {
+      <nav class="form-actions">
         <button
           mat-flat-button
           color="primary"
           type="submit"
-          [disabled]="!loginForm.host().valid()"
+          [disabled]="!loginForm.site().valid()"
           i18n
         >
           Continue
         </button>
-      } @else {
-        <button mat-button type="button" (click)="store.stepBack()" i18n>Back</button>
-        @if (!store.loginOptions()?.isMaintenanceMode && store.loginOptions()?.isLoginFormEnabled) {
+      </nav>
+    </form>
+  } @else {
+    @let siteConfig = store.siteConfig()!;
+
+    @if (siteConfig.isMaintenanceMode) {
+      <!-- ================= 2A. MANTENIMIENTO ================= -->
+      <div class="form-container">
+        <!-- O la clase wrapper que uses en lugar de form si no hay submit -->
+        <header>
+          <img [src]="siteConfig.siteLogo || 'logo.png'" [alt]="siteConfig.siteName" />
+          <h2>{{ siteConfig.siteName }}</h2>
+        </header>
+        <h3 i18n>Site is in maintenance mode</h3>
+        <div class="form-content">
+          <div class="maintenance-alert" [innerHTML]="store.parsedMaintenanceMessage()"></div>
+        </div>
+        <nav class="form-actions">
+          <button mat-button type="button" (click)="store.stepBack()" i18n>Back</button>
+        </nav>
+      </div>
+    } @else if (siteConfig.loginType === LoginType.APP && siteConfig.isLoginFormEnabled) {
+      <!-- ================= 2B. LOGIN CLÁSICO ================= -->
+      <form novalidate (submit)="onLogin($event)">
+        <header>
+          <img [src]="siteConfig.siteLogo || 'logo.png'" [alt]="siteConfig.siteName" />
+          <h2>{{ siteConfig.siteName }}</h2>
+        </header>
+
+        <div class="form-content">
+          <app-text-field
+            i18n-label
+            label="User"
+            autocomplete="username"
+            [list]="store.filteredUsernames()"
+            [formField]="loginForm.username"
+          />
+          <app-password-field i18n-label label="Password" [formField]="loginForm.password" />
+          <fieldset class="options-row">
+            <mat-checkbox [formField]="loginForm.rememberUsername" i18n>Remember user</mat-checkbox>
+            <div class="action-icons">
+              <button
+                matIconButton
+                type="button"
+                (click)="store.restoreUsername()"
+                i18n-title
+                title="Restore"
+              >
+                <mat-icon>settings_backup_restore</mat-icon>
+              </button>
+              <button
+                matIconButton
+                type="button"
+                (click)="store.cleanUsername()"
+                i18n-title
+                title="Clean"
+              >
+                <mat-icon>cleaning_services</mat-icon>
+              </button>
+            </div>
+          </fieldset>
+        </div>
+
+        <nav class="form-actions">
+          <button mat-button type="button" (click)="store.stepBack()" i18n>Back</button>
           <button
             mat-flat-button
             color="primary"
             type="submit"
-            [disabled]="!loginForm().valid()"
+            [disabled]="!loginForm.username().valid() || !loginForm.password().valid()"
             i18n
           >
             Connect
           </button>
-        }
-      }
-    </nav>
-  </form>
+        </nav>
+      </form>
+    } @else {
+      <!-- ================= 2C. LOGIN SSO ================= -->
+      <form novalidate (submit)="onSsoLogin($event)">
+        <header>
+          <img [src]="siteConfig.siteLogo || 'logo.png'" [alt]="siteConfig.siteName" />
+          <h2>{{ siteConfig.siteName }}</h2>
+        </header>
+
+        <div class="form-content">
+          <button type="submit" class="sso-button">
+            SSO Access <mat-icon>open_in_new</mat-icon>
+          </button>
+        </div>
+
+        <nav class="form-actions">
+          <button mat-button type="button" (click)="store.stepBack()" i18n>Back</button>
+        </nav>
+      </form>
+    }
+  }
 }

@@ -1,6 +1,6 @@
 package es.ubu.lsi.ubumonitorweb.core.security
 
-import es.ubu.lsi.ubumonitorweb.domain.AuthConfig
+import es.ubu.lsi.ubumonitorweb.domain.SiteConfig
 import es.ubu.lsi.ubumonitorweb.moodle.client.ToolMobileClient
 import org.springframework.stereotype.Service
 import org.springframework.web.service.registry.ImportHttpServices
@@ -16,8 +16,8 @@ import org.springframework.web.service.registry.ImportHttpServices
 class AuthService(
   private val toolMobileClient: ToolMobileClient,
 ) {
-  fun discover(): AuthConfig? {
+  fun discover(): SiteConfig? {
     val moodlePublicConfig = toolMobileClient.getPublicConfig()
-    return moodlePublicConfig.firstOrNull()?.data?.toAuthConfig()
+    return moodlePublicConfig.firstOrNull()?.data?.toSiteConfig()
   }
 }

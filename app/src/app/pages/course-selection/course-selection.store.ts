@@ -4,12 +4,7 @@ import { Sort } from '@angular/material/sort';
 import { Course } from '@core/models/course';
 import { CourseClassification, CourseService } from '@core/services/course.service';
 import { withTabs } from '@core/stores/features/tab.feature';
-import {
-  signalStore,
-  withComputed,
-  withMethods,
-  withProps
-} from '@ngrx/signals';
+import { signalStore, withComputed, withMethods, withProps } from '@ngrx/signals';
 import { of, tap } from 'rxjs';
 
 /**
@@ -51,7 +46,7 @@ const initialModelState: CourseSelectionModel = {
  * Store de propiedades de estado del componente de selección de curso.
  */
 export const CourseSelectionStore = signalStore(
-  withTabs<CourseClassification>(['all', 'starred', 'recent', 'inprogress', 'future', 'past']),
+  withTabs(...classifications),
   withProps(() => ({
     _cache: new Map<CourseClassification, Course[]>(),
   })),

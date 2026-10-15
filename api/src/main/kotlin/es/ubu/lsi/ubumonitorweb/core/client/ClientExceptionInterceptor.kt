@@ -78,7 +78,7 @@ class ClientExceptionInterceptor(
          */
         val status = HttpStatus.valueOf(statusCode.value())
         properties.scrapingErrorMappings[status]?.let { mapping ->
-          val detail = body.select(mapping.detailSelector)?.text()
+          val detail = body.select(mapping.detailSelector).text()
 
           throw ClientException(mapping.status, detail)
         }
@@ -94,9 +94,9 @@ class ClientExceptionInterceptor(
           .let { if (it.isArray) it.firstOrNull() else it }
           ?.takeIf { it.isObject }
           ?.let { mapper.treeToValue<ClientException.ClientError>(it) }
-          ?.takeIf { it.status != null }
+          ?.takeIf { it.isValid }
           ?.let {
-            val status = properties.serviceErrorMappings.getOrDefault(it.status, HttpStatus.BAD_REQUEST)
+            val status = properties.serviceErrorMappings.getOrDefault(it.status, HttpStatus.INTERNAL_SERVER_ERROR)
             throw ClientException(status, it.detail)
           }
       }

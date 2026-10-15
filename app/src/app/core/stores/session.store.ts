@@ -16,7 +16,7 @@ import { withStorage } from './features/storage.feature';
  * Propiedades de estado de la sesión.
  */
 type SessionState = {
-  principal: User | null;
+  user: User | null;
   course: Course | null;
 };
 
@@ -24,21 +24,21 @@ type SessionState = {
  * Estado inicial.
  */
 const initialState: SessionState = {
-  principal: null,
+  user: null,
   course: null,
 };
 
 /**
- * Store de propiedades de estado de la sesión: Usuario autenticado (Principal) y Curso.
+ * Store de propiedades de estado de la sesión: Usuario autenticado y Curso.
  */
 export const SessionStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
-  withComputed(({ principal, course }) => ({
+  withComputed(({ user, course }) => ({
     /**
-     * Usuario logueado.
+     * Usuario autenticado.
      */
-    currentPrincipal: computed(() => principal()!),
+    currentUser: computed(() => user()!),
 
     /**
      * Curso seleccionado.
@@ -48,14 +48,14 @@ export const SessionStore = signalStore(
     /**
      * Ubicación según el estado de la sesión.
      */
-    location: computed(() => (!principal() ? '/login' : !course() ? '/course' : '/dashboard')),
+    location: computed(() => (!user() ? '/login' : !course() ? '/course' : '/dashboard')),
   })),
   withMethods((store, router = inject(Router)) => ({
     /**
-     * Establece el principal.
+     * Establece el usuario autenticado.
      */
-    setPrincipal(principal: User): void {
-      patchState(store, { principal });
+    setUser(user: User): void {
+      patchState(store, { user });
       router.navigate(['/course']);
     },
 
@@ -68,7 +68,7 @@ export const SessionStore = signalStore(
     },
 
     /**
-     * Limpia el curso.
+     * Reinicializa el curso.
      */
     clearCourse(): void {
       patchState(store, { course: null });
@@ -76,7 +76,7 @@ export const SessionStore = signalStore(
     },
 
     /**
-     * Limpia la sesión completa.
+     * Reinicializa la sesión completa.
      */
     clear(): void {
       patchState(store, initialState);

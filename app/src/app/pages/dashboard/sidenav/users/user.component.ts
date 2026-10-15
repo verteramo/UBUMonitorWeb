@@ -10,10 +10,11 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { Participant } from '@core/models/participant';
 import { TimeAgoPipe } from '@core/pipes/time-ago.pipe';
+import { AvatarComponent } from '@shared/components/avatar.component';
 
 @Component({
   selector: 'app-user',
-  imports: [MatIconModule, MatCheckboxModule, TimeAgoPipe, MatButtonModule],
+  imports: [MatIconModule, MatCheckboxModule, TimeAgoPipe, MatButtonModule, AvatarComponent],
   styles: `
     article {
       display: flex;
@@ -35,7 +36,7 @@ import { TimeAgoPipe } from '@core/pipes/time-ago.pipe';
       &.selected,
       &:hover {
         .avatar-action-container {
-          img {
+          app-avatar {
             display: none;
           }
           mat-checkbox {
@@ -51,13 +52,6 @@ import { TimeAgoPipe } from '@core/pipes/time-ago.pipe';
         display: flex;
         align-items: center;
         justify-content: center;
-
-        img {
-          width: 32px;
-          height: 32px;
-          border-radius: 50%;
-          object-fit: cover;
-        }
 
         mat-checkbox {
           display: none !important;
@@ -102,7 +96,7 @@ import { TimeAgoPipe } from '@core/pipes/time-ago.pipe';
   template: `
     <article [class.selected]="selected()" (click)="toggle.emit(user().id)">
       <div class="avatar-action-container">
-        <img [src]="user().picture || 'user_blank.png'" [alt]="user().fullName" />
+        <app-avatar [data]="user()" />
         <mat-checkbox [checked]="selected()" style="pointer-events: none"></mat-checkbox>
       </div>
 

@@ -18,7 +18,7 @@
   }
 }
 
-form {
+form, .form-container {
   display: flex;
   flex-direction: column;
   width: 90vw;
@@ -40,7 +40,7 @@ form {
     margin-bottom: 24px;
 
     img {
-      height: 72px;
+      height: 128px;
       width: auto;
       object-fit: contain;
     }

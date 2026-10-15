@@ -8,12 +8,17 @@ import { signal, Signal } from '@angular/core';
 import { patchState, signalStoreFeature, watchState, withHooks } from '@ngrx/signals';
 
 /**
- * Feature que permite persistir un store completo en un Storage.
+ * Feature que permite persistir un store completo o parcialmente en un Storage.
  *
  * @param storage Instancia del Storage (sessionStorage, localStorage).
  * @param keySignal Señal que computa la clave de almacenamiento.
+ * @param keys Array opcional de propiedades del estado a persistir.
  */
-export function withSignalStorage(storage: Storage, keySignal: Signal<string | null>) {
+export function withSignalStorage<T>(
+  storage: Storage,
+  keySignal: Signal<string | null>,
+  keys?: (keyof T)[],
+) {
   return signalStoreFeature(
     withHooks((store) => ({
       /**
@@ -28,13 +33,12 @@ export function withSignalStorage(storage: Storage, keySignal: Signal<string | n
           try {
             patchState(store, JSON.parse(item));
           } catch (e) {
-            console.error(`Error parsing storage key '${key}'`, item, e);
+            console.error(`ERROR: Can not parse storage key: '${key}'`, item, e);
           }
         }
 
-        // Watcher que almacena los cambios en el storage,
-        // reacciona también con claves de almacenamiento dinámicas
         watchState(store, (state) => {
+          console.log(`State changed: '${JSON.stringify(state)}'`);
           const key = keySignal();
 
           if (key) {
@@ -47,11 +51,12 @@ export function withSignalStorage(storage: Storage, keySignal: Signal<string | n
 }
 
 /**
- * Feature que permite persistir un store completo en un Storage.
+ * Feature que permite persistir un store completo o parcialmente en un Storage.
  *
  * @param storage Instancia del Storage (sessionStorage, localStorage, ...).
  * @param key Clave de almacenamiento.
+ * @param keys Array opcional de propiedades del estado a persistir.
  */
-export function withStorage(storage: Storage, key: string) {
-  return withSignalStorage(storage, signal(key));
+export function withStorage<T>(storage: Storage, key: string, keys?: (keyof T)[]) {
+  return withSignalStorage(storage, signal(key), keys);
 }

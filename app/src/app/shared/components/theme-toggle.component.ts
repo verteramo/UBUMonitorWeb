@@ -9,7 +9,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { AppStore } from '@core/stores/app.store';
 
-/** Botón para cambiar el Theme. */
+/**
+ * Componente de botón para cambiar el tema visual de la aplicación.
+ */
 @Component({
   selector: 'app-theme-toggle',
   standalone: true,
@@ -25,10 +27,14 @@ import { AppStore } from '@core/stores/app.store';
   `,
 })
 export class ThemeToggleComponent {
-  /** Store de las preferencias de la aplicación. */
+  /**
+   * Store de preferencias de la aplicación.
+   */
   readonly store = inject(AppStore);
 
-  /** Iconos de Angular Material asociados a los themes. */
+  /**
+   * Iconos de Angular Material asociados a cada tema visual.
+   */
   readonly icons = {
     system: 'brightness_auto',
     light: 'light_mode',

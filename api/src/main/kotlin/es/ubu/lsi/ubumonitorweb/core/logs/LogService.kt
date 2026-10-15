@@ -166,7 +166,7 @@ class LogService(
   ): List<LogEntry> {
     val stats: MutableStatsMap = mutableMapOf()
 
-    val logs =
+    val logEntries =
       logClient
         .getLogs(id)
         .csvToSequence<MoodleLogEntry>()
@@ -175,6 +175,6 @@ class LogService(
 
     logReport(stats)
 
-    return logs
+    return logEntries
   }
 }

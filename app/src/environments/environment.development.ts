@@ -6,7 +6,9 @@
 
 import { environment as common } from './environment.common';
 
-/** Propiedades de entorno para desarrollo. */
+/**
+ * Propiedades de entorno específicas para desarrollo.
+ */
 export const environment = {
   ...common,
   production: false,
