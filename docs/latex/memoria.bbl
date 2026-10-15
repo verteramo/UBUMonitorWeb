@@ -1,0 +1,29 @@
+\begin{thebibliography}{1}
+
+\bibitem{echarts}
+{Apache Software Foundation}.
+\newblock {Apache ECharts}: An open source javascript visualization library.
+\newblock \url{https://echarts.apache.org/}, 2017.
+
+\bibitem{angular}
+{Google}.
+\newblock {Angular}: Framework for building scalable web apps.
+\newblock \url{https://angular.dev/}, 2010.
+
+\bibitem{moodle}
+{Moodle HQ}.
+\newblock {Moodle}: Open source learning management system.
+\newblock \url{https://moodle.org/}, 2002.
+
+\bibitem{ngrx}
+{NgRx Team}.
+\newblock {NgRx SignalStore}: Reactive state for angular.
+\newblock \url{https://ngrx.io/}, 2016.
+
+\bibitem{springboot}
+{VMWare Tanzu}.
+\newblock {Spring Boot}: Open source, java based framework designed for
+  production-ready applications.
+\newblock \url{https://spring.io/}, 2014.
+
+\end{thebibliography}
