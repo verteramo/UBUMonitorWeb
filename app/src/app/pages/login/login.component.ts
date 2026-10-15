@@ -65,19 +65,32 @@ export class LoginComponent implements OnInit {
    * procedimiento de login mediante token SSO.
    */
   ngOnInit() {
-    const link = this.route.snapshot.queryParamMap.get('link');
+    // Usamos el observable en lugar de snapshot para reaccionar a cambios en caliente
+    this.route.queryParams.subscribe((params) => {
+      const link = params['link'];
 
-    if (link) {
-      this.router.navigate([], {
-        relativeTo: this.route,
-        queryParams: { link: null },
-        queryParamsHandling: 'merge',
-        replaceUrl: true,
-      });
+      if (link) {
+        console.log('Token captured reactively', link);
 
-      this.store.loginSso(link).subscribe({ error: (e: AppError) => this.snack(e.message) });
-    }
+        // Lanzamos el login
+        this.store.loginSso(link).subscribe({
+          error: (e: AppError) => {
+            this.snack(e.message);
+
+            // Cortafuegos: Limpiamos la URL solo si el login falla.
+            // Si tiene éxito, SessionStore navegará y la limpiará por defecto.
+            this.router.navigate([], {
+              relativeTo: this.route,
+              queryParams: { link: null },
+              queryParamsHandling: 'merge',
+              replaceUrl: true,
+            });
+          },
+        });
+      }
+    });
   }
+
   /**
    * Inicia el procedimiento de descubrimiento.
    *
