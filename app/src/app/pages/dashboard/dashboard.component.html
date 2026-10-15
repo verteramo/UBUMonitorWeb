@@ -1,6 +1,6 @@
 <header>
   <app-navbar
-    [principal]="session.currentPrincipal()"
+    [user]="session.currentUser()"
     (changeCourse)="session.clearCourse()"
     (logout)="session.logout()"
     (toggleSidebar)="drawer.toggle()"
@@ -43,7 +43,7 @@
 
 <footer>
   <app-statusbar
-    [principal]="session.currentPrincipal()"
+    [user]="session.currentUser()"
     [course]="session.currentCourse()"
     (refresh)="dataset.refresh()"
   />

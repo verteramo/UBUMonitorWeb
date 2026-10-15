@@ -8,7 +8,7 @@
  * Tipo de fichero para el dataset.
  */
 export const UmwDatasetType: FilePickerAcceptType = {
-  description: 'UBU Monitor Web Dataset',
+  description: 'UBUMonitorWeb Dataset',
   accept: { 'application/octet-stream': ['.umw'] },
 };
 
@@ -32,11 +32,10 @@ export async function saveFilePicker(
  * Abre una ventana de selección de fichero y lee su información para retornarla.
  *
  * @param options Opciones de la ventana.
- * @returns Información leída del fichero.
+ * @returns Contenido del fichero.
  */
 export async function openFilePicker(options: OpenFilePickerOptions): Promise<string> {
   const [handle] = await window.showOpenFilePicker({ ...options, multiple: false });
   const file = await handle.getFile();
   return await file.text();
 }
-

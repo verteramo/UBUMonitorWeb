@@ -1,15 +1,10 @@
-import {
-  afterNextRender,
-  Component,
-  computed,
-  ElementRef,
-  input,
-  model,
-  output,
-  signal,
-  viewChild,
-} from '@angular/core';
-import { FormsModule } from '@angular/forms';
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
+import { Component, computed, ElementRef, input, model, output, viewChild } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -19,11 +14,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 
+/**
+ * Componente de control de filtros con barra de búsqueda, selección global y menú desplegable de filtros avanzados.
+ */
 @Component({
   selector: 'app-filter-control',
   standalone: true,
   imports: [
-    FormsModule,
     MatFormFieldModule,
     MatCheckboxModule,
     MatInputModule,
@@ -106,7 +103,13 @@ import { MatMenuModule } from '@angular/material/menu';
       </mat-checkbox>
 
       <mat-form-field appearance="outline" subscriptSizing="dynamic">
-        <input matInput [placeholder]="placeholder()" [(ngModel)]="term" />
+        <input
+          #searchInput
+          matInput
+          [placeholder]="placeholder()"
+          [value]="term()"
+          (input)="term.set(searchInput.value)"
+        />
         @if (term()) {
           <button matSuffix matIconButton aria-label="Clear" (click)="term.set('')">
             <mat-icon>close</mat-icon>
@@ -132,34 +135,30 @@ import { MatMenuModule } from '@angular/material/menu';
     </div>
 
     <mat-menu #filters="matMenu" xPosition="before">
-      <div #content class="filters-menu" (click)="$event.stopPropagation()">
+      <div class="filters-menu" (click)="$event.stopPropagation()">
         <h3 i18n>Filters</h3>
-        <mat-divider></mat-divider>
+        <mat-divider />
         <!-- Filtros específicos -->
-        <ng-content></ng-content>
+        <div #content>
+          <ng-content />
+        </div>
       </div>
     </mat-menu>
   `,
 })
 export class FilterControlComponent {
-  /** Configuración de estado */
-  placeholder = input<string>('');
-  checked = input<boolean>(false);
-  indeterminate = input<boolean>(false);
-  badge = input<number>(0);
-  term = model<string>('');
-  toggleAll = output<void>();
+  readonly placeholder = input('');
+  readonly checked = input(false);
+  readonly indeterminate = input(false);
+  readonly badge = input(0);
+  readonly term = model('');
+
+  readonly toggleAll = output();
 
   protected readonly content = viewChild<ElementRef<HTMLDivElement>>('content');
-  protected readonly hasContent = signal(false);
 
-  private contentLength = computed(() => {
-    return this.content()?.nativeElement.children.length ?? 0;
+  protected readonly hasContent = computed(() => {
+    const element = this.content()?.nativeElement;
+    return element ? element.children.length > 0 : false;
   });
-
-  constructor() {
-    afterNextRender(() => {
-      this.hasContent.set(this.contentLength() > 2);
-    });
-  }
 }

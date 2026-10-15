@@ -10,6 +10,7 @@ import { provideRouter, withHashLocation } from '@angular/router';
 import { provideServiceWorker } from '@angular/service-worker';
 import { authInterceptor } from '@core/interceptors/auth-interceptor';
 import { errorInterceptor } from '@core/interceptors/error-interceptor';
+import { provideEchartsCore } from 'ngx-echarts';
 import { routes } from './app.routes';
 
 /**
@@ -27,5 +28,6 @@ export const appConfig: ApplicationConfig = {
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000',
     }),
+    provideEchartsCore({ echarts: () => import('echarts') }),
   ],
 };

@@ -28,7 +28,7 @@ class AuthenticationTest {
   private fun createHeaders(): HttpHeaders =
     HttpHeaders().apply {
       contentType = MediaType.APPLICATION_FORM_URLENCODED
-      set("Moodle-Host", "https://school.moodledemo.net/")
+      set("Moodle-Url", "https://school.moodledemo.net/")
     }
 
   private fun performLogin(

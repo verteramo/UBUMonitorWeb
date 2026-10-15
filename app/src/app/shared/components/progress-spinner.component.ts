@@ -8,7 +8,7 @@ import { Component } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 /**
- * Progress Spiner con una configuración y estilos normalizados.
+ * Componente de indicador de progreso con una configuración y estilos normalizados.
  */
 @Component({
   selector: 'app-progress-spinner',

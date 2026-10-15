@@ -1,10 +1,10 @@
 package es.ubu.lsi.ubumonitorweb.domain
 
-data class AuthConfig(
+data class SiteConfig(
   val siteName: String,
   val siteLogo: String?,
   val loginType: Int,
-  val loginUrl: String,
+  val loginLaunchUrl: String,
   val loginInstructions: String?,
   val maintenanceMessage: String,
   val isMaintenanceEnabled: Boolean,
@@ -13,4 +13,6 @@ data class AuthConfig(
   val isMobileServiceEnabled: Boolean,
   val isMfaEnabled: Boolean,
   val idProviders: List<IdProvider>,
+  val wwwRoot: String,
+  val wwwRootSecure: String,
 )

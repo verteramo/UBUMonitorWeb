@@ -94,16 +94,16 @@ class ClientProcessor(
         requestValues.setHttpMethod(profile.method ?: HttpMethod.GET)
 
         /*
-         * Obtención y establecimiento del host:
+         * Obtención y establecimiento de la URL del sitio:
          * 1. Se obtiene el bean del provider.
          * 2. Se ejecuta pasándole el contexto del método.
          * 3. Se convierte su valor a string.
          * 4. Se le añade el endpoint.
          * 5. Se crea el UriBuilderFactory.
          * 6. Se le pasa a requestValues para que construya las URL con
-         *    este factory, que contiene el host y el endpoint inyectados.
+         *    este factory, que contiene la URL del sitio y el endpoint inyectados.
          */
-        profile.host
+        profile.siteUrl
           ?.let(context::getBean)
           ?.resolve(methodContext)
           ?.toString()
@@ -122,7 +122,7 @@ class ClientProcessor(
          * Los parámetros de momento se acumulan en un mapa mutable,
          * se le deben añadir los parámetros dinámicos resueltos por
          * providers y, finalmente, de acuerdo con el Content-Type:
-         * - los parámetros podrían en la URL,
+         * - los parámetros podrían ir en la URL,
          * - application/x-www-form-urlencoded: en el body,
          * - application/json: también en el body pero serializados como JSON.
          */

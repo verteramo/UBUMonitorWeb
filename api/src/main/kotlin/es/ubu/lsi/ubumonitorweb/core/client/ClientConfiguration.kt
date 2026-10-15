@@ -9,8 +9,19 @@ package es.ubu.lsi.ubumonitorweb.core.client
 import org.apache.hc.client5.http.config.ConnectionConfig
 import org.apache.hc.client5.http.cookie.BasicCookieStore
 import org.apache.hc.client5.http.cookie.CookieStore
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient
 import org.apache.hc.client5.http.impl.classic.HttpClients
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder
+import org.apache.hc.client5.http.io.HttpClientConnectionManager
+import org.apache.hc.client5.http.ssl.ClientTlsStrategyBuilder
+import org.apache.hc.client5.http.ssl.DefaultHostnameVerifier
+import org.apache.hc.client5.http.ssl.NoopHostnameVerifier
+import org.apache.hc.client5.http.ssl.TlsSocketStrategy
+import org.apache.hc.client5.http.ssl.TrustAllStrategy
+import org.apache.hc.core5.http.HttpRequestInterceptor
+import org.apache.hc.core5.http.HttpResponseInterceptor
+import org.apache.hc.core5.ssl.SSLContexts
 import org.apache.hc.core5.util.Timeout
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
@@ -22,6 +33,8 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory
 import org.springframework.web.client.support.RestClientHttpServiceGroupConfigurer
 import org.springframework.web.service.invoker.HttpRequestValues
 import org.springframework.web.service.invoker.HttpServiceArgumentResolver
+import javax.net.ssl.HostnameVerifier
+import javax.net.ssl.SSLContext
 
 /**
  * Configuración global de clientes HTTP.
@@ -30,7 +43,7 @@ import org.springframework.web.service.invoker.HttpServiceArgumentResolver
 @EnableConfigurationProperties(ClientProperties::class)
 class ClientConfiguration {
   /**
-   * Almacén en memoria que sincroniza automáticamente las cookies entre el motor HTTP y los clientes de la aplicación.
+   * Almacén en memoria que sincroniza automáticamente las cookies entre el motor HTTP y los clientes.
    *
    * @return Almacén de cookies.
    */
@@ -38,44 +51,127 @@ class ClientConfiguration {
   fun cookieStore(): CookieStore = BasicCookieStore()
 
   /**
-   * Construye la factoría de clientes HTTP vinculando el almacén global de cookies.
+   * Construye el contexto SSL basándose en la estrategia de confianza configurada.
    *
-   * @return Factoría de clientes HTTP.
+   * @param properties Propiedades de configuración.
+   * @return Instancia de [SSLContext].
    */
   @Bean
-  fun clientFactory(
+  fun sslContext(properties: ClientProperties): SSLContext =
+    SSLContexts
+      .custom()
+      .apply {
+        if (properties.factory.sslTrustStrategy == ClientProperties.FactoryProperties.SslTrustStrategy.TRUST_ALL) {
+          loadTrustMaterial(TrustAllStrategy.INSTANCE)
+        }
+      }.build()
+
+  /**
+   * Determina el verificador de nombres de host según la estrategia de confianza configurada.
+   *
+   * @param properties Propiedades de configuración.
+   * @return Instancia de [HostnameVerifier].
+   */
+  @Bean
+  fun hostnameVerifier(properties: ClientProperties): HostnameVerifier =
+    when (properties.factory.sslTrustStrategy) {
+      ClientProperties.FactoryProperties.SslTrustStrategy.STRICT -> DefaultHostnameVerifier()
+      ClientProperties.FactoryProperties.SslTrustStrategy.TRUST_ALL -> NoopHostnameVerifier.INSTANCE
+    }
+
+  /**
+   * Define la estrategia TLS usando el contexto SSL y el verificador de host.
+   *
+   * @param sslContext Contexto SSL.
+   * @param hostnameVerifier Validador de nombres de host.
+   * @return Estrategia TLS.
+   */
+  @Bean
+  fun tlsStrategy(
+    sslContext: SSLContext,
+    hostnameVerifier: HostnameVerifier,
+  ): TlsSocketStrategy =
+    ClientTlsStrategyBuilder
+      .create()
+      .setSslContext(sslContext)
+      .setHostnameVerifier(hostnameVerifier)
+      .buildClassic()
+
+  /**
+   * Configura el gestor de conexiones HTTP aplicando la estrategia TLS y los timeouts.
+   *
+   * @param properties Propiedades de configuración.
+   * @param tlsStrategy Estrategia TLS.
+   * @return Gestor de conexiones HTTP.
+   */
+  @Bean
+  fun httpClientConnectionManager(
     properties: ClientProperties,
-    cookieStore: CookieStore,
-  ): ClientHttpRequestFactory {
+    tlsStrategy: TlsSocketStrategy,
+  ): HttpClientConnectionManager {
     val connectionConfig =
       ConnectionConfig.custom().setConnectTimeout(Timeout.of(properties.factory.connectionTimeout)).build()
 
-    val connectionManager =
-      PoolingHttpClientConnectionManagerBuilder.create().setDefaultConnectionConfig(connectionConfig).build()
+    return PoolingHttpClientConnectionManagerBuilder
+      .create()
+      .setTlsSocketStrategy(tlsStrategy)
+      .setDefaultConnectionConfig(connectionConfig)
+      .build()
+  }
 
-    val httpClient =
-      HttpClients
-        .custom()
-        .setConnectionManager(connectionManager)
-        .setDefaultCookieStore(cookieStore)
-        .build()
+  /**
+   * Instancia el cliente HTTP de Apache vinculando el gestor de conexiones, cookies e interceptores.
+   *
+   * @param connectionManager Gestor de conexiones HTTP.
+   * @param cookieStore Almacén de cookies.
+   * @param requestInterceptors Interceptores de peticiones de red.
+   * @param responseInterceptors Interceptores de respuestas de red.
+   * @return Cliente HTTP de Apache.
+   */
+  @Bean
+  fun httpClient(
+    connectionManager: HttpClientConnectionManager,
+    cookieStore: CookieStore,
+    requestInterceptors: Collection<HttpRequestInterceptor>,
+    responseInterceptors: Collection<HttpResponseInterceptor>,
+  ): CloseableHttpClient =
+    HttpClients
+      .custom()
+      .setConnectionManager(connectionManager)
+      .setDefaultCookieStore(cookieStore)
+      .apply {
+        requestInterceptors.forEach { addRequestInterceptorLast(it) }
+        responseInterceptors.forEach { addResponseInterceptorLast(it) }
+      }.build()
 
+  /**
+   * Construye la factoría de solicitudes HTTP para Spring incorporando timeouts de lectura y búfer.
+   *
+   * @param properties Propiedades de configuración.
+   * @param httpClient Cliente HTTP de Apache.
+   * @return Factoría de peticiones HTTP en búfer.
+   */
+  @Bean
+  fun clientHttpRequestFactory(
+    properties: ClientProperties,
+    httpClient: CloseableHttpClient,
+  ): ClientHttpRequestFactory {
     val requestFactory =
       HttpComponentsClientHttpRequestFactory(httpClient).apply {
         setReadTimeout(properties.factory.readTimeout)
         setConnectionRequestTimeout(properties.factory.connectionTimeout)
       }
-
     return BufferingClientHttpRequestFactory(requestFactory)
   }
 
   /**
-   * Incorpora los componentes de apoyo a los clientes HTTP en la cadena de ejecución.
+   * Incorpora los componentes de apoyo y el grupo de servicios a la cadena de ejecución de Spring.
    *
    * @param factory Factoría de clientes HTTP.
-   * @param resolvers Resolvers de argumentos.
-   * @param processors Procesadores de solicitudes.
-   * @param interceptors Interceptores de solicitudes y respuestas.
+   * @param resolvers Resolvers de argumentos personalizados.
+   * @param processors Procesadores de valores de solicitud.
+   * @param interceptors Interceptores de solicitudes del framework.
+   * @return Configurador de grupos de servicios HTTP.
    */
   @Bean
   fun clientGroupConfigurer(

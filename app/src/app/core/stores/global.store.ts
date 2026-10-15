@@ -5,14 +5,14 @@
  */
 
 import { signalStore } from '@ngrx/signals';
-import { withSlices } from './features/slices.feature';
+import { withRegistry } from './features/registry.feature';
 import { withStorage } from './features/storage.feature';
 
 /**
  * Store de propiedades de estado de la aplicación (no ligadas a sesión).
  */
-export const LocalSettingsStore = signalStore(
+export const GlobalStore = signalStore(
   { providedIn: 'root' },
-  withSlices(),
-  withStorage(localStorage, 'app'),
+  withRegistry(),
+  withStorage(localStorage, 'global'),
 );

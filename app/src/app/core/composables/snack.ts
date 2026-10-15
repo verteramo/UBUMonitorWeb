@@ -16,8 +16,15 @@ import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 export function useSnack(baseConfig?: Partial<MatSnackBarConfig>) {
   const snackBar = inject(MatSnackBar);
 
+  /**
+   * Muestra una notificación emergente (SnackBar).
+   * Por defecto tiene una duración de 5 segundos y se muestra en la parte inferior central.
+   *
+   * @param message Texto de la notificación.
+   * @param action Texto opcional para el botón de acción.
+   * @param overrideConfig Configuración puntual que sobrescribe la base para esta llamada específica.
+   */
   return (message: string, action?: string, overrideConfig?: Partial<MatSnackBarConfig>) => {
-    // Por defecto dura 5 segundos y se muestra en la parte inferior central
     snackBar.open(message, action, {
       duration: 5000,
       verticalPosition: 'bottom',

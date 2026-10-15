@@ -7,12 +7,18 @@ import { TabLogsEventsComponent } from './tab-logs-events.component';
 import { TabLogsModulesComponent } from './tab-logs-modules.component';
 import { TabLogsSectionsComponent } from './tab-logs-sections.component';
 
-const Store = signalStore(withTabs(['components', 'events', 'sections', 'modules']));
+const Tabs = signalStore(withTabs('components', 'events', 'sections', 'modules'));
 
 @Component({
   selector: 'app-tab-logs',
-  providers: [Store],
-  imports: [MatTabsModule, TabLogsSectionsComponent, TabLogsComponentsComponent, TabLogsEventsComponent, TabLogsModulesComponent],
+  providers: [Tabs],
+  imports: [
+    MatTabsModule,
+    TabLogsComponentsComponent,
+    TabLogsEventsComponent,
+    TabLogsSectionsComponent,
+    TabLogsModulesComponent,
+  ],
   styles: `
     :host {
       display: flex;
@@ -48,18 +54,21 @@ const Store = signalStore(withTabs(['components', 'events', 'sections', 'modules
   `,
   template: `
     <mat-tab-group
-      [selectedIndex]="store.tabIndex()"
-      (selectedIndexChange)="store.setTabIndex($event)"
+      [selectedIndex]="tabs.tabIndex()"
+      (selectedIndexChange)="tabs.setTabIndex($event)"
     >
       <mat-tab i18n-label label="Components">
         <app-tab-logs-components />
       </mat-tab>
+
       <mat-tab i18n-label label="Events">
         <app-tab-logs-events />
       </mat-tab>
+
       <mat-tab i18n-label label="Sections">
         <app-tab-logs-sections />
       </mat-tab>
+
       <mat-tab i18n-label label="Modules">
         <app-tab-logs-modules />
       </mat-tab>
@@ -67,5 +76,5 @@ const Store = signalStore(withTabs(['components', 'events', 'sections', 'modules
   `,
 })
 export class TabLogsComponent {
-  readonly store = inject(Store);
+  readonly tabs = inject(Tabs);
 }

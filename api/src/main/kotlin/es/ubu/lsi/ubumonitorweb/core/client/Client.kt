@@ -16,7 +16,7 @@ import org.springframework.web.service.annotation.HttpExchange
  * clients:
  *   profiles:
  *     my-profile:
- *       host: { ... }
+ *       site-url: { ... }
  *       headers:
  *         Accept-Language: en
  *         Content-Type: application/x-www-form-urlencoded
@@ -29,6 +29,7 @@ import org.springframework.web.service.annotation.HttpExchange
  * ```
  *
  * Anotada con [HttpExchange] para poder ser interceptada por interceptors, resolvers y processors.
+ *
  * @see ClientProcessor
  *
  * @property profile Nombre del perfil.

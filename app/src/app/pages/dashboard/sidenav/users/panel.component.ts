@@ -4,11 +4,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { Participant } from '@core/models/participant';
+import { DatasetStore } from '@core/stores/dataset.store';
 import { ExpansionPanelComponent } from '@shared/components/expansion-panel.component';
 import { FilterControlComponent } from '@shared/components/filter-control.component';
 import { ProfileComponent } from './profile.component';
 import { UserComponent } from './user.component';
-import { UsersStore } from './users.store';
+import { UserStore } from './users.store';
 
 @Component({
   selector: 'app-users-panel',
@@ -34,7 +35,7 @@ import { UsersStore } from './users.store';
       i18n-title
       title="Users"
       [(expanded)]="expanded"
-      [loading]="store.isLoading()"
+      [loading]="dataset.data.isLoading()"
     >
       <header>
         <app-filter-control
@@ -85,20 +86,22 @@ import { UsersStore } from './users.store';
         @for (user of store.filteredItems(); track user.id) {
           <app-user
             [user]="user"
-            [selected]="store.isSelected(user.id)"
-            (toggle)="store.toggleItem($event)"
+            [selected]="store.isSelected(user)"
+            (toggle)="store.toggleItem(user)"
             (openProfile)="openProfile($event)"
           />
         }
       </main>
     </app-expansion-panel>
   `,
-  providers: [UsersStore],
+  providers: [UserStore],
 })
 export class UserPanelComponent {
+  protected readonly store = inject(UserStore);
+  protected readonly dataset = inject(DatasetStore);
+
   readonly expanded = model.required<boolean>();
   readonly dialog = inject(MatDialog);
-  readonly store = inject(UsersStore);
 
   openProfile(user: Participant) {
     this.dialog.open(ProfileComponent, { data: user });

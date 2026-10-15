@@ -33,12 +33,13 @@ export class CourseService {
    * Obtiene un observable con la información solicitada.
    *
    * @param endpoint Subruta.
+   * @param defaultValue Valor por defecto en caso de error de permisos.
    * @returns Observable con la información solicitada.
    */
   private getData<T>(endpoint: string, defaultValue: T): Observable<T> {
-    return this.http.get<T>(`${env.endpoints.courses}/${endpoint}`).pipe(
-      defaultIfStatus(HttpStatusCode.Forbidden, defaultValue)
-    );
+    return this.http
+      .get<T>(`${env.endpoints.courses}/${endpoint}`)
+      .pipe(defaultIfStatus(HttpStatusCode.Forbidden, defaultValue));
   }
 
   /**
@@ -63,6 +64,7 @@ export class CourseService {
 
   /**
    * Obtiene la lista de secciones de un curso determinado.
+   *
    * @param id ID del curso.
    * @returns Lista de secciones del curso.
    */
@@ -72,6 +74,7 @@ export class CourseService {
 
   /**
    * Obtiene la lista de calificaciones de un curso determinado.
+   *
    * @param id ID del curso.
    * @returns Lista de calificaciones del curso.
    */
@@ -81,8 +84,9 @@ export class CourseService {
 
   /**
    * Obtiene la lista de logs de un curso determinado.
+   *
    * @param id ID del curso.
-   * @returns Lista de logs del curso.
+   * @returns Respuesta del endpoint que contiene las entradas de logs, y componentes y eventos disponibles.
    */
   getLogs(id: number): Observable<LogEntry[]> {
     return this.getData<LogEntry[]>(`${id}/logs`, []);
@@ -90,6 +94,7 @@ export class CourseService {
 
   /**
    * Obtiene la lista de eventos de un curso determinado.
+   *
    * @param id ID del curso.
    * @returns Lista de eventos del curso.
    */
@@ -98,7 +103,9 @@ export class CourseService {
   }
 
   /**
-   * Obtiene el estado de finalización de actividades de un usuario en un curso determinado.
+   * Obtiene el estado de finalización de actividades de un usuario en un curso
+   * determinado.
+   *
    * @param courseId ID del curso.
    * @param userId ID del usuario.
    * @returns Estado de finalización de actividades del usuario.

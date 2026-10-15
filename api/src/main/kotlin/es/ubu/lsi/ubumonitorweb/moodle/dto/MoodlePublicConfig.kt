@@ -1,7 +1,7 @@
 package es.ubu.lsi.ubumonitorweb.moodle.dto
 
-import es.ubu.lsi.ubumonitorweb.domain.AuthConfig
 import es.ubu.lsi.ubumonitorweb.domain.IdProvider
+import es.ubu.lsi.ubumonitorweb.domain.SiteConfig
 
 data class MoodlePublicConfig(
   val sitename: String,
@@ -11,25 +11,27 @@ data class MoodlePublicConfig(
   val authinstructions: String?,
   val maintenancemessage: String,
   val maintenanceenabled: Int,
-  val showloginform: Int,
+  val showloginform: Int?,
   val authloginviaemail: Int,
   val enablemobilewebservice: Int,
-  val tool_mfa_enabled: Boolean,
+  val tool_mfa_enabled: Boolean?,
   val identityproviders: List<MoodleIdentityProvider>?,
+  val wwwroot: String,
+  val httpswwwroot: String,
 ) {
-  fun toAuthConfig() =
-    AuthConfig(
+  fun toSiteConfig() =
+    SiteConfig(
       siteName = sitename,
       siteLogo = compactlogourl,
       loginType = typeoflogin,
-      loginUrl = launchurl,
+      loginLaunchUrl = launchurl,
       loginInstructions = authinstructions,
       maintenanceMessage = maintenancemessage,
       isMaintenanceEnabled = maintenanceenabled == 1,
       isLoginFormEnabled = showloginform == 1,
       isLoginByEmailEnabled = authloginviaemail == 1,
       isMobileServiceEnabled = enablemobilewebservice == 1,
-      isMfaEnabled = tool_mfa_enabled,
+      isMfaEnabled = tool_mfa_enabled == true,
       idProviders =
         identityproviders?.map {
           IdProvider(
@@ -38,5 +40,7 @@ data class MoodlePublicConfig(
             icon = it.iconurl,
           )
         } ?: emptyList(),
+      wwwRoot = wwwroot,
+      wwwRootSecure = httpswwwroot,
     )
 }

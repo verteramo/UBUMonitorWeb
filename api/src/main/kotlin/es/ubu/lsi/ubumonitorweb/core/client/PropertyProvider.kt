@@ -17,7 +17,7 @@ import java.lang.reflect.Method
  *
  * @see es.ubu.lsi.ubumonitorweb.core.provider.ArgsProvider
  * @see es.ubu.lsi.ubumonitorweb.core.provider.FunctionProvider
- * @see es.ubu.lsi.ubumonitorweb.core.provider.HostProvider
+ * @see es.ubu.lsi.ubumonitorweb.core.provider.SiteUrlProvider
  * @see es.ubu.lsi.ubumonitorweb.core.provider.TokenProvider
  */
 sealed class PropertyProvider<out T> {

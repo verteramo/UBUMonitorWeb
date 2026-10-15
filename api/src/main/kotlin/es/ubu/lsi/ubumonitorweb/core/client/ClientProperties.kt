@@ -35,7 +35,7 @@ data class ClientProperties(
    * @property method Método HTTP.
    * @property endpoint Path del servicio al que se realiza la solicitud.
    * @property multiple Indica si el body se envía como un array `[{...}, {...}, ...]`.
-   * @property host Clase del bean que resuelve el host.
+   * @property siteUrl Clase del bean que resuelve la URL del sitio.
    * @property params Parámetros estáticos de la solicitud, no se resuelven dinámicamente, sino que van tal cual se definen.
    * @property headers Igual que params, pero para adjuntar cabeceras.
    * @property cookies Igual que params y headers, pero para adjuntar cookies.
@@ -52,7 +52,7 @@ data class ClientProperties(
    *     profile1:
    *       method: GET
    *       endpoint: /login/index.php
-   *       host: es.ubu.lsi.ubumonitorweb.MyHostProvider
+   *       site-url: es.ubu.lsi.ubumonitorweb.MySiteUrlProvider
    *       headers:
    *         Header1: value1
    *         Content-Type: application/x-www-form-urlencoded
@@ -71,7 +71,7 @@ data class ClientProperties(
    * El [ClientProcessor] intercepta la llamada y compone una solicitud saliente como la siguiente:
    *
    * ```http
-   * GET ${host}/login/index.php          // <-- Host resuelto por el provider
+   * GET ${site-url}/login/index.php          // <-- URL del sitio resuelta por el provider
    * Content-Type: application/x-www-form-urlencoded
    * Set-Cookie: Cookie1=value1
    * Accept-Language: {...}               // <-- El valor de la cabecera en la solicitud entrante
@@ -84,7 +84,7 @@ data class ClientProperties(
     val method: HttpMethod? = null,
     val endpoint: String = "",
     val multiple: Boolean? = null,
-    val host: Class<out PropertyProvider<*>>? = null,
+    val siteUrl: Class<out PropertyProvider<*>>? = null,
     val params: Map<String, Any?> = emptyMap(),
     val headers: Map<String, String> = emptyMap(),
     val cookies: Map<String, String> = emptyMap(),
@@ -124,7 +124,7 @@ data class ClientProperties(
         method = method ?: parent.method ?: HttpMethod.GET,
         endpoint = endpoint.ifBlank { parent.endpoint },
         multiple = multiple ?: parent.multiple ?: false,
-        host = host ?: parent.host,
+        siteUrl = siteUrl ?: parent.siteUrl,
         params = parent.params + params,
         headers = parent.headers + headers,
         cookies = parent.cookies + cookies,
@@ -144,7 +144,10 @@ data class ClientProperties(
     val chunkSize: Int = 4096,
     val readTimeout: Duration = Duration.ofSeconds(15),
     val connectionTimeout: Duration = Duration.ofSeconds(3),
-  )
+    val sslTrustStrategy: SslTrustStrategy = SslTrustStrategy.STRICT,
+  ) {
+    enum class SslTrustStrategy { STRICT, TRUST_ALL }
+  }
 
   /**
    * Patrón de error semántico detectado mediante análisis de contenido HTML.

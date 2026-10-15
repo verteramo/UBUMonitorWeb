@@ -49,8 +49,8 @@ import { TimeAgoPipe } from '../../core/pipes/time-ago.pipe';
   template: `
     <div class="status-left">
       <span class="host-name">
-        <a matButton target="_blank" [href]="principal().siteUrl" [title]="principal().siteRelease">
-          {{ principal().siteName }}
+        <a matButton target="_blank" [href]="user().siteUrl" [title]="user().siteRelease">
+          {{ user().siteName }}
         </a>
       </span>
       <span class="separator">|</span>
@@ -94,7 +94,7 @@ export class StatusbarComponent {
   private destroyRef = inject(DestroyRef);
 
   /** Plataforma Moodle de inicio de sesión. */
-  principal = input.required<User>();
+  user = input.required<User>();
 
   /** Curso seleccionado. */
   course = input.required<Course>();

@@ -6,11 +6,12 @@
 
 import { ChangeDetectionStrategy, Component, model } from '@angular/core';
 import { MatTabsModule } from '@angular/material/tabs';
+import { VisualAnalysisComponent } from './visual-analysis.component';
 
 @Component({
   selector: 'app-workspace',
   standalone: true,
-  imports: [MatTabsModule],
+  imports: [MatTabsModule, VisualAnalysisComponent],
   styles: `
     ::ng-deep .mat-mdc-tab {
       min-width: 0 !important;
@@ -26,7 +27,9 @@ import { MatTabsModule } from '@angular/material/tabs';
   `,
   template: `
     <mat-tab-group [(selectedIndex)]="tabIndex" animationDuration="0ms">
-      <mat-tab i18n-label label="Visual Analysis"> </mat-tab>
+      <mat-tab i18n-label label="Visual Analysis">
+        <app-visual-analysis />
+      </mat-tab>
       <mat-tab i18n-label label="Compare"> </mat-tab>
       <mat-tab i18n-label label="Forums"> </mat-tab>
       <mat-tab i18n-label label="Dropout Risk"> </mat-tab>
