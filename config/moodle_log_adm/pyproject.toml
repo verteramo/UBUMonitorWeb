@@ -7,8 +7,8 @@ name = "moodle-log-adm"
 version = "1.0.0"
 description = "Moodle log template generation"
 readme = "README.md"
-requires-python = ">=3.10"
-dependencies = ["PyYAML>=6.0", "click>=8.5", "FreeSimpleGUI>=5.3"]
+requires-python = ">=3.12"
+dependencies = ["PyYAML>=6.0", "click>=8.5", "FreeSimpleGUI>=5.3", "pydantic>=2.14"]
 
 # Comandos ejecutables desde el terminal
 [project.scripts]
