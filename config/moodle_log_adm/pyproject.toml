@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "moodle-log-adm"
+version = "1.0.0"
+description = "Moodle log template generation"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["PyYAML>=6.0", "click>=8.5", "FreeSimpleGUI>=5.3"]
+
+# Comandos ejecutables desde el terminal
+[project.scripts]
+moodle-log-adm-cli = "moodle_log_adm.cli.main:main"
+moodle-log-adm-gui = "moodle_log_adm.gui.main:main"

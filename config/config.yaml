@@ -1,0 +1,131 @@
+#
+# Named groups syntax
+#
+# PCRE/.NET
+# (?'name'pattern)
+#
+# PCRE/JavaScript/Java/.NET
+# (?<name>pattern)
+#
+# PCRE/Python/Golang/Rust
+# (?P<name>pattern)
+#
+# Regex101:   https://docs.regex101.com/editor/engines/#compare-a-named-group
+# .NET:       https://learn.microsoft.com/en-us/dotnet/standard/base-types/grouping-constructs-in-regular-expressions#named-matched-subexpressions
+# Python:     https://docs.python.org/3/howto/regex.html#non-capturing-and-named-groups
+# Golang:     https://pkg.go.dev/regexp#Regexp.Expand
+# Rust:       https://docs.rs/regex/latest/regex/struct.Captures.html
+# JavaScript: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group
+#
+
+formatter:
+  syntax: '(?<{name}>{pattern})'
+  substitutions:
+    '[*+?^${}()|\[\]\\]': '\g<0>'
+  aliases:
+      pageId: [prevPageId, nextPageId]
+      userId: [targetUserId]
+      courseId: [targetCourseId]
+      moduleId: [targetModuleId]
+
+keywords:
+  int:
+    pattern: '-?\d+'
+    wrappers: [['"', '"'], ["'", "'"], ['', '']]
+    placeholders: ['INTEGER']
+
+  str:
+    pattern: '.+?'
+    wrappers: [['"', '"'], ["'", "'"]]
+    placeholders: ['STRING']
+
+  any:
+    pattern: '.+?'
+    wrappers: [['', '']]
+
+
+rules:
+  # Identificadores estáticos
+  - 'category with id {categoryId:int}'
+  - 'chapter with id {chapterId:int}'
+  - 'choice with id {choiceId:int}'
+  - 'comment with id {commentId:int}'
+  - 'discussion with id {discussionId:int}'
+  - 'evidence with id {evidenceId:int}'
+  - 'field with id {fieldId:int}'
+  - 'forum with id {moduleId:int}'
+  - 'glossary entry with id {glossaryEntryId:int}'
+  - 'grade with id {gradeId:int}'
+  - 'group with id {groupId:int}'
+  - 'grouping with id {groupingId:int}'
+  - 'H5P with the id {h5pId:int}'
+  - 'note with id {noteId:int}'
+  - 'option with id {optionId:int}'
+  - 'override with id {overrideId:int}'
+  - 'post with id {postId:int}'
+  - 'question category with id {questionCategoryId:int}'
+  - 'question with id {questionId:int}'
+  - 'record with id {recordId:int}'
+  - 'role with id {roleId:int}'
+  - 'rule with id {ruleId:int}'
+  - 'sco with id {scormId:int}'
+  - 'section with id {sectionId:int}'
+  - 'subscription with id {subscriptionId:int}'
+  - 'tag with id {tagId:int}'
+  - 'tour with id {tourId:int}'
+  - 'grade item with id {gradeItemId:int}'
+
+  # Identificadores con condicionales
+  - 'attempt with (?:the )?id {attemptId:int}'
+  - 'course with (?:the )?id {courseId:int}'
+  - 'course module (?:with )?id {moduleId:int}'
+  - 'page with (?:the )?id {pageId:int}'
+  - 'submission with (?:id (?:of )?)?{submissionId:int} (?!words)'
+  - 'user (?:course )?competency with id {userCompetencyId:int}'
+  - 'user with (?:the )?id {userId:int}'
+  - 'Item (?:created )?with ID {itemId:int}'
+
+  # Identificadores con estructuras específicas
+  - 'curso: {courseId:int}'
+  - 'has viewed page {pageId:int}'
+  - 'has graded the submission {submissionId:int}'
+  - '{Uu}ser {userId:int} has'
+  - 'section number {sectionId:int}'
+
+  # Identificadores en capturas compuestas
+  - 'pinned the discussion {discussionId:int} in the forum {moduleId:int}'
+  - 'discussion {discussionId:int} located in the forum'
+  - 'item type {itemType:str} with id {itemId:int}'
+  - 'enrolment method {enrolmentMethod:str} with id {enrolmentId:int}'
+  - 'phase of the workshop with course module id {int} to {workshopPhase:int}'
+  - 'marker for the user with id {int} to {markerId:int}'
+  - 'event {eventName:str} with id {eventId:int}'
+  - 'step index {int} \(id {stepId:int}\)'
+
+  # Contadores
+  - 'step index {stepIndex:int}'
+  - 'file submission and uploaded {submissionFilesCount:int}'
+  - 'text submission with {submissionWordsCount:int} words'
+  - 'user competency with id {int} with {userCompetencyRating:int} rating'
+  - 'value of {scormValue:str} for the attempt with the id {int} for a scorm activity'
+
+  # Booleanos
+  - 'completion state to {isModuleCompleted:int}'
+
+  # Nombres
+  - 'grade item with id {int} of type {moduleType:str} and name {moduleName:str} in the course'
+  - 'section name {sectionName:str}'
+  - 'the {moduleType:str} activity'
+  - 'instance list {any} module {moduleType:str}'
+  - 'URL {url:str}'
+  - 'submission {any} status {submissionStatus:str}'
+  - 'workflow {any} state {workflowState:str}'
+  - 'enrolment method {enrolmentMethod:str}'
+  - 'entrega {submissionId:str}|Turnitin {submissionId:str}'
+  - 'the {moduleName:str} with course module id'
+  - 'containing {searchTerm:str}'
+  - 'viewing mode {viewingMode:str}'
+  - 'report {reportName:str}'
+  - 'element {elementName:str}'
+  - 'has (created|moved|updated) (a|the) {pageType:any} page'
+  - 'has {any} the {questionType:any} question'
