@@ -3,7 +3,15 @@ import re
 from collections import defaultdict
 from functools import cached_property
 from pathlib import Path
-from typing import Annotated, Any, Callable, Generator, Iterable, NamedTuple, Sized
+from typing import (
+    Annotated,
+    Any,
+    Callable,
+    Iterable,
+    Iterator,
+    NamedTuple,
+    Sized,
+)
 
 import yaml
 from pydantic import AfterValidator, BaseModel, BeforeValidator, RootModel
@@ -389,7 +397,7 @@ class TemplateBuilder:
 
         return text
 
-    def __sanitize(self, string: str) -> Generator[str]:
+    def __sanitize(self, string: str) -> Iterator[str]:
         """Generador que aísla la sanitización del texto literal de los patrones regex.
 
         Usa los tókenes como puntos de fragmentación. Esto evita
