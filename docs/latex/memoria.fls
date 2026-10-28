@@ -1,6 +1,6 @@
-PWD d:\Desarrollo\TFG\UBUMonitorWeb-Thesis
+PWD d:\Desarrollo\TFG\UBUMonitorWeb\docs\latex
 INPUT C:\Users\Verteramo\AppData\Local\MiKTeX\miktex\data\le\pdftex\pdflatex.fmt
-INPUT d:\Desarrollo\TFG\UBUMonitorWeb-Thesis\memoria.tex
+INPUT d:\Desarrollo\TFG\UBUMonitorWeb\docs\latex\memoria.tex
 OUTPUT memoria.log
 INPUT C:\Users\Verteramo\AppData\Local\Programs\MiKTeX\tex\latex\memoir\memoir.cls
 INPUT C:\Users\Verteramo\AppData\Local\Programs\MiKTeX\tex\latex\memoir\memoir.cls
@@ -331,6 +331,7 @@ INPUT tex\7_Conclusiones_Lineas_de_trabajo_futuras.tex
 INPUT .\memoria.bbl
 INPUT .\memoria.bbl
 INPUT memoria.bbl
+INPUT C:\Users\Verteramo\AppData\Local\Programs\MiKTeX\fonts\tfm\public\lm\ec-lmri12.tfm
 INPUT C:\Users\Verteramo\AppData\Local\Programs\MiKTeX\tex\latex\lm\t1lmtt.fd
 INPUT C:\Users\Verteramo\AppData\Local\Programs\MiKTeX\tex\latex\lm\t1lmtt.fd
 INPUT C:\Users\Verteramo\AppData\Local\Programs\MiKTeX\tex\latex\lm\t1lmtt.fd
@@ -378,6 +379,8 @@ INPUT C:\Users\Verteramo\AppData\Local\Programs\MiKTeX\fonts\type1\public\lm\lmr
 INPUT C:\Users\Verteramo\AppData\Local\Programs\MiKTeX\fonts\type1\public\lm\lmr7.pfb
 INPUT C:\Users\Verteramo\AppData\Local\Programs\MiKTeX\fonts\type1\public\lm\lmr8.pfb
 INPUT C:\Users\Verteramo\AppData\Local\Programs\MiKTeX\fonts\type1\public\lm\lmr8.pfb
+INPUT C:\Users\Verteramo\AppData\Local\Programs\MiKTeX\fonts\type1\public\lm\lmri12.pfb
+INPUT C:\Users\Verteramo\AppData\Local\Programs\MiKTeX\fonts\type1\public\lm\lmri12.pfb
 INPUT C:\Users\Verteramo\AppData\Local\Programs\MiKTeX\fonts\type1\public\lm\lmro12.pfb
 INPUT C:\Users\Verteramo\AppData\Local\Programs\MiKTeX\fonts\type1\public\lm\lmro12.pfb
 INPUT C:\Users\Verteramo\AppData\Local\Programs\MiKTeX\fonts\type1\public\lm\lmssbx10.pfb

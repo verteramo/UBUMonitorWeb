@@ -19,48 +19,44 @@ Reallocating 'name_of_file' (item size: 1) to 6 items.
 The style file: plain.bst
 Reallocating 'name_of_file' (item size: 1) to 13 items.
 Database file #1: bibliografia.bib
-Warning--I didn't find a database entry for "wiki:latex"
-Warning--I didn't find a database entry for "koza92"
-Warning--I didn't find a database entry for "bortolot2005"
-You've used 5 entries,
+You've used 3 entries,
             2118 wiz_defined-function locations,
-            532 strings with 4849 characters,
-and the built_in function-call counts, 1060 in all, are:
-= -- 100
-> -- 35
+            524 strings with 4806 characters,
+and the built_in function-call counts, 785 in all, are:
+= -- 76
+> -- 27
 < -- 0
-+ -- 15
-- -- 10
-* -- 32
-:= -- 184
-add.period$ -- 15
-call.type$ -- 5
-change.case$ -- 20
++ -- 11
+- -- 8
+* -- 42
+:= -- 139
+add.period$ -- 10
+call.type$ -- 3
+change.case$ -- 12
 chr.to.int$ -- 0
-cite$ -- 5
-duplicate$ -- 35
-empty$ -- 111
-format.name$ -- 10
-if$ -- 231
+cite$ -- 3
+duplicate$ -- 30
+empty$ -- 72
+format.name$ -- 8
+if$ -- 163
 int.to.chr$ -- 0
-int.to.str$ -- 5
-missing$ -- 0
-newline$ -- 28
-num.names$ -- 10
-pop$ -- 40
+int.to.str$ -- 3
+missing$ -- 3
+newline$ -- 19
+num.names$ -- 6
+pop$ -- 19
 preamble$ -- 1
-purify$ -- 15
+purify$ -- 10
 quote$ -- 0
-skip$ -- 35
+skip$ -- 20
 stack$ -- 0
-substring$ -- 25
-swap$ -- 5
+substring$ -- 40
+swap$ -- 3
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 20
+type$ -- 10
 warning$ -- 0
-while$ -- 10
-width$ -- 6
-write$ -- 52
-(There were 3 warnings)
+while$ -- 8
+width$ -- 4
+write$ -- 35
