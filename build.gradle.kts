@@ -8,6 +8,10 @@ plugins {
   alias(libs.plugins.ktlint)
 }
 
+repositories {
+  mavenCentral()
+}
+
 ktlint {
   android.set(false)
   ignoreFailures.set(false)
