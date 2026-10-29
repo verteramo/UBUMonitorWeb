@@ -6,11 +6,25 @@ build-backend = "setuptools.build_meta"
 name = "moodle-log-adm"
 version = "1.0.0"
 description = "Moodle log template generation"
+keywords = ["moodle", "logs", "templates", "inference"]
 readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+    {name = "Marcelo Verteramo Pérsico"}
+]
 requires-python = ">=3.12"
-dependencies = ["PyYAML>=6.0", "click>=8.5", "FreeSimpleGUI>=5.3", "pydantic>=2.14"]
+dependencies = [
+    "pydantic>=2.14",
+    "PyYAML>=6.0",
+    "click>=8.5",
+    "FreeSimpleGUI>=5.3",
+]
+[project.urls]
+Homepage = "https://github.com/verteramo/UBUMonitorWeb/tree/main/config/moodle_log_adm"
 
-# Comandos ejecutables desde el terminal
 [project.scripts]
 moodle-log-adm-cli = "moodle_log_adm.cli.main:main"
+
+[project.gui-scripts]
 moodle-log-adm-gui = "moodle_log_adm.gui.main:main"
