@@ -1,0 +1,93 @@
+name: UBUMonitorWeb CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+    inputs:
+      build_native:
+        description: 'Construir imagen nativa (GraalVM)'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  validate:
+    name: Validation & Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '25'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Check code format (Ktlint)
+        run: ./gradlew ktlintCheck
+
+      - name: Run Tests
+        run: ./gradlew test
+
+  build-war:
+    name: Build WAR Package
+    needs: validate
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '25'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build Embedded WAR
+        run: ./gradlew bootPackage
+
+      - name: Upload WAR artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ubumonitorweb-war
+          path: api/build/libs/*.war
+          retention-days: 7
+
+  build-native:
+    name: Build Native Executable
+    needs: validate
+    if: github.event_name == 'workflow_dispatch' && inputs.build_native == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up GraalVM
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'graalvm'
+          java-version: '25'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build Native Executable
+        run: ./gradlew nativePackage
+
+      - name: Upload Native artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ubumonitorweb-native
+          path: api/build/native/nativeCompile/*
+          retention-days: 7
