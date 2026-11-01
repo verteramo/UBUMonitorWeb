@@ -27,7 +27,7 @@ jobs:
 
       - name: Setup Environment
         id: setup
-        uses: ./.github/actions/setup-environment
+        uses: ./.github/actions/setup
         with:
           distribution: 'graalvm'
 
