@@ -21,6 +21,9 @@ jobs:
             runner: macos-latest
             bin_name: api/build/native/nativeCompile/ubumonitorweb
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Setup Environment
         id: setup
         uses: ./.github/actions/setup
