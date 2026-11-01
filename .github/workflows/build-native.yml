@@ -37,13 +37,27 @@ jobs:
       - name: Package Native Directory into ZIP
         shell: bash
         run: |
-          mkdir -p dist
+          # Creación carpeta destino
+          mkdir -p dist/temp_bin
           VERSION="${{ steps.setup.outputs.version }}"
+          ZIP_NAME="ubumonitorweb-${VERSION}-${{ matrix.target.os }}.zip"
 
-          # Comprimimos TODO el contenido de nativeCompile (ejecutable + DLLs/librerías) directamente en el ZIP
-          cd ${{ matrix.target.dir_path }}
-          zip -r "../../dist/ubumonitorweb-${VERSION}-${{ matrix.target.os }}.zip" *
-          cd ../../..
+          # Copiado de todo el contenido (binario + librerías) a la carpeta temporal
+          cp -r ${{ matrix.target.dir_path }}/* dist/temp_bin/
+
+          # Acceso al directorio temporal y compresión
+          cd dist/temp_bin
+          if [ "$RUNNER_OS" == "Windows" ]; then
+            # Si es Windows, se usa 7-Zip, preinstalado en los runners de GitHub
+            7z a -tzip "../$ZIP_NAME" *
+          else
+            # Linux y macOS utilizan zip normal
+            zip -r "../$ZIP_NAME" *
+          fi
+
+          # Limpieza
+          cd ..
+          rm -rf temp_bin
 
       - name: Upload Native artifact
         uses: actions/upload-artifact@v4
