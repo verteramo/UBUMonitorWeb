@@ -28,7 +28,7 @@ jobs:
           distribution: 'graalvm'
 
       - name: Build Native Executable
-        run: ./gradlew nativeCompile
+        run: ./gradlew nativePackage
 
       - name: Package Native Executable
         shell: bash
