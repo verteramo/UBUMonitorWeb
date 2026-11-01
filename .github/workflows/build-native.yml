@@ -32,7 +32,7 @@ jobs:
           distribution: 'graalvm'
 
       - name: Build Native Package
-        run: ./gradlew :api:nativePackage
+        run: ./gradlew nativePackage
 
       - name: Package Native Directory into ZIP
         shell: bash
