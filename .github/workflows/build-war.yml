@@ -1,5 +1,4 @@
 name: Build WAR
-
 on:
   workflow_call:
 
@@ -7,6 +6,8 @@ jobs:
   build-war:
     name: Build WAR Package
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -25,9 +26,8 @@ jobs:
           VERSION="${{ steps.setup.outputs.version }}"
           cp api/build/libs/*.war "dist/ubumonitorweb-${VERSION}.war"
 
-      - name: Upload WAR artifact
-        uses: actions/upload-artifact@v4
+      # NUEVO PASO: Sube directamente a la release existente
+      - name: Upload WAR to Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: war-asset
-          path: dist/*.war
-          retention-days: 1
+          files: dist/*.war

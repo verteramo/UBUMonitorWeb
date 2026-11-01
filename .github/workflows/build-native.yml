@@ -1,5 +1,4 @@
 name: Build Native
-
 on:
   workflow_call:
 
@@ -7,13 +6,14 @@ jobs:
   build-native:
     name: Build Native (${{ matrix.target.os }})
     runs-on: ${{ matrix.target.runner }}
+    permissions:
+      contents: write # Necesario para subir a la release directamente
     strategy:
       fail-fast: false
       matrix:
         target:
           - os: linux
             runner: ubuntu-latest
-            # En Linux el binario suele llamarse como el artefacto o el módulo (ajusta si se llama ubumonitorweb o api)
             dir_path: api/build/native/nativeCompile
           - os: windows
             runner: windows-latest
@@ -27,41 +27,34 @@ jobs:
 
       - name: Setup Environment
         id: setup
-        uses: ./.github/actions/setup
+        uses: ./.github/actions/setup-environment
         with:
           distribution: 'graalvm'
 
       - name: Build Native Package
-        run: ./gradlew nativePackage
+        run: ./gradlew :api:nativePackage
 
       - name: Package Native Directory into ZIP
         shell: bash
         run: |
-          # Creación carpeta destino
           mkdir -p dist/temp_bin
           VERSION="${{ steps.setup.outputs.version }}"
           ZIP_NAME="ubumonitorweb-${VERSION}-${{ matrix.target.os }}.zip"
 
-          # Copiado de todo el contenido (binario + librerías) a la carpeta temporal
           cp -r ${{ matrix.target.dir_path }}/* dist/temp_bin/
-
-          # Acceso al directorio temporal y compresión
           cd dist/temp_bin
+
           if [ "$RUNNER_OS" == "Windows" ]; then
-            # Si es Windows, se usa 7-Zip, preinstalado en los runners de GitHub
             7z a -tzip "../$ZIP_NAME" *
           else
-            # Linux y macOS utilizan zip normal
             zip -r "../$ZIP_NAME" *
           fi
 
-          # Limpieza
           cd ..
           rm -rf temp_bin
 
-      - name: Upload Native artifact
-        uses: actions/upload-artifact@v4
+      # NUEVO PASO: Cada runner sube su ZIP en cuanto termina
+      - name: Upload Native ZIP to Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: native-asset-${{ matrix.target.os }}
-          path: dist/*.zip
-          retention-days: 1
+          files: dist/*.zip

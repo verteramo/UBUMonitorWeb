@@ -3,40 +3,42 @@ name: Release Orchestrator
 on:
   push:
     tags:
-      - 'v*' # Se activa al publicar un tag (ej: v1.1.1)
+      - 'v*'
+
+permissions:
+  contents: write
 
 jobs:
   call-validate:
     name: 1. Validate & Test
     uses: ./.github/workflows/validate.yml
 
-  call-build-war:
+  create-release:
     needs: call-validate
-    name: 2. Build WAR
+    name: 2. Create Base Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate Release Title
+        id: meta
+        shell: bash
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          BUILD_DATE=$(date +%Y%m%d)
+          echo "TITLE=v${VERSION} (Build: ${BUILD_DATE})" >> $GITHUB_OUTPUT
+
+      - name: Create empty GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ steps.meta.outputs.TITLE }}
+          draft: false
+          prerelease: false
+
+  call-build-war:
+    needs: create-release
+    name: 3. Build WAR
     uses: ./.github/workflows/build-war.yml
 
   call-build-native:
-    needs: call-validate
-    name: 3. Build Native (Matrix)
+    needs: create-release
+    name: 4. Build Native (Matrix)
     uses: ./.github/workflows/build-native.yml
-
-  publish-release:
-    needs: [ call-build-war, call-build-native ]
-    runs-on: ubuntu-latest
-    name: 4. Publish GitHub Release
-    steps:
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: all-assets
-          merge-multiple: true
-
-      - name: Create GitHub Release & Upload Assets
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            all-assets/*
-          draft: false
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
