@@ -1,0 +1,46 @@
+name: Build Native
+
+on:
+  workflow_call:
+
+jobs:
+  build-native:
+    name: Build Native (${{ matrix.target.os }})
+    runs-on: ${{ matrix.target.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - os: linux
+            runner: ubuntu-latest
+            bin_name: api/build/native/nativeCompile/ubumonitorweb
+          - os: windows
+            runner: windows-latest
+            bin_name: api/build/native/nativeCompile/ubumonitorweb.exe
+          - os: macos
+            runner: macos-latest
+            bin_name: api/build/native/nativeCompile/ubumonitorweb
+    steps:
+      - name: Setup Environment
+        id: setup
+        uses: ./.github/actions/setup
+        with:
+          distribution: 'graalvm'
+
+      - name: Build Native Executable
+        run: ./gradlew nativeCompile
+
+      - name: Package Native Executable
+        shell: bash
+        run: |
+          mkdir -p dist
+          VERSION="${{ steps.setup.outputs.version }}"
+          cp ${{ matrix.target.bin_name }} ubumonitorweb-bin
+          zip -j "dist/ubumonitorweb-${VERSION}-${{ matrix.target.os }}.zip" ubumonitorweb-bin
+
+      - name: Upload Native artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-asset-${{ matrix.target.os }}
+          path: dist/*.zip
+          retention-days: 1

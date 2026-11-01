@@ -1,0 +1,42 @@
+name: Release Orchestrator
+
+on:
+  push:
+    tags:
+      - 'v*' # Se activa al publicar un tag (ej: v1.1.1)
+
+jobs:
+  call-validate:
+    name: 1. Validate & Test
+    uses: ./.github/workflows/validate.yml
+
+  call-build-war:
+    needs: call-validate
+    name: 2. Build WAR
+    uses: ./.github/workflows/build-war.yml
+
+  call-build-native:
+    needs: call-validate
+    name: 3. Build Native (Matrix)
+    uses: ./.github/workflows/build-native.yml
+
+  publish-release:
+    needs: [ call-build-war, call-build-native ]
+    runs-on: ubuntu-latest
+    name: 4. Publish GitHub Release
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: all-assets
+          merge-multiple: true
+
+      - name: Create GitHub Release & Upload Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            all-assets/*
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
