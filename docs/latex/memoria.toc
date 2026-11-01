@@ -4,17 +4,17 @@
 \contentsline {chapter}{\'{I}ndice de figuras}{\es@scroman {iv}}{chapter*.2}%
 \contentsline {chapter}{\'{I}ndice de tablas}{\es@scroman {v}}{chapter*.3}%
 \contentsline {chapter}{1.\hskip .5em\relax Introducción}{1}{chapter*.5}%
-\contentsline {chapter}{2.\hskip .5em\relax Objetivos del proyecto}{3}{chapter*.7}%
-\contentsline {chapter}{3.\hskip .5em\relax Conceptos teóricos}{5}{chapter*.9}%
-\contentsline {section}{\numberline {3.1}Secciones}{5}{section.3.1}%
-\contentsline {subsection}{Subsecciones}{5}{section*.10}%
-\contentsline {subsubsection}{Subsubsecciones}{5}{section*.11}%
-\contentsline {section}{\numberline {3.2}Referencias}{5}{section.3.2}%
-\contentsline {section}{\numberline {3.3}Imágenes}{6}{section.3.3}%
-\contentsline {section}{\numberline {3.4}Listas de items}{6}{section.3.4}%
-\contentsline {section}{\numberline {3.5}Tablas}{7}{section.3.5}%
-\contentsline {chapter}{4.\hskip .5em\relax Técnicas y herramientas}{9}{chapter*.13}%
-\contentsline {chapter}{5.\hskip .5em\relax Aspectos relevantes del desarrollo del proyecto}{11}{chapter*.15}%
-\contentsline {chapter}{6.\hskip .5em\relax Trabajos relacionados}{13}{chapter*.17}%
-\contentsline {chapter}{7.\hskip .5em\relax Conclusiones y Líneas de trabajo futuras}{15}{chapter*.19}%
-\contentsline {chapter}{Bibliograf\'{\i }a}{17}{chapter*.21}%
+\contentsline {section}{\numberline {1.1}Descripción}{1}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Estructura de la memoria}{4}{section.1.2}%
+\contentsline {chapter}{2.\hskip .5em\relax Objetivos del proyecto}{5}{chapter*.7}%
+\contentsline {section}{\numberline {2.1}Objetivos marcados por los requisitos del software}{5}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Objetivos de carácter técnico}{6}{section.2.2}%
+\contentsline {chapter}{3.\hskip .5em\relax Conceptos teóricos}{9}{chapter*.9}%
+\contentsline {section}{\numberline {3.1}Arquitectura de Spring Security y gestión de la autenticación}{9}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Clientes HTTP declarativos}{10}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Compilación AOT vs JIT y el ecosistema GraalVM}{12}{section.3.3}%
+\contentsline {chapter}{4.\hskip .5em\relax Técnicas y herramientas}{17}{chapter*.11}%
+\contentsline {chapter}{5.\hskip .5em\relax Aspectos relevantes del desarrollo del proyecto}{19}{chapter*.13}%
+\contentsline {chapter}{6.\hskip .5em\relax Trabajos relacionados}{21}{chapter*.15}%
+\contentsline {chapter}{7.\hskip .5em\relax Conclusiones y Líneas de trabajo futuras}{23}{chapter*.17}%
+\contentsline {chapter}{Bibliograf\'{\i }a}{25}{chapter*.19}%

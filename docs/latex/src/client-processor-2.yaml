@@ -1,0 +1,17 @@
+clients:
+  profiles:
+    webservice-client:
+      site-url: es.ubu.lsi.ubumonitorweb.core.provider.SiteUrlProvider
+      method: POST
+      endpoint: /webservice/rest/server.php
+      headers:
+        Content-Type: application/x-www-form-urlencoded
+      params:
+        moodlewsrestformat: json
+      providers:
+        wstoken:
+          location: param
+          bean: es.ubu.lsi.ubumonitorweb.core.provider.TokenProvider
+        wsfunction:
+          location: param
+          bean: es.ubu.lsi.ubumonitorweb.core.provider.FunctionProvider

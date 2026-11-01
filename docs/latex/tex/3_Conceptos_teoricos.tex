@@ -1,83 +1,87 @@
 \capitulo{3}{Conceptos teóricos}
 
-En aquellos proyectos que necesiten para su comprensión y desarrollo de unos conceptos teóricos de una determinada materia o de un determinado dominio de conocimiento, debe existir un apartado que sintetice dichos conceptos.
+\section{Arquitectura de Spring Security y gestión de la autenticación}
 
-Algunos conceptos teóricos de \LaTeX{} \footnote{Créditos a los proyectos de Álvaro López Cantero: Configurador de Presupuestos y Roberto Izquierdo Amo: PLQuiz}.
+Spring Security es el marco de referencia en el ecosistema de Spring para proveer mecanismos robustos de autenticación y control de acceso. Su diseño arquitectónico se basa en la interceptación de peticiones HTTP mediante un patrón de cadena de responsabilidad, lo que permite abstraer de forma limpia la lógica de seguridad del código de negocio de la aplicación.
 
-\section{Secciones}
+El núcleo de esta intercepción es la \textbf{SecurityFilterChain} (cadena de filtros de seguridad). Este componente evalúa cada solicitud entrante a través de una serie de filtros ordenados secuencialmente, los cuales se encargan de verificar la existencia de un contexto de seguridad válido, procesar \textit{tokens} de sesión o rechazar peticiones no autorizadas. Esta arquitectura garantiza que los controladores REST solo reciban tráfico que ya ha superado las políticas de acceso.
 
-Las secciones se incluyen con el comando section.
+El procesamiento de las credenciales recae sobre el \textbf{AuthenticationManager}. Este componente actúa como un orquestador que delega la validación real a una o varias implementaciones de la interfaz \textbf{AuthenticationProvider}. Cada proveedor encapsula la lógica específica para un mecanismo de autenticación concreto. El gestor itera sobre ellos hasta que uno es capaz de autenticar la solicitud.
 
-\subsection{Subsecciones}
-
-Además de secciones tenemos subsecciones.
-
-\subsubsection{Subsubsecciones}
-
-Y subsecciones. 
-
-
-\section{Referencias}
-
-Las referencias se incluyen en el texto usando cite~\cite{wiki:latex}. Para citar webs, artículos o libros~\cite{koza92}, si se desean citar más de uno en el mismo lugar~\cite{bortolot2005, koza92}.
-
-
-\section{Imágenes}
-
-Se pueden incluir imágenes con los comandos standard de \LaTeX, pero esta plantilla dispone de comandos propios como por ejemplo el siguiente:
-
-\imagen{escudoInfor}{Autómata para una expresión vacía}{.5}
-
-
-
-\section{Listas de items}
-
-Existen tres posibilidades:
-
+Esta separación de responsabilidades es la clave para soportar múltiples vías de acceso simultáneas, contrastando dos enfoques teóricos fundamentales:
 \begin{itemize}
-	\item primer item.
-	\item segundo item.
+    \item (TODO) añadir referencias a los lugares del documento donde se habla concretamente de cada procedimiento.
+
+    \item \textbf{Autenticación mediante credenciales (\href{https://github.com/verteramo/UBUMonitorWeb/blob/main/api/src/main/kotlin/es/ubu/lsi/ubumonitorweb/core/security/CredentialsAuthProvider.kt\#L26}{\texttt{CredentialsAuthProvider}}):} Procesa las credenciales convencionales (usuario y contraseña) introducidas por el cliente y verifica su validez de forma síncrona, delegando la comprobación contra Moodle.
+    
+    \item \textbf{Autenticación mediante \textit{token} SSO (\href{https://github.com/verteramo/UBUMonitorWeb/blob/05b1a58966ce6891e093e1e0bb836a60f6edd3a6/api/src/main/kotlin/es/ubu/lsi/ubumonitorweb/core/security/SsoTokenAuthProvider.kt\#L21}{\texttt{SsoTokenAuthProvider}}):} Otro \textit{AuthenticationProvider} independiente gestiona el flujo de identidad federada. En este modelo, el sistema no verifica contraseñas, sino que utiliza el \textit{token} emitido por un Proveedor de Identidad externo (IdP) para obtener la cookie de autenticación necesaria mediante \textit{web scraping}.
 \end{itemize}
 
-\begin{enumerate}
-	\item primer item.
-	\item segundo item.
-\end{enumerate}
+Comprender esta jerarquía es importante para la extensibilidad del sistema. Al basar la seguridad en el patrón \textit{AuthenticationProvider}, el proyecto sienta las bases para que futuros desarrolladores puedan integrar nuevos protocolos. Bastará con implementar e inyectar un nuevo proveedor en el contexto de Spring, sin necesidad de alterar la lógica central del servicio ni reescribir los controladores existentes.
 
-\begin{description}
-	\item[Primer item] más información sobre el primer item.
-	\item[Segundo item] más información sobre el segundo item.
-\end{description}
-	
+\section{Clientes HTTP declarativos}
+
+En el ecosistema de Spring Boot, la comunicación con servicios externos ha experimentado una notable evolución desde modelos puramente imperativos hacia paradigmas declarativos. Tradicionalmente, herramientas como \texttt{RestTemplate} o el uso directo de \texttt{WebClient} obligaban al desarrollador a redactar código repetitivo (\textit{boilerplate}) para construir URLs, inyectar cabeceras, parametrizar cuerpos de mensaje y gestionar el enrutamiento. Este enfoque imperativo provocaba un fuerte acoplamiento, entrelazando la complejidad de la red con la lógica de negocio de la aplicación.
+
+Para resolver este problema, Spring Framework 6 introdujo los \textbf{clientes HTTP declarativos} (mediante anotaciones como \texttt{@HttpExchange}). Este modelo permite definir las interacciones de red a través de interfaces puras. En tiempo de ejecución, el \textit{framework} aplica el patrón de diseño \textbf{Proxy dinámico}, generando automáticamente una implementación que intercepta las llamadas a los métodos de la interfaz y las traduce en peticiones HTTP reales. De este modo, el desarrollador especifica \textbf{qué} datos se necesitan, delegando en el \textit{framework} el \textbf{cómo} obtenerlos.
+
+A pesar de esta mejora nativa, en dominios complejos la proliferación de anotaciones repetitivas en las interfaces puede seguir ensuciando el código. Para maximizar la limpieza arquitectónica, se ha diseñado una abstracción de orden superior: el \href{https://github.com/verteramo/UBUMonitorWeb/blob/main/api/src/main/kotlin/es/ubu/lsi/ubumonitorweb/core/client/ClientProcessor.kt#L26}{\textbf{\texttt{ClientProcessor}}}.
+
+Este componente, que implementa la interfaz \texttt{HttpRequestValues.Processor} de Spring, actúa como un interceptor avanzado durante la construcción de la solicitud saliente. Su papel es eliminar por completo el exceso de declaraciones en el código fuente, delegando la configuración a \textbf{perfiles reutilizables} definidos de forma externa en los archivos de propiedades del sistema (como \href{https://github.com/verteramo/UBUMonitorWeb/blob/main/api/src/main/resources/application.yaml#L49}{\texttt{application.yml}}).
+
+El funcionamiento del \texttt{ClientProcessor} se basa en los siguientes pilares técnicos:
 \begin{itemize}
-\item 
+    \item \textbf{Resolución dinámica de perfiles:} A través de reflexión, el procesador identifica con qué perfil específico está anotado el método de la interfaz, recupera de la configuración (YAML) todos los metadatos asociados: método HTTP, \textit{endpoint}, cabeceras, cookies y parámetros estáticos, proveedores, etc.
+    
+    \item \textbf{Inyección dinámica mediante proveedores (Providers):} Existen ciertos parámetros requeridos por las solicitudes salientes (como el \textit{token} de sesión de Moodle o la URL base dinámica del servidor Moodle de destino) cuya obtención exige ejecutar una lógica específica, tal como acceder al contexto de seguridad de Spring o interceptar la solicitud HTTP entrante. En lugar de obligar al desarrollador a resolver y pasar estos datos explícitamente en cada firma de método, el procesador delega esta responsabilidad en clases proveedoras (\textit{Beans}). Estas interceptan el flujo, ejecutan la lógica necesaria para extraer el valor del contexto actual y este valor es inyectado al vuelo antes de emitir la petición.
+
+    \item \textbf{Herencia de configuraciones:} El diseño permite que los perfiles definidos en el YAML hereden propiedades unos de otros (por ejemplo, un perfil \texttt{login-token-client} hereda de un \texttt{default-post}). Esto centraliza la configuración y reduce drásticamente la duplicación.
 \end{itemize}
 
-\section{Tablas}
+Esta arquitectura garantiza que la capa de servicios (\textit{backend}) quede conformada por interfaces extremadamente limpias y puramente centradas en la semántica del negocio, abstraídas totalmente de si el consumo subyacente requiere enviar parámetros en la URL, inyectar un JSON en el cuerpo del mensaje o adjuntar \textit{cookies} de sesión.
 
-Igualmente se pueden usar los comandos específicos de \LaTeX o bien usar alguno de los comandos de la plantilla.
+Para evidenciar el impacto de esta abstracción en la limpieza del código, resulta útil contrastar la implementación estándar frente al enfoque diseñado para UBUMonitorWeb. Como se observa en el Código \ref{lst:client_standard}, el modelo nativo obliga a declarar explícitamente los datos de infraestructura.
 
-\tablaSmall{Herramientas y tecnologías utilizadas en cada parte del proyecto}{l c c c c}{herramientasportipodeuso}
-{ \multicolumn{1}{l}{Herramientas} & App AngularJS & API REST & BD & Memoria \\}{ 
-HTML5 & X & & &\\
-CSS3 & X & & &\\
-BOOTSTRAP & X & & &\\
-JavaScript & X & & &\\
-AngularJS & X & & &\\
-Bower & X & & &\\
-PHP & & X & &\\
-Karma + Jasmine & X & & &\\
-Slim framework & & X & &\\
-Idiorm & & X & &\\
-Composer & & X & &\\
-JSON & X & X & &\\
-PhpStorm & X & X & &\\
-MySQL & & & X &\\
-PhpMyAdmin & & & X &\\
-Git + BitBucket & X & X & X & X\\
-Mik\TeX{} & & & & X\\
-\TeX{}Maker & & & & X\\
-Astah & & & & X\\
-Balsamiq Mockups & X & & &\\
-VersionOne & X & X & X & X\\
-} 
+\begin{listing}[htbp]
+    \centering
+    \inputminted[frame=lines, fontsize=\small]{kotlin}{src/client-processor-1.kt}
+    \caption{Interfaz de cliente HTTP estándar con alto acoplamiento.}
+    \label{lst:client_standard}
+\end{listing}
+
+Por el contrario, gracias al diseño del procesador, la interfaz queda reducida exclusivamente a su parámetro de negocio (Código \ref{lst:client_abstracted}). Toda la configuración se delega al perfil externo definido en YAML (Código \ref{lst:yaml_profile}).
+
+\begin{listing}[htbp]
+    \centering
+    \inputminted[frame=lines, fontsize=\small]{kotlin}{src/client-processor-2.kt}
+    \caption{Interfaz de cliente limpio utilizando \texttt{ClientProcessor}.}
+    \label{lst:client_abstracted}
+\end{listing}
+
+\begin{listing}[htbp]
+    \centering
+    \inputminted[frame=lines, fontsize=\small]{yaml}{src/client-processor-2.yaml}
+    \caption{Perfil YAML que centraliza la configuración de red y dependencias.}
+    \label{lst:yaml_profile}
+\end{listing}
+
+\section{Compilación AOT vs JIT y el ecosistema GraalVM}
+
+El ecosistema Java ha basado tradicionalmente su ejecución en la Máquina Virtual de Java (JVM) y en la compilación \textit{Just-In-Time} (JIT). En este paradigma clásico, el código fuente se compila a un formato intermedio (\textit{bytecode}), el cual es interpretado por la JVM en tiempo de ejecución. A medida que la aplicación funciona, el compilador JIT identifica los fragmentos de código más utilizados (\textit{hotspots}) y los compila dinámicamente a código máquina optimizado para la plataforma subyacente.
+
+Aunque el modelo JIT ofrece un excelente rendimiento máximo tras la fase de ``calentamiento'', presenta algunos inconvenientes significativos para aplicaciones que requieren despliegues ligeros: 
+\begin{itemize}
+    \item \textbf{Tiempos de arranque prolongados:} La JVM necesita cargar muchas clases, inicializar infraestructuras complejas y realizar perfiles de rendimiento antes de que la aplicación esté completamente operativa.
+    
+    \item \textbf{Alta huella de memoria (RAM):} El proceso requiere mantener en memoria no solo la aplicación en sí, sino también el propio compilador JIT, los metadatos de las clases y las estructuras internas de la máquina virtual.
+
+    \item \textbf{Dependencia de la JVM:} Quizá el más importante desde un punto de vista de practicidad y que está estrechamente relacionado con uno de los requisitos funcionales principales. Para ejecutar la aplicación, se necesita tener la versión necesaria del JRE instalada y en ejecución.
+\end{itemize}
+
+Para mitigar estos problemas, ha surgido la compilación \textbf{\textit{Ahead-of-Time} (AOT)} impulsada por tecnologías como \textbf{GraalVM Native Image} \cite{graalvm}. Este enfoque invierte el paradigma: realiza un análisis estático exhaustivo del código, sus dependencias y el estado inicial del \textit{framework} en \textbf{tiempo de compilación} (antes de ejecutar la aplicación). A partir de este análisis, GraalVM elimina el código muerto (que nunca se va a ejecutar) y genera un binario nativo específico para el sistema operativo destino, el cual contiene exclusivamente el código máquina necesario y una versión mínima del recolector de basura (\textit{Substrate VM}).
+
+Los binarios nativos generados mediante compilación AOT ofrecen un arranque casi instantáneo (en milisegundos) y consumen una fracción de la memoria RAM respecto a su contraparte en la JVM, ya que no requieren cargar ninguna máquina virtual externa ni realizar compilaciones dinámicas en caliente.
+
+El reto principal de la compilación AOT radica en su naturaleza estática. Características dinámicas fundamentales en \textit{frameworks} como Spring Boot (reflexión, generación dinámica de \textit{proxies} HTTP como el visto en la sección anterior, o carga perezosa de clases) son invisibles para el compilador en tiempo de construcción. Para que estas funcionen, es obligatorio declarar explícitamente todos los metadatos dinámicos antes de compilar. Afortunadamente, a partir de su versión 3, Spring Boot soporta nativamente el motor AOT de GraalVM, automatizando la generación de estas configuraciones durante la fase de \textit{build}.
+
+La asimilación de estos conceptos teóricos es vital para el desarrollo de UBUMonitorWeb. Justifica la capacidad del proyecto para cumplir con su requisito de \textbf{distribución autónoma y eficiente}: permite empaquetar un servidor web completo (Tomcat) junto con la lógica de \textit{backend} y \textit{frontend} en un único archivo binario que el usuario puede ejecutar de forma nativa en su equipo, sin necesidad de tener Java instalado y consumiendo unos recursos mínimos comparables a los de una distribución JAR o WAR tradicional.

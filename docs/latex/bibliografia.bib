@@ -1,28 +1,77 @@
-@book{koza92,
-		author    = "Koza, John R.",
-		title     = "Genetic Programming: On the Programming of Computers by Means of Natural Selection",
-		publisher = "MIT Press",
-		year      = "1992"
+@inproceedings{graalvm,
+  title = {{{GraalVM}} Native Image: Large-Scale Static Analysis for {{Java}} (Keynote)},
+  booktitle = {Proceedings of the 13th {{ACM SIGPLAN}} International Workshop on Virtual Machines and Intermediate Languages},
+  author = {Wimmer, Christian},
+  year = 2021,
+  series = {Vmil 2021},
+  pages = {3},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  doi = {10.1145/3486606.3488075},
+  abstract = {GraalVM Native Image combines static analysis, heap snapshotting, and ahead-of-time compilation to produce a highly optimized standalone executable for a Java application. In this talk, we first introduce the overall architecture of GraalVM Native Image: instead of ``just'' compiling Java bytecode ahead of time, it also initializes parts of the application at build time. This reduces the startup time and memory footprint of the application at run time. In the second part of the talk, we dive into details of the points-to analysis. We show which of our original research ideas worked or did not work when analyzing large production applications; and we show the benefits of tightly integrating the static analysis with the ahead-of-time compiler.},
+  isbn = {978-1-4503-9109-2},
+  keywords = {Ahead-of-Time Compilation,GraalVM,Points-to Analysis,Static Analysis}
 }
 
-
-@misc{ wiki:latex,
-       author = "Wikipedia",
-       title = "LaTeX --- Wikipedia{,} La enciclopedia libre",
-       year = "2015",
-       howpublished = {\url{https://es.wikipedia.org/w/index.php?title=LaTeX&oldid=84209252}},
-       note = "[Internet; descargado 30-septiembre-2015]"
+@incollection{learning-analytics,
+  title = {What Is Learning Analytics?},
+  booktitle = {The Handbook of Learning Analytics},
+  author = {Lang, Charles and Wise, Alyssa Friend and Merceron, Agathe and Ga{\v s}evi{\'c}, Dragan and Siemens, George},
+  editor = {Lang, Charles and Siemens, George and Wise, Alyssa Friend and Ga{\v s}evi{\'c}, Dragan and Merceron, Agathe},
+  year = 2022,
+  edition = {2},
+  pages = {8--18},
+  publisher = {SoLAR},
+  address = {Vancouver, Canada},
+  isbn = {978-0-9952408-3-4},
+  note = {Section: 1}
 }
 
-
-@article{bortolot2005,
-  title={Estimating forest biomass using small footprint LiDAR data: An individual tree-based approach that incorporates training data},
-  author={Bortolot, Zachary J and Wynne, Randolph H},
-  journal={ISPRS Journal of Photogrammetry and Remote Sensing},
-  volume={59},
-  number={6},
-  pages={342--360},
-  year={2005},
-  publisher={Elsevier}
+@article{ubumonitor,
+  title = {{{UBUMonitor}}: {{An}} Open-Source Desktop Application for Visual e-Learning Analysis with Moodle},
+  author = {{Marticorena-S{\'a}nchez}, Ra{\'u}l and {L{\'o}pez-Nozal}, Carlos and Ji, Yi Peng and {Pardo-Aguilar}, Carlos and {Arnaiz-Gonz{\'a}lez}, {\'A}lvar},
+  year = 2022,
+  journal = {Electronics},
+  volume = {11},
+  number = {954},
+  issn = {2079-9292},
+  doi = {10.3390/electronics11060954},
+  abstract = {An inherent requirement of teaching using online learning platforms is that the teacher must analyze student activity and performance in relation to course learning objectives. Therefore, all e-learning environments implement a module to collect such information. Nevertheless, these raw data must be processed to perform e-learning analysis and to help teachers arrive at relevant decisions for the teaching process. In this paper, UBUMonitor is presented, an open-source desktop application that downloads Moodle (Modular Object-Oriented Dynamic Learning Environment) platform data, so that student activity and performance can be monitored. The application organizes and summarizes these data in various customizable charts for visual analysis. The general features and uses of UBUMonitor are described, as are some approaches to e-teaching improvements, through real case studies. These include the analysis of accesses per e-learning object, statistical analysis of grading e-activities, detection of e-learning object configuration errors, checking of teacher activity, and comparisons between online and blended learning profiles. As an open-source application, UBUMonitor was institutionally adopted as an official tool and validated with several groups of teachers at the Teacher Training Institute of the University of Burgos.}
 }
 
+@article{ubumonitor-clustering,
+  title = {{{UBUMonitor}}: {{Desktop}} Application for Visual e-Learning Student Clustering with {{Moodle}}},
+  author = {{Marticorena-S{\'a}nchez}, Ra{\'u}l and {L{\'o}pez-Nozal}, Carlos and {Serrano-Mamolar}, Ana and {Olivares-Gil}, Alicia},
+  year = 2024,
+  journal = {SoftwareX},
+  volume = {26},
+  pages = {101727},
+  issn = {2352-7110},
+  doi = {10.1016/j.softx.2024.101727},
+  abstract = {UBUMonitor is an open-source Java desktop tool designed to analyse student interactions and grades within courses in the Moodle learning management system. Its primary goal is to assist educational researchers in making informed decisions. The application offers flexible configuration of educational datasets, enabling educational researchers to customize features of their analyses based on filters such as time, participants, e-resources, e-forums and teaching e-activities. With a modular architecture developed iteratively in Github with 35 releases, UBUMonitor has demonstrated its usability in teaching through several published use cases. This paper focuses specifically on the student clustering module, which allows customization of course activity access and grading, supports multiple clustering algorithms, and incorporates techniques for validating both the optimal number of clusters and the quality of cluster result.},
+  keywords = {e-learning analytic,Educational data clustering process,Educational software,Learning management systems,Unsupervised machine learning}
+}
+
+@article{ubumonitor-dropout,
+  title = {Activity and Dropout Tracking in Moodle Using Ubumonitor Application},
+  author = {Ji, Yi Peng and {Marticorena-S{\'a}nchez}, Ra{\'u}l and {Pardo-Aguilar}, Carlos and {L{\'o}pez-Nozal}, Carlos and {Juez-Gil}, Mario},
+  year = 2022,
+  journal = {IEEE Revista Iberoamericana de Tecnologias del Aprendizaje},
+  volume = {17},
+  number = {3},
+  pages = {307--317},
+  doi = {10.1109/RITA.2022.3191279},
+  keywords = {Dropout,Education,Head,Internet,logs,monitoring,moodle,Pandemics,Sociology,Statistics,teaching-learning,Video on demand,visual analytics}
+}
+
+@article{ubumonitor-monitoring,
+  title = {Monitoring of Student Learning in Learning Management Systems: {{An}} Application of Educational Data Mining Techniques},
+  author = {{S{\'a}iz-Manzanares}, Mar{\'i}a Consuelo and {Rodr{\'i}guez-D{\'i}ez}, Juan Jos{\'e} and {D{\'i}ez-Pastor}, Jos{\'e} Francisco and {Rodr{\'i}guez-Arribas}, Sandra and {Marticorena-S{\'a}nchez}, Ra{\'u}l and Ji, Yi Peng},
+  year = 2021,
+  journal = {Applied Sciences},
+  volume = {11},
+  number = {2677},
+  issn = {2076-3417},
+  doi = {10.3390/app11062677},
+  abstract = {In this study, we used a module for monitoring and detecting students at risk of dropping out. We worked with a sample of 49 third-year students in a Health Science degree during a lockdown caused by COVID-19. Three follow-ups were carried out over a semester: an initial one, an intermediate one and a final one with the UBUMonitor tool. This tool is a desktop application executed on the client, implemented with Java, and with a graphic interface developed in JavaFX. The application connects to the selected Moodle server, through the web services and the REST API provided by the server. UBUMonitor includes, among others, modules for log visualisation, risk of dropping out, and clustering. The visualisation techniques of boxplots and heat maps and the cluster analysis module (k-means ++, fuzzy k-means and Density-based spatial clustering of applications with noise (DBSCAN) were used to monitor the students. A teaching methodology based on project-based learning (PBL), self-regulated learning (SRL) and continuous assessment was also used. The results indicate that the use of this methodology together with early detection and personalised intervention in the initial follow-up of students achieved a drop-out rate of less than 7}
+}

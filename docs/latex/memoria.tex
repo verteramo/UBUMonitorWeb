@@ -8,6 +8,8 @@
 \usepackage{lmodern} % Scalable font
 \usepackage{microtype}
 \usepackage{placeins}
+\usepackage{minted}
+\renewcommand{\listingscaption}{Código} % Para que diga "Código 3.1" en vez de "Listing"
 
 \RequirePackage{booktabs}
 \RequirePackage[table]{xcolor}
@@ -342,7 +344,7 @@
   \begin{center}%
   {%
     \noindent\LARGE
-    Presentado por \@author{}\\
+    Presentado por \@author{}\\ 
     en Universidad de Burgos --- \@date{}\\
     Tutor: \@tutor{}\\
   }%
@@ -381,7 +383,7 @@
 
 \noindent Expone:
 
-\noindent Que el alumno D. \nombre, con DNI 07283437G, ha realizado el Trabajo final de Grado en Ingeniería Informática titulado UBUMonitorWeb.
+\noindent Que el alumno D. \nombre, con DNI 07283437G, ha realizado el Trabajo final de Grado en Ingeniería Informática titulado UBUMonitorWeb. 
 
 \noindent Y que dicho trabajo ha sido realizado por el alumno bajo la dirección del que suscribe, en virtud de lo cual se autoriza su presentación y defensa.
 
@@ -425,7 +427,7 @@ D. nombre co-tutor
 % Abstract en castellano
 \renewcommand*\abstractname{Resumen}
 \begin{abstract}
-Los Sistemas de Gestión del Aprendizaje (LMS) como Moodle generan volúmenes masivos de datos sobre las interacciones y el rendimiento de los estudiantes. Aunque las herramientas de analítica visual son cruciales para que los docentes monitoricen el compromiso y prevengan el abandono escolar, las soluciones de escritorio tradicionales a menudo enfrentan limitaciones de flexibilidad y actualización tecnológica. Este artículo presenta UBUMonitorWeb, una aplicación de código abierto diseñada para trasladar y expandir las capacidades de analítica del aprendizaje de su predecesor de escritorio a un entorno web moderno. La herramienta reside localmente en el equipo del docente ejecutándose mediante un archivo WAR que despliega una API REST con Spring Boot y un frontend reactivo en Angular que se ejecuta en el navegador. A través de esta arquitectura y la integración de flujos de autenticación Single Sign-On (SSO) con los servidores de Moodle, UBUMonitorWeb proporciona a los docentes un entorno multiplataforma y accesible para visualizar la actividad del alumnado, configurar conjuntos de datos y analizar métricas de rendimiento sin depender de instalaciones pesadas de escritorio. Al ofrecer paneles interactivos (dashboards) y gráficos dinámicos, la aplicación simplifica la monitorización continua, facilitando la toma de decisiones informadas y la intervención temprana en entornos e-learning.
+Los Sistemas de Gestión del Aprendizaje (LMS) como Moodle generan volúmenes masivos de datos sobre las interacciones y el rendimiento de los estudiantes. Aunque las herramientas de analítica visual son cruciales para que los docentes monitoricen el compromiso y prevengan el abandono, las soluciones de escritorio tradicionales a menudo enfrentan limitaciones de flexibilidad y actualización tecnológica. Este trabajo propone UBUMonitorWeb, una aplicación de código abierto diseñada para trasladar y expandir las capacidades de analítica del aprendizaje de su predecesor de escritorio, UBUMonitor \cite{ubumonitor}, a un entorno web moderno. La herramienta reside localmente en el equipo del docente ejecutándose mediante un distribuible que despliega una API REST con Spring Boot y un frontend reactivo en Angular que se ejecuta en el navegador. A través de esta arquitectura y la integración de flujos de autenticación Single Sign-On (SSO) con los servidores de Moodle, UBUMonitorWeb proporciona a los docentes un entorno multiplataforma y accesible para visualizar la actividad del alumnado, configurar conjuntos de datos y analizar métricas de rendimiento sin depender de instalaciones pesadas de escritorio. Al ofrecer paneles interactivos y gráficos dinámicos, la aplicación simplifica la monitorización continua, facilitando la toma de decisiones informadas y la intervención temprana en entornos e-learning.
 \end{abstract}
 
 \renewcommand*\abstractname{Descriptores}
@@ -438,7 +440,7 @@ Analítica de aprendizaje; Analítica visual; Aplicación web; Spring Boot; Angu
 % Abstract en inglés
 \renewcommand*\abstractname{Abstract}
 \begin{abstract}
-Learning Management Systems (LMS) such as Moodle generate massive volumes of data regarding student interactions and performance. While visual analytic tools are crucial for teachers to monitor engagement and prevent student dropout, traditional desktop-based solutions often face limitations in flexibility and tech stack modernization. This paper presents UBUMonitorWeb, an open-source application designed to transition and expand the learning analytics capabilities of its desktop predecessor into a modern web environment. The application runs locally on the teacher's machine via a WAR package deploying a Spring Boot REST API along with a reactive Angular frontend executed directly in the browser. Through this architecture and seamless Single Sign-On (SSO) authentication integration with Moodle servers, UBUMonitorWeb provides teachers with an accessible, cross-platform environment to visualize student activity, configure datasets, and analyze performance metrics without relying on heavy desktop software setups. By offering interactive dashboards and dynamic charts, the tool simplifies continuous monitoring, facilitating informed decision-making and early intervention in e-learning environments.
+Learning Management Systems (LMS) such as Moodle generate massive volumes of data regarding student interactions and performance. While visual analytic tools are crucial for teachers to monitor engagement and prevent student dropout, traditional desktop-based solutions often face limitations in flexibility and tech stack modernization. This paper presents UBUMonitorWeb, an open-source application designed to transition and expand the learning analytics capabilities of its desktop predecessor, UBUMonitor \cite{ubumonitor}, into a modern web environment. The application runs locally on the teacher's machine via a package deploying a Spring Boot REST API along with a reactive Angular frontend executed directly in the browser. Through this architecture and seamless Single Sign-On (SSO) authentication integration with Moodle servers, UBUMonitorWeb provides teachers with an accessible, cross-platform environment to visualize student activity, configure datasets, and analyze performance metrics without relying on heavy desktop software setups. By offering interactive dashboards and dynamic charts, the tool simplifies continuous monitoring, facilitating informed decision-making and early intervention in e-learning environments.
 \end{abstract}
 
 \renewcommand*\abstractname{Keywords}

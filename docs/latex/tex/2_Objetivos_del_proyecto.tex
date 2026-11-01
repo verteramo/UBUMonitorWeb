@@ -1,3 +1,41 @@
 \capitulo{2}{Objetivos del proyecto}
 
-Este apartado explica de forma precisa y concisa cuales son los objetivos que se persiguen con la realización del proyecto. Se puede distinguir entre los objetivos marcados por los requisitos del software a construir y los objetivos de carácter técnico que plantea a la hora de llevar a la práctica el proyecto.
+Tomando como base directa los requerimientos de la propuesta inicial:
+
+\begin{quote}
+    <<\textit{La aplicación UBUMonitor permite conectarse a servidores Moodle para la extracción de datos y visualización de los mismos. Se dispone de una aplicación cliente de escritorio muy madura - desarrollada con Java y JafaFX - que se quiere migrar a una solución web con SpringBoot (Java) y React. Esa migración implicaría la creación de un backend API REST.}
+
+    \textit{Dentro de todas las funcionalidades incluidas en UBUMonitor, en esta primera fase solo se aborda como objetivo la importación datos de Moodle para su visualización relativos a: cursos, participantes, actividades/recursos y fundamentalmente los logs. Se requiere un diseño modular, para permitir futuras extensiones del desarrollo actual en futuros proyectos.}
+
+    \textit{El despliegue de la aplicación web se realizará de manera similar al despliegue actual con un único fichero comprimido o autoextraíble y acceso local por parte del usuario, por motivos de protección de datos.}>>
+\end{quote}
+
+\section{Objetivos marcados por los requisitos del software}
+
+Estos objetivos definen las metas operativas y el alcance funcional que el sistema debe satisfacer:
+
+\begin{itemize}
+    \item \textbf{Migración a un modelo web:} Evolucionar la plataforma de escritorio hacia una solución basada en navegador. Esto implica necesariamente la creación de un sistema cliente-servidor que, mediante el desarrollo de un servicio \textit{backend}, exponga una API REST.
+
+    \item \textbf{Alcance funcional inicial:} Centrar el esfuerzo de desarrollo actual en la extracción de datos desde Moodle y su representación gráfica. El trabajo abarca estrictamente los elementos clave del proceso de aprendizaje: cursos, participantes, actividades/recursos y, de manera fundamental, los registros de actividad (logs).
+
+    \item \textbf{Protección de datos:} Garantizar la protección de la información. El sistema debe diseñarse de modo que los datos sensibles de los estudiantes nunca se externalicen, quedando exclusivamente bajo el control local, utilizando algoritmos de cifrado cuando sea necesario.
+
+    \item \textbf{Despliegue local:} Replicar la comodidad de la herramienta original mediante un empaquetado autocontenido. La aplicación web debe distribuirse como un único fichero (comprimido o ejecutable) que el usuario pueda lanzar y operar de manera directa en su propio equipo, sin requerir configuraciones complejas.
+\end{itemize}
+
+\section{Objetivos de carácter técnico}
+
+Para materializar los requisitos anteriores de la forma más eficiente posible, se plantean los siguientes objetivos técnicos y arquitectónicos:
+
+\begin{itemize}
+    \item \textbf{Arquitectura modular:} Construir el código fuente separando claramente las responsabilidades. Dado que este proyecto representa la primera fase de la migración, el diseño arquitectónico debe asegurar que la plataforma pueda absorber futuras extensiones y la migración del resto de funcionalidades de la versión de escritorio de forma fluida.
+
+    \item \textbf{Adaptación del \textit{stack} tecnológico:} Implementar la solución sobre el framework Spring Boot para el \textit{backend} y construir el cliente web como una \textit{Single Page Application} (SPA). Aunque la propuesta inicial contemplaba el uso de Java y React, tras el análisis técnico se decidió apostar por \textbf{Kotlin DSL} y \textbf{Angular}, logrando así una estructura más robusta, un tipado más seguro y un entorno altamente declarativo.
+
+    \item \textbf{Empaquetado unificado e independiente:} Lograr que la API REST (Spring Boot) y el cliente web (Angular) se sirvan desde un servidor embebido indivisible. Para cumplir con el requisito del fichero único de forma óptima, se plantea generar ejecutables nativos multiplataforma mediante GraalVM, reduciendo drásticamente el consumo de memoria RAM respecto a una distribución clásica dependiente de JRE.
+
+    \item \textbf{Integración de autenticación Single Sign-On (SSO):} Desarrollar el soporte para el inicio de sesión delegado mediante identidad federada. Esto requiere implementar un flujo de red complejo entre el cliente web (Angular), el \textit{backend} (Spring Boot) y el sistema institucional de Moodle, gestionando redirecciones, almacenamiento de \textit{tokens} y sesiones de forma segura, sin necesidad de interceptar ni almacenar las credenciales directas del usuario.
+
+    \item \textbf{Análisis avanzado de logs (Aportación extendida):} Como valor técnico añadido a la visualización de registros, implementar un módulo de análisis de texto no estructurado que permita extraer y tipificar información de valor oculta en los registros crudos de Moodle.
+\end{itemize}

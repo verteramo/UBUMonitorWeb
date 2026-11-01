@@ -9,11 +9,11 @@ package "Capa cliente" as ClientLayer #EAECEE {
 
 rectangle "Aplicación Autocontenida (Local)" as SystemBoundary #line.dashed {
 
-    package "Capa presentación: Frontend (React)" as PresentationLayer #D6EAF8 {
+    package "Capa presentación: Frontend (Angular)" as PresentationLayer #ffbcb8 {
         component "Vistas UI" as PresentationViews
         component "Lógica y estado" as PresentationLogic
         component "Clientes REST" as PresentationClients
-        
+
         PresentationViews <-right-> PresentationLogic
         PresentationLogic <-right-> PresentationClients
     }
@@ -21,18 +21,18 @@ rectangle "Aplicación Autocontenida (Local)" as SystemBoundary #line.dashed {
     package "Capa negocio: Backend (Spring Boot)" as BusinessLayer #D5F5E3 {
         component "Controladores\nEndpoints REST" as BusinessControllers
         component "Servicios\nLógica y negocio" as BusinessServices
-        component "Repositorios JPA" as BusinessRepositories
+        component "Repositorios" as BusinessRepositories
         component "Clientes REST" as BusinessClients
         component "Scrapers HTML" as BusinessScrapers
-        
+
         BusinessControllers <-left-> BusinessServices
         BusinessServices <-down-> BusinessRepositories
         BusinessServices <-down-> BusinessClients
         BusinessServices <-down-> BusinessScrapers
     }
 
-    package "Capa datos: Persistencia (H2)" as DataLayer #FCF3CF {
-        database "Base de datos local" as Database
+    package "Capa datos: Persistencia" as DataLayer #FCF3CF {
+        database "Sistema de archivos local" as Database
     }
 }
 
@@ -44,6 +44,6 @@ Browser <.down.> PresentationViews
 PresentationClients <.down.> BusinessControllers : JSON
 BusinessClients <.down.> Moodle : XML/JSON
 BusinessScrapers <.down.> Moodle : HTML
-BusinessRepositories <.down.> Database : SQL
+BusinessRepositories <.down.> Database : IO
 
 @enduml
