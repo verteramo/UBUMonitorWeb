@@ -7,8 +7,8 @@ import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.http.client.ClientHttpResponse
 import org.springframework.stereotype.Component
 
-// @Profile("dev")
-// @Component
+@Profile("dev")
+@Component
 class ClientLoggerInterceptor : ClientHttpRequestInterceptor {
   private val logger = KotlinLogging.logger {}
 

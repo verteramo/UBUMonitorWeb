@@ -1,5 +1,8 @@
 package es.ubu.lsi.ubumonitorweb.core.security
 
+import es.ubu.lsi.ubumonitorweb.core.crypto.CipherStrategy
+import es.ubu.lsi.ubumonitorweb.core.crypto.DigestService
+import es.ubu.lsi.ubumonitorweb.core.crypto.DigestService.Companion.asString
 import es.ubu.lsi.ubumonitorweb.core.system.ScrapingExtensions.select
 import es.ubu.lsi.ubumonitorweb.moodle.client.LoginClient
 import es.ubu.lsi.ubumonitorweb.moodle.client.ToolMobileClient
@@ -11,7 +14,10 @@ import org.apache.hc.client5.http.impl.cookie.BasicClientCookie
 import org.springframework.security.authentication.AuthenticationServiceException
 import org.springframework.stereotype.Service
 import org.springframework.web.service.registry.ImportHttpServices
+import tools.jackson.databind.ObjectMapper
+import tools.jackson.module.kotlin.readValue
 import java.net.URI
+import kotlin.jvm.optionals.getOrNull
 
 /**
  * Servicio encargado de gestionar, validar y persistir las cookies de sesión de Moodle.
@@ -27,36 +33,64 @@ import java.net.URI
   LoginClient::class,
 )
 class CookieService(
+  private val mapper: ObjectMapper,
   private val cookieRepository: CookieRepository,
+  private val digestService: DigestService,
+  private val cipherStrategy: CipherStrategy,
   private val toolMobileClient: ToolMobileClient,
   private val loginClient: LoginClient,
   private val cookieStore: CookieStore,
 ) {
+  data class SerializableCookie(
+    val name: String,
+    val value: String,
+    val domain: String,
+    val path: String,
+    val isSecure: Boolean,
+  )
+
   private val logger = KotlinLogging.logger {}
 
   /**
    * Asegura la disponibilidad de una cookie de sesión válida en el almacén global.
    *
-   * @param ssoToken Credenciales de acceso de Moodle.
-   * @param userId Identificador único del usuario.
+   * @param moodleToken Credenciales de acceso de Moodle.
+   * @param resolveUserId Función que resuelve el identificador único del usuario.
    * @throws AuthenticationServiceException Si no es posible obtener o estabilizar la cookie.
    */
   fun getOrFetchCookie(
-    ssoToken: AuthController.SsoTokenLoginRequest,
-    userId: Int,
+    moodleToken: MoodleToken,
+    resolveUserId: () -> Int,
   ) {
     cookieStore.clear()
 
-    cookieRepository.readCookie(ssoToken.token)?.takeIf { isValid(it) }?.also {
-      logger.info { "Cookie loaded from repository is valid" }
-    } ?: run {
-      logger.info { "Cookie is missing, invalid or read failed" }
+    val tokenDigest = digestService.digest(moodleToken.token)
+    val tokenHash = tokenDigest.asString()
 
-      autologin(ssoToken, userId).let { newCookie ->
-        cookieRepository.writeCookie(newCookie, ssoToken.token)
-        logger.info { "New cookie saved to repository" }
+    val storedCookie =
+      cookieRepository.findById(tokenHash).getOrNull()?.data?.let {
+        runCatching {
+          mapper.readValue<SerializableCookie>(
+            cipherStrategy.decrypt(it, tokenDigest),
+          )
+        }.getOrNull()
       }
+
+    if (storedCookie == null || !isValid(storedCookie)) {
+      val newCookie = autologin(moodleToken, resolveUserId())
+      val bytes = mapper.writeValueAsBytes(newCookie)
+      val encryptedBytes = cipherStrategy.encrypt(bytes, tokenDigest)
+      val cookieEntity =
+        CookieEntity().apply {
+          id = tokenHash
+          data = encryptedBytes
+        }
+
+      cookieRepository.save(cookieEntity)
+      logger.info { "New cookie securely saved to DB" }
     }
+
+    logger.info { "Cookie loaded from DB is valid" }
   }
 
   /**
@@ -65,7 +99,7 @@ class CookieService(
    * @param cookie Objeto con la información de la cookie almacenada.
    * @return `true` si la cookie es válida; `false` en caso contrario.
    */
-  private fun isValid(cookie: CookieRepository.Cookie): Boolean {
+  private fun isValid(cookie: SerializableCookie): Boolean {
     cookieStore.clear()
 
     cookieStore.addCookie(
@@ -87,21 +121,21 @@ class CookieService(
   /**
    * Ejecuta el flujo de autologin para obtener una nueva cookie.
    *
-   * @param ssoToken Credenciales de acceso de Moodle.
+   * @param moodleToken Credenciales de acceso de Moodle.
    * @param userId Identificador único del usuario.
    * @return Cookie nueva extraída del store.
    *
    * @throws AuthenticationServiceException Si falla la obtención de la cookie de sesión.
    */
   private fun autologin(
-    ssoToken: AuthController.SsoTokenLoginRequest,
+    moodleToken: MoodleToken,
     userId: Int,
-  ): CookieRepository.Cookie {
+  ): SerializableCookie {
     cookieStore.clear()
 
     logger.info { "Starting autologin sequence (tool_mobile_get_autologin_key)" }
 
-    toolMobileClient.getAutologinKey(ssoToken.token, ssoToken.privateToken).let {
+    toolMobileClient.getAutologinKey(moodleToken.token, moodleToken.privatetoken).let {
       logger.debug { "Autologin key: '$it'" }
       toolMobileClient.autologin(URI(it.autologinurl), it.key, userId)
     }
@@ -110,7 +144,7 @@ class CookieService(
       logger.info { "Session cookie obtained" }
       logger.debug { "Cookie: '$it'" }
 
-      CookieRepository.Cookie(
+      SerializableCookie(
         name = it.name,
         value = it.value,
         domain = it.domain,

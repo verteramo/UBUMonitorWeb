@@ -6,6 +6,7 @@
 
 package es.ubu.lsi.ubumonitorweb.core.system
 
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import tools.jackson.dataformat.csv.CsvMapper
@@ -16,6 +17,7 @@ import tools.jackson.module.kotlin.kotlinModule
  * Configuración global de componentes y beans transversales del sistema.
  */
 @Configuration
+@EnableConfigurationProperties(SystemProperties::class)
 class SystemConfiguration {
   /**
    * Proporciona la instancia compartida de [CsvMapper] configurada con soporte para tipos de Kotlin.

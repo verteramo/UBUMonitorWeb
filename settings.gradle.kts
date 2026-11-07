@@ -12,4 +12,7 @@ pluginManagement {
     gradlePluginPortal()
     mavenCentral()
   }
+  plugins {
+    kotlin("plugin.jpa") version "2.3.21"
+  }
 }

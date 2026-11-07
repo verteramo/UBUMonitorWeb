@@ -4,7 +4,7 @@
  * @author Marcelo Verteramo Pérsico
  */
 
-import { HttpClient, HttpContext, HttpContextToken } from '@angular/common/http';
+import { HttpClient, HttpContext, HttpContextToken, HttpHeaders } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { SiteConfig } from '@core/models/site-config';
 import { User } from '@core/models/user';
@@ -29,8 +29,7 @@ export type SsoTokenLoginRequest = {
   site: string;
   payload: {
     token: string;
-    privateToken?: string;
-  };
+  }
 };
 
 /**
@@ -53,6 +52,7 @@ export class AuthService {
    */
   discover(site: string): Observable<SiteConfig> {
     return this.http.get<SiteConfig>(env.endpoints.discover, {
+      headers: new HttpHeaders().set(env.schemeHeader, env.scheme),
       context: new HttpContext().set(AuthToken, site),
     });
   }

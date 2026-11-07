@@ -1,18 +1,17 @@
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 package es.ubu.lsi.ubumonitorweb.domain
 
 data class SiteConfig(
   val siteName: String,
   val siteLogo: String?,
-  val loginType: Int,
-  val loginLaunchUrl: String,
+  val loginStatus: LoginStatus,
+  val loginMode: LoginMode?,
+  val loginUrl: String?,
   val loginInstructions: String?,
-  val maintenanceMessage: String,
-  val isMaintenanceEnabled: Boolean,
-  val isLoginFormEnabled: Boolean,
-  val isLoginByEmailEnabled: Boolean,
-  val isMobileServiceEnabled: Boolean,
-  val isMfaEnabled: Boolean,
-  val idProviders: List<IdProvider>,
-  val wwwRoot: String,
-  val wwwRootSecure: String,
+  val maintenanceMessage: String?,
 )

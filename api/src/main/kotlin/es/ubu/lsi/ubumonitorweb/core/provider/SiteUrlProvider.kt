@@ -8,7 +8,7 @@ package es.ubu.lsi.ubumonitorweb.core.provider
 
 import es.ubu.lsi.ubumonitorweb.core.client.PropertyProvider
 import es.ubu.lsi.ubumonitorweb.core.locale.Message
-import es.ubu.lsi.ubumonitorweb.core.security.SecurityProperties
+import es.ubu.lsi.ubumonitorweb.core.system.SystemProperties
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
@@ -20,7 +20,7 @@ import org.springframework.util.AntPathMatcher
 @Component
 class SiteUrlProvider(
   private val request: HttpServletRequest,
-  private val properties: SecurityProperties,
+  private val properties: SystemProperties,
 ) : PropertyProvider.Static<String?>() {
   /**
    * Matcher de rutas.

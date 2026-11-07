@@ -9,8 +9,10 @@
  */
 export const environment = {
   scheme: 'web+umw',
+  schemeHeader: 'App-Scheme',
   siteHeader: 'Moodle-Site',
   endpoints: {
+    preferences: '/api/system/preferences',
     discover: '/api/auth/discover',
     login: '/api/auth/login',
     loginSso: '/api/auth/login-sso',

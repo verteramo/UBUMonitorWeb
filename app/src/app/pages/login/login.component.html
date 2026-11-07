@@ -63,10 +63,9 @@
   } @else {
     @let siteConfig = store.siteConfig()!;
 
-    @if (siteConfig.isMaintenanceMode) {
+    @if (siteConfig.loginStatus === 'MAINTENANCE') {
       <!-- ================= 2A. MANTENIMIENTO ================= -->
       <div class="form-container">
-        <!-- O la clase wrapper que uses en lugar de form si no hay submit -->
         <header>
           <img [src]="siteConfig.siteLogo || 'logo.png'" [alt]="siteConfig.siteName" />
           <h2>{{ siteConfig.siteName }}</h2>
@@ -79,8 +78,8 @@
           <button mat-button type="button" (click)="store.stepBack()" i18n>Back</button>
         </nav>
       </div>
-    } @else if (siteConfig.loginType === LoginType.APP && siteConfig.isLoginFormEnabled) {
-      <!-- ================= 2B. LOGIN CLÁSICO ================= -->
+    } @else if (siteConfig.loginMode === 'CREDENTIALS') {
+      <!-- ================= 2B. LOGIN CLÁSICO (CREDENTIALS) ================= -->
       <form novalidate (submit)="onLogin($event)">
         <header>
           <img [src]="siteConfig.siteLogo || 'logo.png'" [alt]="siteConfig.siteName" />
@@ -135,7 +134,7 @@
         </nav>
       </form>
     } @else {
-      <!-- ================= 2C. LOGIN SSO ================= -->
+      <!-- ================= 2C. LOGIN SSO o ALL ================= -->
       <form novalidate (submit)="onSsoLogin($event)">
         <header>
           <img [src]="siteConfig.siteLogo || 'logo.png'" [alt]="siteConfig.siteName" />
@@ -143,6 +142,9 @@
         </header>
 
         <div class="form-content">
+          @if (siteConfig.loginInstructions) {
+            <div class="login-instructions" [innerHTML]="store.parsedLoginInstructions()"></div>
+          }
           <button type="submit" class="sso-button">
             SSO Access <mat-icon>open_in_new</mat-icon>
           </button>

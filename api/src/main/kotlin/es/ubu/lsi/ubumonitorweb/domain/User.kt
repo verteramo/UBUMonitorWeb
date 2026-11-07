@@ -41,4 +41,5 @@ data class User(
   val siteVersion: String?,
   val siteRelease: String?,
   val siteTimezone: ZoneId,
+  val preferences: Preferences = Preferences(),
 )

@@ -26,18 +26,16 @@ import org.springframework.web.service.registry.ImportHttpServices
 /**
  * Proveedor de autenticación mediante credenciales para Moodle.
  *
+ * @property cookieStore Almacén de cookies.
  * @property loginClient Cliente web de Moodle.
  * @property coreWebserviceClient Cliente API de Moodle.
- * @property userAssembler Ensamblador de sesión.
- * @property cookieStore Almacén de cookies.
  */
 @Component
 @ImportHttpServices(LoginClient::class, CoreWebserviceClient::class)
 class CredentialsAuthProvider(
+  private val cookieStore: CookieStore,
   private val loginClient: LoginClient,
   private val coreWebserviceClient: CoreWebserviceClient,
-  private val userAssembler: UserAssembler,
-  private val cookieStore: CookieStore,
 ) : AuthenticationProvider {
   private val logger = KotlinLogging.logger {}
 
@@ -63,7 +61,7 @@ class CredentialsAuthProvider(
     val username = authentication.name
     val password = authentication.credentials.toString()
 
-    logger.info { "Starting username/password authentication" }
+    logger.info { "Starting credentials authentication" }
     logger.debug { "Credentials: '$username:$password'" }
     cookieStore.clear()
 
@@ -112,18 +110,16 @@ class CredentialsAuthProvider(
 
     /*
      * Montaje del keychain para el contexto de la sesión
-     * y ensamblaje final de los datos del usuario.
+     * y obtención de la información en crudo del sitio Moodle.
      */
-    val keychain =
-      Keychain(token = moodleToken.token, privateToken = moodleToken.privatetoken, sessionKey = sessionKey)
+    val keychain = Keychain(token = moodleToken.token, privateToken = moodleToken.privatetoken, sessionKey = sessionKey)
 
-    val user =
-      userAssembler.assemble(keychain.token) { coreWebserviceClient.getSiteInfo(moodleToken.token) }
+    val moodleSiteInfo = coreWebserviceClient.getSiteInfo(moodleToken.token)
 
-    logger.debug { "User: '$user'" }
+    logger.debug { "SiteInfo: '$moodleSiteInfo'" }
     logger.debug { "Keychain: '$keychain'" }
     logger.info { "Logged in" }
 
-    return UsernamePasswordAuthenticationToken(user, keychain, emptyList())
+    return UsernamePasswordAuthenticationToken(moodleSiteInfo, keychain, emptyList())
   }
 }

@@ -10,6 +10,7 @@ import es.ubu.lsi.ubumonitorweb.core.system.ScrapingExtensions.sessionKey
 import es.ubu.lsi.ubumonitorweb.domain.Keychain
 import es.ubu.lsi.ubumonitorweb.moodle.client.CoreWebserviceClient
 import es.ubu.lsi.ubumonitorweb.moodle.client.LoginClient
+import es.ubu.lsi.ubumonitorweb.moodle.dto.MoodleToken
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.AuthenticationServiceException
@@ -22,17 +23,15 @@ import org.springframework.web.service.registry.ImportHttpServices
  * Proveedor de autenticación SSO para validar tokens pre-cargados desde el frontend.
  *
  * @property cookieService Servicio para la gestión de cookies de sesión.
- * @property coreWebserviceClient Cliente API de Moodle.
  * @property loginClient Cliente web de Moodle.
- * @property userAssembler Ensamblador de sesión.
+ * @property coreWebserviceClient Cliente API de Moodle.
  */
 @Component
 @ImportHttpServices(CoreWebserviceClient::class, LoginClient::class)
 class SsoTokenAuthProvider(
   private val cookieService: CookieService,
-  private val coreWebserviceClient: CoreWebserviceClient,
   private val loginClient: LoginClient,
-  private val userAssembler: UserAssembler,
+  private val coreWebserviceClient: CoreWebserviceClient,
 ) : AuthenticationProvider {
   private val logger = KotlinLogging.logger {}
 
@@ -57,9 +56,11 @@ class SsoTokenAuthProvider(
     logger.info { "Starting SSO authentication" }
     logger.debug { "SSO Token: '$ssoToken'" }
 
-    val moodleSiteInfo = coreWebserviceClient.getSiteInfo(ssoToken.token)
+    val moodleToken = decodeSsoToken(ssoToken.token)
 
-    cookieService.getOrFetchCookie(ssoToken, moodleSiteInfo.userid)
+    val moodleSiteInfo by lazy { coreWebserviceClient.getSiteInfo(moodleToken.token) }
+
+    cookieService.getOrFetchCookie(moodleToken) { moodleSiteInfo.userid }
 
     val sessionKey = loginClient.getUserEditForm().sessionKey
 
@@ -68,18 +69,45 @@ class SsoTokenAuthProvider(
     }
 
     /*
-     * Montaje del keychain para el contexto de la sesión
-     * y ensamblaje final de los datos del usuario.
+     * Montaje del keychain para el contexto de la sesión.
      */
     val keychain =
       Keychain(
-        token = ssoToken.token,
-        privateToken = ssoToken.privateToken,
+        token = moodleToken.token,
+        privateToken = moodleToken.privatetoken,
         sessionKey = sessionKey,
       )
 
-    val user = userAssembler.assemble(keychain.token) { moodleSiteInfo }
+    return PreAuthenticatedAuthenticationToken(moodleSiteInfo, keychain, emptyList())
+  }
 
-    return PreAuthenticatedAuthenticationToken(user, keychain, emptyList())
+  /**
+   * Decodifica el token cifrado recibido por el deep link y extrae el par de tokens de Moodle.
+   * Formato esperado tras Base64: hash:::token:::privatetoken (o similar)
+   */
+  private fun decodeSsoToken(encodedToken: String): MoodleToken {
+    try {
+      val decodedBytes =
+        java.util.Base64
+          .getDecoder()
+          .decode(encodedToken)
+      val decodedString = String(decodedBytes, Charsets.UTF_8)
+      val parts = decodedString.split(":::")
+
+      if (parts.size < 2) {
+        throw AuthenticationServiceException("Malformed SSO token structure")
+      }
+
+      // parts[0] -> hash de seguridad (verificado por el backend si procede)
+      // parts[1] -> token principal
+      // parts[2] -> privatetoken (opcional según versión de Moodle)
+      val token = parts[1]
+      val privateToken = if (parts.size > 2) parts[2] else ""
+
+      return MoodleToken(token = token, privatetoken = privateToken)
+    } catch (e: Exception) {
+      logger.error(e) { "Failed to decode SSO token" }
+      throw AuthenticationServiceException("Invalid SSO token encoding", e)
+    }
   }
 }

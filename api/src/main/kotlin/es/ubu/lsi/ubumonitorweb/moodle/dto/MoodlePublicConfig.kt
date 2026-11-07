@@ -1,8 +1,5 @@
 package es.ubu.lsi.ubumonitorweb.moodle.dto
 
-import es.ubu.lsi.ubumonitorweb.domain.IdProvider
-import es.ubu.lsi.ubumonitorweb.domain.SiteConfig
-
 data class MoodlePublicConfig(
   val sitename: String,
   val compactlogourl: String?,
@@ -18,29 +15,4 @@ data class MoodlePublicConfig(
   val identityproviders: List<MoodleIdentityProvider>?,
   val wwwroot: String,
   val httpswwwroot: String,
-) {
-  fun toSiteConfig() =
-    SiteConfig(
-      siteName = sitename,
-      siteLogo = compactlogourl,
-      loginType = typeoflogin,
-      loginLaunchUrl = launchurl,
-      loginInstructions = authinstructions,
-      maintenanceMessage = maintenancemessage,
-      isMaintenanceEnabled = maintenanceenabled == 1,
-      isLoginFormEnabled = showloginform == 1,
-      isLoginByEmailEnabled = authloginviaemail == 1,
-      isMobileServiceEnabled = enablemobilewebservice == 1,
-      isMfaEnabled = tool_mfa_enabled == true,
-      idProviders =
-        identityproviders?.map {
-          IdProvider(
-            url = it.url,
-            name = it.name,
-            icon = it.iconurl,
-          )
-        } ?: emptyList(),
-      wwwRoot = wwwroot,
-      wwwRootSecure = httpswwwroot,
-    )
-}
+)

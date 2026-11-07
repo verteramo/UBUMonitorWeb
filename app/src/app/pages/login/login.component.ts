@@ -13,7 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
 import { useSnack } from '@core/composables/snack';
 import { AppError } from '@core/interceptors/app-error';
-import { LoginType } from '@core/models/site-config';
+import { getURIParam } from '@core/utils/string.utils';
 import { url } from '@core/validators/url-validator';
 import { PasswordFieldComponent } from '@shared/components/password-field.component';
 import { ProgressSpinnerComponent } from '@shared/components/progress-spinner.component';
@@ -44,8 +44,6 @@ import { LoginFormStore } from './login-form.store';
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
-  protected readonly LoginType = LoginType;
-
   private snack = useSnack();
   private router = inject(Router);
   private route = inject(ActivatedRoute);
@@ -68,12 +66,13 @@ export class LoginComponent implements OnInit {
     // Usamos el observable en lugar de snapshot para reaccionar a cambios en caliente
     this.route.queryParams.subscribe((params) => {
       const link = params['link'];
+      const token = getURIParam(link, 'token');
 
-      if (link) {
-        console.log('Token captured reactively', link);
+      console.log('Extracted SSO Token:', token);
 
+      if (token) {
         // Lanzamos el login
-        this.store.loginSso(link).subscribe({
+        this.store.loginSso(token).subscribe({
           error: (e: AppError) => {
             this.snack(e.message);
 

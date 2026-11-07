@@ -1,26 +1,54 @@
 spring:
   application:
     name: ubumonitorweb
+  # Si no se especifica Accept-Language al utilizar
+  # este backend, se asume idioma inglés para la emisión
+  # de mensajes
   web:
     locale: en
   messages:
     fallback-to-system-locale: false
+  # Por defecto, se asume el perfil de desarrollo
+  # que en determinados casos puede habilitar un
+  # logging más completo de todo lo que ocurre en
+  # cada momento
   profiles:
     default: dev
+  # Se utiliza la convención ProblemDetail para
+  # la generación de errores de este backend,
+  # esto implica que cualquier error será presentado
+  # en forma de objeto ProblemDetail:
+  # https://www.rfc-editor.org/rfc/rfc9457.html
   mvc:
     problemdetails:
       enabled: true
+  # Configuración de la base de datos y repositorios
+  # que almacenan los datos de los usuarios
+  datasource:
+    url: jdbc:h2:file:./umw/umw;AUTO_SERVER=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ''
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+  # Consola H2
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
 
-# Configuración de la cookie de sesión.
+
+
+# Configuración de las cookies de sesión
 server:
   servlet:
     session:
       cookie:
         http-only: true
         same-site: strict
-
-security:
-  cookies-directory: ${user.home}/.umw/
 
 logs:
   boolean-prefixes: [ is, has ]

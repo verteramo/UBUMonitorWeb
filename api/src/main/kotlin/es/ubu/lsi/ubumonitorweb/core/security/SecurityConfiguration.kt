@@ -6,8 +6,8 @@
 
 package es.ubu.lsi.ubumonitorweb.core.security
 
+import es.ubu.lsi.ubumonitorweb.core.system.SystemProperties
 import jakarta.servlet.DispatcherType
-import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationProvider
@@ -25,9 +25,8 @@ import org.springframework.security.web.context.SecurityContextRepository
  */
 @Configuration
 @EnableWebSecurity
-@EnableConfigurationProperties(SecurityProperties::class)
 class SecurityConfiguration(
-  private val properties: SecurityProperties,
+  private val properties: SystemProperties,
 ) {
   /**
    * Repositorio de contexto de seguridad que utiliza el contenedor.

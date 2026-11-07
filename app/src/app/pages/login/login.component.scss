@@ -7,7 +7,6 @@
   align-items: center;
   min-height: 100vh;
   position: relative;
-  /* Fondo general base */
   background-color: var(--mat-sys-surface);
 
   app-theme-toggle {
@@ -18,7 +17,8 @@
   }
 }
 
-form, .form-container {
+form,
+.form-container {
   display: flex;
   flex-direction: column;
   width: 90vw;
@@ -26,7 +26,6 @@ form, .form-container {
   padding: 32px 24px 24px;
   box-sizing: border-box;
 
-  /* Fondo del formulario ligeramente más oscuro para generar contraste */
   background: var(--mat-sys-surface-container);
   border: 1px solid var(--mat-sys-outline-variant);
   border-radius: 16px;
@@ -54,25 +53,32 @@ form, .form-container {
     }
   }
 
+  /* Título secundario para vistas como Mantenimiento */
+  h3 {
+    margin: 0 0 16px 0;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--mat-sys-error);
+    text-align: center;
+  }
+
   .form-content {
     display: flex;
     flex-direction: column;
-    min-height: 80px;
+    gap: 16px;
 
     app-text-field,
     app-password-field {
       width: 100%;
-      margin-bottom: 8px;
     }
 
     .options-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: -8px;
-
       border: none;
       padding: 0;
+      margin: 0;
 
       .action-icons {
         display: flex;
@@ -80,20 +86,38 @@ form, .form-container {
       }
     }
 
+    .login-instructions,
+    .maintenance-alert {
+      font-size: 14px;
+      color: var(--mat-sys-on-surface-variant);
+      line-height: 1.5;
+
+      a {
+        color: var(--mat-sys-primary);
+        text-decoration: underline;
+      }
+    }
+
     .sso-button {
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 10px;
-      border: 1px solid var(--mat-sys-outline);
+      gap: 8px;
+      width: 100%;
+      padding: 12px;
+      background-color: var(--mat-sys-primary);
+      border: none;
       border-radius: 8px;
-      color: var(--mat-sys-on-surface);
+      color: var(--mat-sys-on-primary);
       font-weight: 500;
+      font-size: 15px;
+      cursor: pointer;
       text-decoration: none;
-      transition: background-color 0.2s;
+      transition: opacity 0.2s;
+      box-sizing: border-box;
 
       &:hover {
-        background-color: var(--mat-sys-surface-variant);
+        opacity: 0.9;
       }
     }
   }
@@ -104,7 +128,6 @@ form, .form-container {
     gap: 8px;
     margin-top: 24px;
 
-    /* Separa los botones: el principal se empuja a la derecha, dejando "Back" a la izquierda */
     button[mat-flat-button] {
       margin-left: auto;
     }

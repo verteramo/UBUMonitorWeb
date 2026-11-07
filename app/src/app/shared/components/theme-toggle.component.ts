@@ -7,7 +7,7 @@
 import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { AppStore } from '@core/stores/app.store';
+import { SystemPreferencesStore } from '@core/stores/system-preferences.store';
 
 /**
  * Componente de botón para cambiar el tema visual de la aplicación.
@@ -30,7 +30,7 @@ export class ThemeToggleComponent {
   /**
    * Store de preferencias de la aplicación.
    */
-  readonly store = inject(AppStore);
+  readonly store = inject(SystemPreferencesStore);
 
   /**
    * Iconos de Angular Material asociados a cada tema visual.

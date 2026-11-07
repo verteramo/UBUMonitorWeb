@@ -6,7 +6,7 @@
 
 package es.ubu.lsi.ubumonitorweb.core.crypto
 
-import es.ubu.lsi.ubumonitorweb.core.security.SecurityProperties
+import es.ubu.lsi.ubumonitorweb.core.system.SystemProperties
 import org.springframework.stereotype.Service
 import java.security.MessageDigest
 
@@ -17,7 +17,7 @@ import java.security.MessageDigest
  */
 @Service
 class DigestService(
-  private val properties: SecurityProperties,
+  private val properties: SystemProperties,
 ) {
   /**
    * Calcula el hash de un arreglo de bytes.

@@ -4,12 +4,11 @@ import { User } from '@core/models/user';
 import { AuthService } from '@core/services/auth.service';
 import { DatasetStore } from '@core/stores/dataset.store';
 import { SessionStore } from '@core/stores/session.store';
+import { SystemPreferencesStore } from '@core/stores/system-preferences.store';
 import { resolveRelativeLinks } from '@core/utils/string.utils';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { finalize, Observable, tap } from 'rxjs';
 import { withLoginModel } from './login-model.feature';
-import { LoginPassportStore } from './login-passport.store';
-import { LoginPreferencesStore } from './login-prefs.store';
 
 /**
  * Estado local del formulario de login.
@@ -45,8 +44,7 @@ export const LoginFormStore = signalStore(
     }),
   })),
   withMethods((store) => {
-    const prefs = inject(LoginPreferencesStore);
-    const passport = inject(LoginPassportStore);
+    const prefs = inject(SystemPreferencesStore);
     const service = inject(AuthService);
     const session = inject(SessionStore);
     const dataset = inject(DatasetStore);
@@ -112,21 +110,21 @@ export const LoginFormStore = signalStore(
       startSsoLogin(): void {
         const siteConfig = store.siteConfig();
 
-        if (siteConfig) {
-          window.location.href = passport.getLaunchUrl(siteConfig);
+        if (siteConfig?.loginUrl) {
+          window.location.href = siteConfig.loginUrl;
         }
       },
 
-      loginSso(uri: string): Observable<User> {
-        const { site, ...payload } = passport.parseToken(uri);
+      loginSso(token: string): Observable<User> {
+        const { site } = store.model();
 
         patchState(store, { loading: true });
 
-        return service.loginSso({ site, payload }).pipe(
+        return service.loginSso({ site, payload: { token } }).pipe(
           tap({
             next(user): void {
               session.setUser(user);
-              dataset.computeHash(payload.token);
+              dataset.computeHash(token);
             },
 
             error(e): void {

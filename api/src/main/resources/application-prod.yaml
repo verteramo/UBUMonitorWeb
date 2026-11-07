@@ -1,6 +1,7 @@
-security:
+system:
   public-routes:
     - /
+    - /api/system/preferences
     - /api/auth/discover
     - /api/auth/login-sso
     - /api/auth/login

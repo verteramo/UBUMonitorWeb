@@ -6,6 +6,7 @@
 
 plugins {
   alias(libs.plugins.kotlin.jvm)
+  alias(libs.plugins.kotlin.jpa)
   alias(libs.plugins.kotlin.spring)
   alias(libs.plugins.spring.boot)
   alias(libs.plugins.spring.dependencyManagement)
@@ -32,6 +33,7 @@ dependencies {
   implementation(libs.spring.boot.starter.webmvc)
   implementation(libs.spring.boot.starter.security)
   implementation(libs.spring.boot.starter.actuator)
+  implementation(libs.spring.boot.starter.data.jpa)
 
   implementation(libs.jackson.module.kotlin)
   implementation(libs.jackson.dataformat.csv)
@@ -43,6 +45,8 @@ dependencies {
   implementation(libs.jsoup)
   implementation(libs.httpclient5)
 
+  runtimeOnly(libs.h2)
+
   providedRuntime(libs.spring.boot.starter.tomcat.runtime)
   testImplementation(libs.kotlin.test.junit5)
   testImplementation(libs.spring.security.test)
@@ -50,6 +54,7 @@ dependencies {
   testImplementation(libs.spring.boot.starter.test)
   developmentOnly(libs.spring.boot.devtools)
   testRuntimeOnly(libs.junit.platform.launcher)
+  testImplementation(kotlin("test"))
 }
 
 kotlin {

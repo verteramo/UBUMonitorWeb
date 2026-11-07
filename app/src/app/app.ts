@@ -4,9 +4,10 @@
  * @author Marcelo Verteramo Pérsico
  */
 
-import { Component, DOCUMENT, effect, inject, Renderer2 } from '@angular/core';
+import { Component, DOCUMENT, effect, inject, OnInit, Renderer2 } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { AppStore } from '@core/stores/app.store';
+import { SystemPreferencesStore } from '@core/stores/system-preferences.store';
+import { SplashLogoComponent } from '@shared/components/splash-logo.component';
 
 /**
  * Componente principal que inyecta el RouterOutlet.
@@ -15,11 +16,18 @@ import { AppStore } from '@core/stores/app.store';
  */
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
-  template: `<router-outlet />`,
+
+  imports: [RouterOutlet, SplashLogoComponent],
+  template: `
+    @if (store.loading()) {
+      <app-splash-logo [loaded]="!store.loading()" />
+    } @else {
+      <router-outlet />
+    }
+  `,
 })
-export class App {
-  private readonly store = inject(AppStore);
+export class App implements OnInit {
+  protected readonly store = inject(SystemPreferencesStore);
   private readonly document = inject(DOCUMENT);
   private readonly renderer = inject(Renderer2);
 
@@ -35,5 +43,9 @@ export class App {
         this.renderer.addClass(element, theme);
       }
     });
+  }
+
+  ngOnInit(): void {
+    this.store.loadPreferences();
   }
 }

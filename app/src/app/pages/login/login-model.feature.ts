@@ -5,9 +5,9 @@
  */
 
 import { computed, inject, linkedSignal } from '@angular/core';
+import { SystemPreferencesStore } from '@core/stores/system-preferences.store';
 import { cleanUrl } from '@core/utils/string.utils';
 import { signalStoreFeature, withComputed, withMethods, withProps } from '@ngrx/signals';
-import { LoginPreferencesStore } from './login-prefs.store';
 
 /**
  * Propiedades de estado del modelo del formulario de login.
@@ -35,7 +35,7 @@ const initialState: LoginModelState = {
 export function withLoginModel() {
   return signalStoreFeature(
     withComputed(() => {
-      const prefs = inject(LoginPreferencesStore);
+      const prefs = inject(SystemPreferencesStore);
 
       return {
         /**
@@ -58,7 +58,7 @@ export function withLoginModel() {
       model: linkedSignal(() => loadedState()),
     })),
     withComputed(({ model }) => {
-      const prefs = inject(LoginPreferencesStore);
+      const prefs = inject(SystemPreferencesStore);
       const cleanSite = computed(() => cleanUrl(model().site.trim().toLowerCase()));
       const cleanUsername = computed(() => model().username.trim().toLowerCase());
 
