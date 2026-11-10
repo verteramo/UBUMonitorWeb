@@ -26,8 +26,9 @@ spring:
       enabled: true
   # Configuración de la base de datos y repositorios
   # que almacenan los datos de los usuarios
+
   datasource:
-    url: jdbc:h2:file:${user.home}/.umw/database;AUTO_SERVER=TRUE
+    url: jdbc:h2:file:~/.umw/database;AUTO_SERVER=TRUE
     driver-class-name: org.h2.Driver
     username: sa
     password: ''

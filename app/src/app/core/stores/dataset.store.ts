@@ -12,8 +12,7 @@ import { Module } from '@core/models/module';
 import { Participant } from '@core/models/participant';
 import { Section } from '@core/models/section';
 import { CourseService } from '@core/services/course.service';
-import { decryptAes, encryptAes, sha256 } from '@core/utils/crypto.utils';
-import { patchState, signalStore, withMethods, withProps, withState } from '@ngrx/signals';
+import { signalStore, withMethods, withProps, withState } from '@ngrx/signals';
 import { forkJoin, map } from 'rxjs';
 import { SessionStore } from './session.store';
 
@@ -71,10 +70,7 @@ function flatModules(sections: Section[]) {
  */
 export const DatasetStore = signalStore(
   { providedIn: 'root' },
-  /**
-   * Hash con el que se cifran/descifran ficheros.
-   */
-  withState<{ hash: string }>({ hash: '' }),
+  withState(initialState),
   withProps(() => {
     const session = inject(SessionStore);
     const service = inject(CourseService);
@@ -107,40 +103,12 @@ export const DatasetStore = signalStore(
       }),
     };
   }),
-  withMethods((store) => ({
-    /**
-     * Computa y almacena el hash.
-     *
-     * @param secret Clave secreta utilizada para generar el hash.
-     */
-    computeHash(secret: string): void {
-      patchState(store, { hash: sha256(secret) });
-    },
-  })),
-  withMethods(({ hash, data }) => ({
+  withMethods(({ data }) => ({
     /**
      * Refresca el dataset completo desde las fuentes.
      */
     refresh(): void {
       data.reload();
-    },
-
-    /**
-     * Cifra el dataset.
-     *
-     * @returns Dataset cifrado.
-     */
-    encrypt(): string {
-      return encryptAes(JSON.stringify(data.value()), hash());
-    },
-
-    /**
-     * Descifra el dataset.
-     *
-     * @param encryptedData Dataset cifrado.
-     */
-    decrypt(encryptedData: string): void {
-      data.value.set(JSON.parse(decryptAes(encryptedData, hash())));
     },
   })),
 );

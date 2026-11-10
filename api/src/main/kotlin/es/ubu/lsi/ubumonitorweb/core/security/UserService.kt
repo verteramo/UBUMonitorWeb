@@ -3,6 +3,9 @@ package es.ubu.lsi.ubumonitorweb.core.security
 import es.ubu.lsi.ubumonitorweb.core.crypto.CipherStrategy
 import es.ubu.lsi.ubumonitorweb.core.crypto.DigestService
 import es.ubu.lsi.ubumonitorweb.core.crypto.DigestService.Companion.asString
+import es.ubu.lsi.ubumonitorweb.domain.User
+import es.ubu.lsi.ubumonitorweb.moodle.dto.MoodleSiteInfo
+import es.ubu.lsi.ubumonitorweb.moodle.dto.MoodleUser
 import org.springframework.stereotype.Service
 import tools.jackson.dataformat.yaml.YAMLMapper
 import tools.jackson.module.kotlin.readValue
@@ -34,6 +37,13 @@ class UserService(
     getIdHash(email, siteUrl, userId).let { hash ->
       userRepository.findById(hash).orElseGet { UserEntity().apply { id = hash } }
     }
+
+  fun findOrCreate(
+    moodleUser: MoodleUser?,
+    moodleSiteInfo: MoodleSiteInfo,
+  ): UserEntity = findOrCreate(moodleUser?.email, moodleSiteInfo.siteurl, moodleSiteInfo.userid)
+
+  fun findOrCreate(user: User): UserEntity = findOrCreate(user.email, user.siteUrl, user.id)
 
   fun getVault(
     userEntity: UserEntity,

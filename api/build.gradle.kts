@@ -45,7 +45,7 @@ dependencies {
   implementation(libs.jsoup)
   implementation(libs.httpclient5)
 
-  runtimeOnly(libs.h2)
+  implementation(libs.h2)
 
   providedRuntime(libs.spring.boot.starter.tomcat.runtime)
   testImplementation(libs.kotlin.test.junit5)

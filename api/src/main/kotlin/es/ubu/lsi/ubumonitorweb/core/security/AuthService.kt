@@ -12,12 +12,9 @@ import es.ubu.lsi.ubumonitorweb.moodle.client.CoreUserClient
 import es.ubu.lsi.ubumonitorweb.moodle.client.CoreWebserviceClient
 import es.ubu.lsi.ubumonitorweb.moodle.client.LoginClient
 import es.ubu.lsi.ubumonitorweb.moodle.client.ToolMobileClient
-import es.ubu.lsi.ubumonitorweb.moodle.dto.MoodleSiteInfo
 import es.ubu.lsi.ubumonitorweb.moodle.dto.MoodleToken
 import org.springframework.http.ResponseEntity
-import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Service
 import org.springframework.web.service.registry.ImportHttpServices
@@ -44,33 +41,28 @@ class AuthService(
   private val toolMobileClient: ToolMobileClient,
   private val coreWebserviceClient: CoreWebserviceClient,
 ) {
-  fun testlogin(cookie: UserEntity.Vault.Cookie): ResponseEntity<String>? {
+  private fun testlogin(cookie: UserEntity.Vault.Cookie): ResponseEntity<String>? {
     cookieService.addCookie(cookie)
 
-    val editForm = loginClient.getUserEditForm()
-
-    if (editForm.select("body#page-user-edit").isNotEmpty()) {
-      return editForm
+    return loginClient.getUserEditForm().takeIf { page ->
+      page.select("body#page-user-edit").isNotEmpty()
     }
-
-    return null
   }
 
-  fun autologin(
-    moodleToken: MoodleToken,
-    moodleSiteInfo: MoodleSiteInfo,
-  ): ResponseEntity<String> {
-    if (moodleToken.privatetoken == null) {
-      throw BadCredentialsException("")
-    }
-
+  private fun autologin(
+    token: String,
+    privateToken: String,
+    userId: Int,
+  ): ResponseEntity<String>? {
     cookieService.clearStore()
 
-    toolMobileClient.getAutologinKey(moodleToken.token, moodleToken.privatetoken).also {
-      toolMobileClient.autologin(URI(it.autologinurl), it.key, moodleSiteInfo.userid)
+    return toolMobileClient.getAutologinKey(token, privateToken).let {
+      toolMobileClient.autologin(URI(it.autologinurl), it.key, userId).let {
+        loginClient.getUserEditForm().takeIf { page ->
+          page.select("body#page-user-edit").isNotEmpty()
+        }
+      }
     }
-
-    return loginClient.getUserEditForm()
   }
 
   /**
@@ -80,7 +72,7 @@ class AuthService(
    * @param authentication Token con las credenciales iniciales.
    * @return Token de autenticación resultante con la entidad User completa como principal.
    */
-  fun authenticate(authentication: Authentication): Authentication {
+  fun authenticate(authentication: Authentication): Triple<User, Keyring, Map<String, Any>> {
     cookieService.clearStore()
 
     // Los providers resuelven el MoodleToken(token, privatetoken)
@@ -93,12 +85,7 @@ class AuthService(
     val moodleUser =
       coreUserClient.getUsersByField(moodleToken.token, "id", listOf(moodleSiteInfo.userid)).firstOrNull()
 
-    val userEntity =
-      userService.findOrCreate(
-        moodleUser?.email,
-        moodleSiteInfo.siteurl,
-        moodleSiteInfo.userid,
-      )
+    val userEntity = userService.findOrCreate(moodleUser, moodleSiteInfo)
 
     val vault = userService.getVault(userEntity, moodleToken.token)
 
@@ -107,21 +94,19 @@ class AuthService(
         ?: throw SessionConflictException(i18n(Message.ERROR_AUTH_TOKEN_MISSING))
 
     val editForm =
-      vault?.cookie?.let { testlogin(it) } ?: run {
-        autologin(
-          moodleToken.copy(token = moodleToken.token, privatetoken = privateToken),
-          moodleSiteInfo,
-        )
-      }
+      vault?.cookie?.let { testlogin(it) }
+        ?: autologin(moodleToken.token, privateToken, moodleSiteInfo.userid)
+        ?: throw SessionConflictException(i18n(Message.ERROR_AUTH_LOGIN_FAILED))
 
     val sesskey =
-      editForm.sesskey ?: throw SessionConflictException(i18n(Message.ERROR_AUTH_SESSKEY_MISSING))
+      editForm.sesskey
+        ?: throw SessionConflictException(i18n(Message.ERROR_AUTH_SESSKEY_MISSING))
 
     val cookie =
       cookieService.getCookie("MoodleSession")
         ?: throw SessionConflictException(i18n(Message.ERROR_AUTH_COOKIE_MISSING))
 
-    val newVault = UserEntity.Vault(cookie = cookie, privateToken = privateToken)
+    val newVault = UserEntity.Vault(cookie, privateToken)
 
     userService.setVault(userEntity, newVault, moodleToken.token)
     userService.save(userEntity)
@@ -149,17 +134,10 @@ class AuthService(
         siteVersion = moodleSiteInfo.version,
         siteRelease = moodleSiteInfo.release,
         siteTimezone = siteTimezoneId,
-        preferences = preferences,
       )
 
-    val keyring = Keyring(token = moodleToken.token, sesskey = sesskey)
+    val keyring = Keyring(moodleToken.token, sesskey)
 
-    return object : AbstractAuthenticationToken(emptyList()) {
-      override fun isAuthenticated() = true
-
-      override fun getPrincipal() = user
-
-      override fun getCredentials() = keyring
-    }
+    return Triple(user, keyring, preferences)
   }
 }

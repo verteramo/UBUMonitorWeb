@@ -75,58 +75,12 @@ import { ThemeToggleComponent } from '@shared/components/theme-toggle.component'
 
       <span class="spacer"></span>
 
-      <!-- Menú Logs
-      <button matButton [matMenuTriggerFor]="logsMenu" i18n>
-        <mat-icon>receipt_long</mat-icon> Logs
-      </button>
-      <mat-menu #logsMenu="matMenu">
-        <button mat-menu-item>
-          <mat-icon>upload_file</mat-icon>
-          <span i18n>Upload</span>
-        </button>
-        <button mat-menu-item>
-          <mat-icon>delete_sweep</mat-icon>
-          <span i18n>Clear</span>
-        </button>
-      </mat-menu> -->
-
-      <!-- Menú Export -->
-      <button matButton [matMenuTriggerFor]="exportMenu" i18n>
-        <mat-icon>download</mat-icon> Export
-      </button>
-      <mat-menu #exportMenu="matMenu">
-        <button mat-menu-item (click)="exportDataset.emit()">
-          <mat-icon>dataset</mat-icon>
-          <span i18n>Dataset</span>
-        </button>
-        <button mat-menu-item>
-          <mat-icon>dashboard</mat-icon>
-          <span i18n>Dashboard</span>
-        </button>
-        <button mat-menu-item>
-          <mat-icon>leaderboard</mat-icon>
-          <span i18n>Ranking</span>
-        </button>
-        <button mat-menu-item>
-          <mat-icon>group</mat-icon>
-          <span i18n>Users</span>
-        </button>
-      </mat-menu>
-
-      <!-- Menú Import -->
-      <button matButton [matMenuTriggerFor]="importMenu" i18n>
-        <mat-icon>upload</mat-icon> Import
-      </button>
-      <mat-menu #importMenu="matMenu">
-        <button mat-menu-item (click)="importDataset.emit()">
-          <mat-icon>dataset</mat-icon>
-          <span i18n>Dataset</span>
-        </button>
-      </mat-menu>
+      <!-- Botón Save -->
+      <button matButton (click)="save.emit()" i18n><mat-icon>save</mat-icon> Save</button>
 
       <!-- Botón Settings -->
-      <button matButton (click)="openSettings.emit()" i18n>
-        <mat-icon>settings</mat-icon> Settings
+      <button matButton (click)="openPreferences.emit()" i18n>
+        <mat-icon>tune</mat-icon> Preferences
       </button>
 
       <!-- Botón Modo Claro / Oscuro -->
@@ -164,9 +118,9 @@ export class NavbarComponent {
   /** Evento de cambio de estado de la barra lateral. */
   toggleSidebar = output<void>();
 
-  /** Evento para abrir la configuración. */
-  openSettings = output<void>();
+  /** Evento para abrir la configuración de las preferencias del usuario. */
+  openPreferences = output<void>();
 
-  exportDataset = output<void>();
-  importDataset = output<void>();
+  /** Evento para guardar el estado actual. */
+  save = output<void>();
 }

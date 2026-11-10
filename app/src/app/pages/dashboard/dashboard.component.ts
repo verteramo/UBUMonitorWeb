@@ -5,13 +5,14 @@
  */
 
 import { Component, inject } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { DatasetStore } from '@core/stores/dataset.store';
 import { SessionStore } from '@core/stores/session.store';
-import { openFilePicker, saveFilePicker, UmwDatasetType } from '@core/utils/window.utils';
 import { DashboardStore } from './dashboard.store';
+import { PreferencesComponent } from './main/preferences.component';
 import { WorkspaceComponent } from './main/workspace.component';
 import { NavbarComponent } from './navbar.component';
 import { ActivityPanelComponent } from './sidenav/activities/panel.component';
@@ -20,8 +21,6 @@ import { StatusbarComponent } from './statusbar.component';
 
 /**
  * Componente del dashboard.
- * La gestión de las preferencias se realiza mediante el SettingsStore
- * (persistencia en localStorage).
  */
 @Component({
   selector: 'app-dashboard',
@@ -45,28 +44,18 @@ export class DashboardComponent {
   readonly session = inject(SessionStore);
   readonly dataset = inject(DatasetStore);
 
-  onOpenSettings(): void {
-    // this.#dialog.open(SettingsComponent, {
-    //   width: '1200px',
-    //   height: '90vh',
-    // })
+  private readonly dialog = inject(MatDialog);
+
+  onOpenPreferences(): void {
+    this.dialog.open(PreferencesComponent, {
+      width: '80vw',
+      height: '80vh',
+      maxWidth: '1000px',
+    });
   }
 
-  async exportDataset(): Promise<void> {
-    try {
-      const data = this.dataset.encrypt();
-      await saveFilePicker({ suggestedName: 'dataset.umw', types: [UmwDatasetType] }, data);
-    } catch (e) {
-      console.error('Error writing file', e);
-    }
-  }
-
-  async importDataset(): Promise<void> {
-    try {
-      const data = await openFilePicker({ types: [UmwDatasetType] });
-      this.dataset.decrypt(data);
-    } catch (e) {
-      console.error('Error reading file', e);
-    }
-  }
+  /**
+   * Sincroniza y guarda el estado actual del dataset en el servidor.
+   */
+  save(): void {}
 }

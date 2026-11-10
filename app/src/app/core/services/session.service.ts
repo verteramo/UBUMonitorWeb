@@ -7,7 +7,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { User } from '@core/models/user';
-import { UserPreferences } from '@core/models/user-prefereces';
+import { UserPreferences } from '@core/models/user-preferences';
 import { environment as env } from '@env/environment';
 import { Observable } from 'rxjs';
 

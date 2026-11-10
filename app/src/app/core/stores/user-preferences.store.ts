@@ -1,17 +1,38 @@
+/*
+ * Este fichero forma parte de UBUMonitorWeb.
+ *
+ * @author Marcelo Verteramo Pérsico
+ */
+
 import { computed, inject } from '@angular/core';
 import { nextTheme } from '@core/models/theme';
-import { UserPreferences } from '@core/models/user-prefereces';
+import { UserPreferences } from '@core/models/user-preferences';
 import { SessionService } from '@core/services/session.service';
-import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
-import { withAutoSave } from './features/auto-save.feature';
+import { toPascalCase } from '@core/utils/string.utils';
+import {
+  patchState,
+  signalStore,
+  withComputed,
+  withFeature,
+  withMethods,
+  withState,
+} from '@ngrx/signals';
+import { withAutoSave } from './features/autosave.feature';
 import { extractLoadingFromState, withLoading } from './features/loading.feature';
-import { SessionStore } from './session.store';
+
+type PreferenceSetters = {
+  [K in keyof UserPreferences & string as `set${Capitalize<K>}`]: (
+    value: UserPreferences[K],
+  ) => void;
+};
 
 const initialState: UserPreferences = {
   theme: 'system',
   language: 'en',
   autosaveDelayMs: 5000,
 };
+
+const keys = Object.keys(initialState) as (keyof UserPreferences)[];
 
 export const UserPreferencesStore = signalStore(
   { providedIn: 'root' },
@@ -20,59 +41,44 @@ export const UserPreferencesStore = signalStore(
   withComputed(({ theme }) => ({
     nextTheme: computed(() => nextTheme[theme()]),
   })),
-  withAutoSave(() => {
-    const sessionService = inject(SessionService);
-    return (prefs: UserPreferences) => sessionService.putPreferences(prefs);
-  }),
-  withMethods((store, sessionStore = inject(SessionStore)) => {
-
-    function syncUserPreferences(prefereces: UserPreferences): void {
-      const user = sessionStore.user();
-
-      if (user) {
-        patchState(sessionStore, {
-          user: {
-            ...user,
-            preferences: prefereces
-          }
-        })
-      }
-    }
-
-    return {
-      loadPreferences(): void {
-        store.startLoading();
-
-        const user = sessionStore.user();
-        const preferences = (user?.preferences || {}) as Partial<UserPreferences>;
-
-        patchState(store, {
-          ...initialState,
-          ...preferences,
-        });
-
-        store.stopLoading();
+  withFeature((store) =>
+    withAutoSave(
+      () => {
+        const sessionService = inject(SessionService);
+        return (prefs: UserPreferences) => sessionService.putPreferences(prefs);
       },
+      () => store.autosaveDelayMs(),
+    ),
+  ),
+  withMethods((store) => ({
+    /**
+     * Establece las preferencias del usuario obtenidas desde el backend tras el login.
+     */
+    setPreferences(preferences: UserPreferences): void {
+      patchState(store, { ...initialState, ...preferences });
+    },
 
-      toggleTheme(): void {
-        patchState(store, (state) => {
-          const updatedState = { ...state, theme: nextTheme[state.theme] };
-          store.save(extractLoadingFromState(updatedState));
-          return updatedState;
-        });
-      },
-
-      /**
-       * Método genérico y seguro: TS te obligará a pasar una clave real (ej: 'theme')
-       * y un valor válido para esa clave (ej: 'dark').
-       */
-      updatePreference<K extends keyof UserPreferences>(key: K, value: UserPreferences[K]): void {
-        patchState(store, (state) => {
-          const updatedState = { ...state, [key]: value };
-          store.save(extractLoadingFromState(updatedState));
-          return updatedState;
-        });
-      },
-    };
-  }),
+    toggleTheme(): void {
+      patchState(store, (state) => {
+        const updatedState = { ...state, theme: nextTheme[state.theme] };
+        store.save(extractLoadingFromState(updatedState));
+        return updatedState;
+      });
+    },
+  })),
+  withMethods(
+    (store) =>
+      Object.fromEntries(
+        keys.map((key) => [
+          `set${toPascalCase(String(key))}`,
+          (value: unknown): void => {
+            patchState(store, (state) => {
+              const updatedState = { ...state, [key]: value };
+              store.save(extractLoadingFromState(updatedState));
+              return updatedState;
+            });
+          },
+        ]),
+      ) as PreferenceSetters,
+  ),
 );

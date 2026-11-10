@@ -12,8 +12,7 @@ import {
   inject,
   OnInit,
   Renderer2,
-  Signal,
-  untracked,
+  Signal
 } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Theme } from '@core/models/theme';
@@ -34,11 +33,10 @@ interface PreferencesStore {
  */
 @Component({
   selector: 'app-root',
-
   imports: [RouterOutlet, SplashLogoComponent],
   template: `
-    @if (prefsStore().loading()) {
-      <app-splash-logo [loaded]="!prefsStore().loading()" />
+    @if (preferencesStore().loading()) {
+      <app-splash-logo [loaded]="!preferencesStore().loading()" />
     } @else {
       <router-outlet />
     }
@@ -49,15 +47,15 @@ export class App implements OnInit {
   private readonly renderer = inject(Renderer2);
 
   private readonly sessionStore = inject(SessionStore);
-  private readonly userPrefsStore = inject(UserPreferencesStore);
-  private readonly systemPrefsStore = inject(SystemPreferencesStore);
+  private readonly userPreferencesStore = inject(UserPreferencesStore);
+  private readonly systemPreferencesStore = inject(SystemPreferencesStore);
 
-  protected readonly prefsStore = computed<PreferencesStore>(() => {
+  protected readonly preferencesStore = computed<PreferencesStore>(() => {
     if (this.sessionStore.user() != null) {
-      return this.userPrefsStore;
+      return this.userPreferencesStore;
     }
 
-    return this.systemPrefsStore;
+    return this.systemPreferencesStore;
   });
 
   constructor() {
@@ -67,24 +65,14 @@ export class App implements OnInit {
       this.renderer.removeClass(element, 'light');
       this.renderer.removeClass(element, 'dark');
 
-      const theme = this.prefsStore().theme();
+      const theme = this.preferencesStore().theme();
       if (theme !== 'system') {
         this.renderer.addClass(element, theme);
       }
     });
-
-    effect(() => {
-      const user = this.sessionStore.user();
-
-      untracked(() => {
-        if (user != null && this.userPrefsStore.loading()) {
-          this.userPrefsStore.loadPreferences();
-        }
-      });
-    });
   }
 
   ngOnInit(): void {
-    this.systemPrefsStore.loadPreferences();
+    this.systemPreferencesStore.loadPreferences();
   }
 }

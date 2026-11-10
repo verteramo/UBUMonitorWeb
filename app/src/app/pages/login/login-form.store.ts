@@ -1,10 +1,10 @@
 import { computed, inject } from '@angular/core';
 import { SiteConfig } from '@core/models/site-config';
-import { User } from '@core/models/user';
-import { AuthService } from '@core/services/auth.service';
-import { DatasetStore } from '@core/stores/dataset.store';
+import { AuthService, LoginResponse } from '@core/services/auth.service';
+import { withLoading } from '@core/stores/features/loading.feature';
 import { SessionStore } from '@core/stores/session.store';
 import { SystemPreferencesStore } from '@core/stores/system-preferences.store';
+import { UserPreferencesStore } from '@core/stores/user-preferences.store';
 import { resolveRelativeLinks } from '@core/utils/string.utils';
 import { environment as env } from '@env/environment';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
@@ -15,7 +15,6 @@ import { withLoginModel } from './login-model.feature';
  * Estado local del formulario de login.
  */
 type LoginFormState = {
-  loading: boolean;
   siteConfig: SiteConfig | null;
 };
 
@@ -23,7 +22,6 @@ type LoginFormState = {
  * Estado inicial del formulario de login.
  */
 const initialState: LoginFormState = {
-  loading: false,
   siteConfig: null,
 };
 
@@ -32,6 +30,7 @@ const initialState: LoginFormState = {
  */
 export const LoginFormStore = signalStore(
   withState(initialState),
+  withLoading(),
   withLoginModel(),
   withComputed(({ model, siteConfig }) => ({
     parsedLoginInstructions: computed(() => {
@@ -45,10 +44,10 @@ export const LoginFormStore = signalStore(
     }),
   })),
   withMethods((store) => {
-    const prefs = inject(SystemPreferencesStore);
-    const service = inject(AuthService);
-    const session = inject(SessionStore);
-    const dataset = inject(DatasetStore);
+    const authService = inject(AuthService);
+    const sessionStore = inject(SessionStore);
+    const userPreferencesStore = inject(UserPreferencesStore);
+    const systemPreferencesStore = inject(SystemPreferencesStore);
 
     return {
       /**
@@ -66,12 +65,12 @@ export const LoginFormStore = signalStore(
        */
       discover(): Observable<SiteConfig> {
         const { site, rememberSite } = store.model();
-        patchState(store, { loading: true });
 
-        return service.discover(site).pipe(
+        return authService.discover(site).pipe(
+          tap(() => store.startLoading()),
           tap({
             next(siteConfig): void {
-              prefs.updateSitePreferences(site, rememberSite);
+              systemPreferencesStore.updateSitePreferences(site, rememberSite);
               patchState(store, { siteConfig });
             },
 
@@ -79,7 +78,7 @@ export const LoginFormStore = signalStore(
               console.error(e);
             },
           }),
-          finalize(() => patchState(store, { loading: false })),
+          finalize(() => store.stopLoading()),
         );
       },
 
@@ -87,24 +86,23 @@ export const LoginFormStore = signalStore(
        * Realiza el login y, en caso de éxito, establece el usuario autenticado,
        * computa el hash para el dataset y actualiza las preferencias.
        */
-      login(): Observable<User> {
+      login(): Observable<LoginResponse> {
         const { site, username, password, rememberUsername } = store.model();
 
-        patchState(store, { loading: true });
-
-        return service.login({ site, payload: { username, password } }).pipe(
+        return authService.login({ site, payload: { username, password } }).pipe(
+          tap(() => store.startLoading()),
           tap({
-            next(user): void {
-              session.setUser(user);
-              dataset.computeHash(`${username}:${password}`);
-              prefs.updateUsernamePreferences(username, rememberUsername);
+            next({ user, preferences }): void {
+              sessionStore.setUser(user);
+              userPreferencesStore.setPreferences(preferences);
+              systemPreferencesStore.updateUsernamePreferences(username, rememberUsername);
             },
 
             error(e): void {
               console.error(e);
             },
           }),
-          finalize(() => patchState(store, { loading: false })),
+          finalize(() => store.stopLoading()),
         );
       },
 
@@ -119,23 +117,22 @@ export const LoginFormStore = signalStore(
         }
       },
 
-      loginSso(token: string): Observable<User> {
+      loginSso(token: string): Observable<LoginResponse> {
         const { site } = store.model();
 
-        patchState(store, { loading: true });
-
-        return service.loginSso({ site, payload: { token } }).pipe(
+        return authService.loginSso({ site, payload: { token } }).pipe(
+          tap(() => store.startLoading()),
           tap({
-            next(user): void {
-              session.setUser(user);
-              dataset.computeHash(token);
+            next({ user, preferences }): void {
+              sessionStore.setUser(user);
+              userPreferencesStore.setPreferences(preferences);
             },
 
             error(e): void {
               console.error(e);
             },
           }),
-          finalize(() => patchState(store, { loading: false })),
+          finalize(() => store.stopLoading()),
         );
       },
     };

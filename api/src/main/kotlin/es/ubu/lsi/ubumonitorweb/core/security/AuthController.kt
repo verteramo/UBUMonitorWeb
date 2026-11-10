@@ -13,10 +13,7 @@ import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
-import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
-import org.springframework.security.web.context.SecurityContextRepository
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -28,14 +25,13 @@ import org.springframework.web.bind.annotation.RestController
  * Controlador REST que gestiona el ciclo de vida de la autenticación de usuarios y la sesión HTTP.
  *
  * @property authService Servicio para la detección y descubrimiento de configuraciones de autenticación externas.
- * @property securityContextRepository Repositorio para persistir y recuperar el contexto de seguridad.
  */
 @RestController
 @RequestMapping("/api/auth")
 class AuthController(
   private val authService: AuthService,
   private val siteService: SiteService,
-  private val securityContextRepository: SecurityContextRepository,
+  private val securityContextService: SecurityContextService,
 ) {
   /**
    * Carga útil para la autenticación estándar mediante usuario y contraseña.
@@ -57,34 +53,10 @@ class AuthController(
     val token: String,
   )
 
-  /**
-   * Estrategia centralizada para acceder y gestionar de forma segura el contexto de seguridad.
-   *
-   * https://docs.spring.io/spring-security/reference/servlet/authentication/session-management.html#use-securitycontextholderstrategy
-   */
-  private val securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy()
-
-  /**
-   * Handler reutilizable para invalidar la sesión y purgar el contexto de seguridad en el logout.
-   *
-   * https://docs.spring.io/spring-security/reference/servlet/authentication/logout.html#creating-custom-logout-endpoint
-   */
-  private val logoutHandler = SecurityContextLogoutHandler()
-
-  /**
-   * Asienta una nueva autenticación en el SecurityContext y la persiste en la sesión servlet.
-   */
-  private fun saveSecurityContext(
-    authentication: Authentication,
-    request: HttpServletRequest,
-    response: HttpServletResponse,
-  ) {
-    securityContextHolderStrategy
-      .createEmptyContext()
-      .apply { this.authentication = authentication }
-      .apply { securityContextHolderStrategy.context = this }
-      .run { securityContextRepository.saveContext(this, request, response) }
-  }
+  data class LoginResponse(
+    val user: User,
+    val preferences: Map<String, Any>,
+  )
 
   /**
    * Expone la configuración y métodos de autenticación soportados por el servidor.
@@ -107,16 +79,16 @@ class AuthController(
     request: HttpServletRequest,
     response: HttpServletResponse,
     @RequestBody credentials: CredentialsLoginRequest,
-  ): User =
+  ): LoginResponse =
     authService
       .authenticate(
         UsernamePasswordAuthenticationToken.unauthenticated(
           credentials.username,
           credentials.password,
         ),
-      ).let {
-        saveSecurityContext(it, request, response)
-        it.principal as User
+      ).let { (user, keyring, preferences) ->
+        securityContextService.create(user, keyring, request, response)
+        LoginResponse(user, preferences)
       }
 
   /**
@@ -132,16 +104,16 @@ class AuthController(
     request: HttpServletRequest,
     response: HttpServletResponse,
     @RequestBody ssoToken: SsoTokenLoginRequest,
-  ): User =
+  ): LoginResponse =
     authService
       .authenticate(
         PreAuthenticatedAuthenticationToken(
           ssoToken.token,
           siteService.passport,
         ),
-      ).let {
-        saveSecurityContext(it, request, response)
-        it.principal as User
+      ).let { (user, keyring, preferences) ->
+        securityContextService.create(user, keyring, request, response)
+        LoginResponse(user, preferences)
       }
 
   /**
@@ -156,5 +128,5 @@ class AuthController(
     authentication: Authentication,
     request: HttpServletRequest,
     response: HttpServletResponse,
-  ) = logoutHandler.logout(request, response, authentication)
+  ) = securityContextService.destroy(authentication, request, response)
 }

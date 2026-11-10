@@ -9,4 +9,5 @@ enum class Message(
   ERROR_AUTH_TOKEN_MISSING("error.auth_token_missing"),
   ERROR_AUTH_PASSPORT_MISSING("error.auth_passport_missing"),
   ERROR_AUTH_PASSPORT_INVALID("error.auth_passport_invalid"),
+  ERROR_AUTH_LOGIN_FAILED("error.auth_login_failed"),
 }
