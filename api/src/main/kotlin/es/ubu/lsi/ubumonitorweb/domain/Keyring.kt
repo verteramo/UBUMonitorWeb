@@ -11,11 +11,9 @@ package es.ubu.lsi.ubumonitorweb.domain
  * Contenedor de dominio que agrupa los elementos de seguridad y sesión del usuario.
  *
  * @property token Token de acceso a los servicios web.
- * @property privateToken Token privado complementario para operaciones específicas.
- * @property sessionKey Token CSRF para operaciones POST en el frontend (`sesskey`).
+ * @property sesskey Token CSRF para operaciones de escritura (ej. POST( en el frontend de Moodle.
  */
-data class Keychain(
+data class Keyring(
   val token: String,
-  val privateToken: String,
-  val sessionKey: String,
+  val sesskey: String,
 )

@@ -6,7 +6,6 @@
 
 package es.ubu.lsi.ubumonitorweb.core.security
 
-import es.ubu.lsi.ubumonitorweb.domain.Preferences
 import es.ubu.lsi.ubumonitorweb.domain.SiteConfig
 import es.ubu.lsi.ubumonitorweb.domain.User
 import jakarta.servlet.http.HttpServletRequest
@@ -14,16 +13,13 @@ import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
-import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
 import org.springframework.security.web.context.SecurityContextRepository
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
@@ -38,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/auth")
 class AuthController(
   private val authService: AuthService,
+  private val siteService: SiteService,
   private val securityContextRepository: SecurityContextRepository,
 ) {
   /**
@@ -90,25 +87,12 @@ class AuthController(
   }
 
   /**
-   * Obtiene los datos del usuario autenticado en la sesión actual.
-   *
-   * @param user Usuario autenticado.
-   * @return Datos de perfil del usuario activo.
-   */
-  @GetMapping("/user")
-  fun getUser(
-    @AuthenticationPrincipal user: User,
-  ): User = user
-
-  /**
    * Expone la configuración y métodos de autenticación soportados por el servidor.
    *
    * @return Parámetros de descubrimiento del servicio.
    */
   @GetMapping("/discover")
-  fun discover(
-    @RequestHeader("App-Scheme") scheme: String,
-  ): SiteConfig? = authService.discover(scheme)
+  fun discover(): SiteConfig? = siteService.discover()
 
   /**
    * Inicia sesión validando credenciales de usuario y contraseña.
@@ -149,10 +133,16 @@ class AuthController(
     response: HttpServletResponse,
     @RequestBody ssoToken: SsoTokenLoginRequest,
   ): User =
-    authService.authenticate(PreAuthenticatedAuthenticationToken(ssoToken, null)).let {
-      saveSecurityContext(it, request, response)
-      it.principal as User
-    }
+    authService
+      .authenticate(
+        PreAuthenticatedAuthenticationToken(
+          ssoToken.token,
+          siteService.passport,
+        ),
+      ).let {
+        saveSecurityContext(it, request, response)
+        it.principal as User
+      }
 
   /**
    * Cierra la sesión activa destruyendo el contexto de seguridad.
@@ -167,30 +157,4 @@ class AuthController(
     request: HttpServletRequest,
     response: HttpServletResponse,
   ) = logoutHandler.logout(request, response, authentication)
-
-  /**
-   * Actualiza las preferencias del usuario activo en sesión y las persiste en el sistema de archivos.
-   *
-   * @param user Usuario activo inyectado desde la sesión.
-   * @param preferences Nuevas preferencias enviadas en el cuerpo JSON.
-   * @param request Petición HTTP actual.
-   * @param response Respuesta HTTP actual.
-   * @return Objeto [User] actualizado.
-   */
-  @PutMapping("/preferences")
-  fun updatePreferences(
-    @AuthenticationPrincipal user: User,
-    @RequestBody preferences: Preferences,
-    request: HttpServletRequest,
-    response: HttpServletResponse,
-  ): User {
-    val updatedUser = authService.updatePreferences(user, preferences)
-    val currentAuth = securityContextHolderStrategy.context.authentication
-
-    // Reemplazar el principal en el SecurityContext con la instancia de User actualizada
-    val updatedAuth = UsernamePasswordAuthenticationToken(updatedUser, currentAuth?.credentials, emptyList())
-    saveSecurityContext(updatedAuth, request, response)
-
-    return updatedUser
-  }
 }

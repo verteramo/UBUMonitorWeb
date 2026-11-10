@@ -2,10 +2,11 @@ package es.ubu.lsi.ubumonitorweb.moodle.dto
 
 data class MoodlePublicConfig(
   val sitename: String,
+  val logourl: String?,
   val compactlogourl: String?,
   val typeoflogin: Int,
   val launchurl: String,
-  val authinstructions: String?,
+  val authinstructions: String,
   val maintenancemessage: String,
   val maintenanceenabled: Int,
   val showloginform: Int?,

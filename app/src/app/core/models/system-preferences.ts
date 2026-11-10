@@ -1,4 +1,4 @@
-export type Theme = 'system' | 'light' | 'dark';
+import { Theme } from './theme';
 
 export type SystemPreferences = {
   theme: Theme;

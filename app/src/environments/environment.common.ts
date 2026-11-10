@@ -9,14 +9,21 @@
  */
 export const environment = {
   scheme: 'web+umw',
-  schemeHeader: 'App-Scheme',
   siteHeader: 'Moodle-Site',
   endpoints: {
-    preferences: '/api/system/preferences',
-    discover: '/api/auth/discover',
-    login: '/api/auth/login',
-    loginSso: '/api/auth/login-sso',
-    logout: '/api/auth/logout',
+    auth: {
+      login: '/api/auth/login',
+      loginSso: '/api/auth/login-sso',
+      logout: '/api/auth/logout',
+      discover: '/api/auth/discover',
+    },
+    session: {
+      user: '/api/session/user',
+      preferences: '/api/session/preferences',
+    },
+    system: {
+      preferences: '/api/system/preferences',
+    },
     courses: '/api/courses',
   },
 };

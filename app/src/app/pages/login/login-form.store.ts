@@ -6,6 +6,7 @@ import { DatasetStore } from '@core/stores/dataset.store';
 import { SessionStore } from '@core/stores/session.store';
 import { SystemPreferencesStore } from '@core/stores/system-preferences.store';
 import { resolveRelativeLinks } from '@core/utils/string.utils';
+import { environment as env } from '@env/environment';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { finalize, Observable, tap } from 'rxjs';
 import { withLoginModel } from './login-model.feature';
@@ -111,7 +112,10 @@ export const LoginFormStore = signalStore(
         const siteConfig = store.siteConfig();
 
         if (siteConfig?.loginUrl) {
-          window.location.href = siteConfig.loginUrl;
+          // Se añade el scheme para que Moodle haga
+          // la redirección a esta misma aplicación
+          const loginUrl = `${siteConfig.loginUrl}&urlscheme=${encodeURIComponent(env.scheme)}`;
+          window.location.href = loginUrl;
         }
       },
 

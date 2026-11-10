@@ -10,7 +10,6 @@ data class SiteConfig(
   val siteName: String,
   val siteLogo: String?,
   val loginStatus: LoginStatus,
-  val loginMode: LoginMode?,
   val loginUrl: String?,
   val loginInstructions: String?,
   val maintenanceMessage: String?,

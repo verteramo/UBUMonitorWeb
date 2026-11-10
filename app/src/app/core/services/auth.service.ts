@@ -4,7 +4,7 @@
  * @author Marcelo Verteramo Pérsico
  */
 
-import { HttpClient, HttpContext, HttpContextToken, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpContext, HttpContextToken } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { SiteConfig } from '@core/models/site-config';
 import { User } from '@core/models/user';
@@ -29,7 +29,7 @@ export type SsoTokenLoginRequest = {
   site: string;
   payload: {
     token: string;
-  }
+  };
 };
 
 /**
@@ -51,8 +51,7 @@ export class AuthService {
    * @returns Observable con las opciones de inicio de sesión disponibles.
    */
   discover(site: string): Observable<SiteConfig> {
-    return this.http.get<SiteConfig>(env.endpoints.discover, {
-      headers: new HttpHeaders().set(env.schemeHeader, env.scheme),
+    return this.http.get<SiteConfig>(env.endpoints.auth.discover, {
       context: new HttpContext().set(AuthToken, site),
     });
   }
@@ -64,7 +63,7 @@ export class AuthService {
    * @returns Observable con la información del usuario autenticado.
    */
   login({ site, payload }: CredentialsLoginRequest): Observable<User> {
-    return this.http.post<User>(env.endpoints.login, payload, {
+    return this.http.post<User>(env.endpoints.auth.login, payload, {
       context: new HttpContext().set(AuthToken, site),
     });
   }
@@ -76,7 +75,7 @@ export class AuthService {
    * @returns Observable con la información del usuario autenticado.
    */
   loginSso({ site, payload }: SsoTokenLoginRequest): Observable<User> {
-    return this.http.post<User>(env.endpoints.loginSso, payload, {
+    return this.http.post<User>(env.endpoints.auth.loginSso, payload, {
       context: new HttpContext().set(AuthToken, site),
     });
   }
@@ -87,6 +86,6 @@ export class AuthService {
    * @returns Observable que se completa al finalizar el cierre de sesión.
    */
   logout(): Observable<void> {
-    return this.http.get<void>(env.endpoints.logout);
+    return this.http.get<void>(env.endpoints.auth.logout);
   }
 }

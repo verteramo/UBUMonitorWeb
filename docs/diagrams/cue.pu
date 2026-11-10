@@ -1,0 +1,26 @@
+@startuml UseCases
+title Casos de uso esenciales
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Docente" as User
+actor "Moodle" as Moodle
+
+rectangle "UBUMonitorWeb" {
+  usecase "CUE-1 Autenticarse en el sistema" as CUE1
+  usecase "CUE-2 Extraer datos del curso" as CUE2
+  usecase "CUE-3 Analizar visualmente" as CUE3
+  usecase "CUE-4 Gestionar persistencia" as CUE4
+  usecase "CUE-5 Gestionar preferencias" as CUE5
+}
+
+User --> CUE1
+User --> CUE2
+User --> CUE3
+User --> CUE4
+User --> CUE5
+
+CUE1 --> Moodle : Consulta modelo\nValida identidad\n(Credenciales o SSO)
+CUE2 --> Moodle : Descarga datos\nAPI/Web scraping
+
+@enduml

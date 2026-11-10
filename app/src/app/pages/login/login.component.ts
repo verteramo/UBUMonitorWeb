@@ -49,6 +49,9 @@ export class LoginComponent implements OnInit {
   private route = inject(ActivatedRoute);
   protected readonly store = inject(LoginFormStore);
 
+  protected isConflict = false;
+  protected siteUrl = '';
+
   /**
    * Modelo del formulario.
    */
@@ -76,6 +79,12 @@ export class LoginComponent implements OnInit {
           error: (e: AppError) => {
             this.snack(e.message);
 
+            // Detección de conflictos de sesión (409)
+            if (e.status === 409) {
+              this.isConflict = true;
+              this.siteUrl = this.store.model().site;
+            }
+
             // Cortafuegos: Limpiamos la URL solo si el login falla.
             // Si tiene éxito, SessionStore navegará y la limpiará por defecto.
             this.router.navigate([], {
@@ -88,6 +97,10 @@ export class LoginComponent implements OnInit {
         });
       }
     });
+  }
+
+  protected redirectToLogout(): void {
+    window.location.href = `${this.siteUrl}/login/logout.php`;
   }
 
   /**

@@ -7,15 +7,15 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/system/preferences")
-class SystemPreferencesController(
-  private val service: SystemPreferencesService,
+@RequestMapping("/api/system")
+class SystemController(
+  private val preferencesService: PreferencesService,
 ) {
-  @GetMapping
-  fun get(): SystemPreferences = service.read()
+  @GetMapping("/preferences")
+  fun getPreferences(): Map<String, Any> = preferencesService.read()
 
-  @PutMapping
-  fun put(
-    @RequestBody preferences: SystemPreferences,
-  ) = service.write(preferences)
+  @PutMapping("/preferences")
+  fun putPreferences(
+    @RequestBody preferences: Map<String, Any>,
+  ) = preferencesService.write(preferences)
 }

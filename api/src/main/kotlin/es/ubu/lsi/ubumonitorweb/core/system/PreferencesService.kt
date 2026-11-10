@@ -6,7 +6,7 @@ import tools.jackson.dataformat.yaml.YAMLMapper
 import tools.jackson.module.kotlin.readValue
 
 @Service
-class SystemPreferencesService(
+class PreferencesService(
   private val mapper: YAMLMapper,
   private val properties: SystemProperties,
 ) {
@@ -21,25 +21,26 @@ class SystemPreferencesService(
       }
 
       if (!file.exists()) {
-        mapper.writeValue(file, SystemPreferences())
+        mapper.writeValue(file, emptyMap<String, Any>())
         logger.info { "System preferences file created: '$file'." }
       }
     }
   }
 
-  fun read(): SystemPreferences =
+  fun read(): Map<String, Any> =
     properties.preferencesFile.let { file ->
       runCatching {
-        mapper.readValue<SystemPreferences>(file).also {
+        mapper.readValue<Map<String, Any>>(file).also {
           logger.debug { "System preferences read from: '$file'." }
         }
       }.onFailure {
         logger.error(it) { "Error reading system preferences from: '$file'." }
-      }.getOrDefault(SystemPreferences())
+      }.getOrDefault(emptyMap())
     }
 
-  fun write(preferences: SystemPreferences) {
+  fun write(preferences: Map<String, Any>) {
     properties.preferencesFile.let { file ->
+      logger.debug { "Writing preferences: '$preferences'." }
       runCatching {
         mapper.writeValue(file, preferences).also {
           logger.debug { "System preferences written to: '$file'." }

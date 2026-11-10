@@ -7,18 +7,21 @@
 package es.ubu.lsi.ubumonitorweb.core.provider
 
 import es.ubu.lsi.ubumonitorweb.core.client.PropertyProvider
+import es.ubu.lsi.ubumonitorweb.core.locale.I18nService
 import es.ubu.lsi.ubumonitorweb.core.locale.Message
 import es.ubu.lsi.ubumonitorweb.core.system.SystemProperties
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.util.AntPathMatcher
+import org.springframework.web.server.ResponseStatusException
 
 /**
  * Proveedor que resuelve la URL del sitio, bien desde el contexto de la sesión o desde el header.
  */
 @Component
 class SiteUrlProvider(
+  private val i18n: I18nService,
   private val request: HttpServletRequest,
   private val properties: SystemProperties,
 ) : PropertyProvider.Static<String?>() {
@@ -52,5 +55,5 @@ class SiteUrlProvider(
    */
   override fun invoke(): String? =
     siteUrl.takeIf { isPublicRoute } ?: user?.siteUrl
-      ?: throw Message.ERROR_HTTP_MISSING_HEADER(HttpStatus.BAD_REQUEST, header)
+      ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST, i18n(Message.ERROR_HTTP_HEADER_MISSING, header))
 }

@@ -15,9 +15,9 @@ import org.springframework.stereotype.Component
 @Component
 class TokenProvider : PropertyProvider.Static<String?>() {
   /**
-   * Obtiene el token de los webservices de Moodle desde el keychain del contexto de la sesión.
+   * Obtiene el token de los webservices de Moodle desde el keyring del contexto de la sesión.
    *
    * @return Token de los webservices de Moodle.
    */
-  override fun invoke(): String? = keychain?.token
+  override fun invoke(): String? = keyring?.token
 }

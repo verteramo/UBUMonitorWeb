@@ -78,7 +78,7 @@
           <button mat-button type="button" (click)="store.stepBack()" i18n>Back</button>
         </nav>
       </div>
-    } @else if (siteConfig.loginMode === 'CREDENTIALS') {
+    } @else if (siteConfig.loginStatus === 'CREDENTIALS') {
       <!-- ================= 2B. LOGIN CLÁSICO (CREDENTIALS) ================= -->
       <form novalidate (submit)="onLogin($event)">
         <header>
@@ -134,7 +134,7 @@
         </nav>
       </form>
     } @else {
-      <!-- ================= 2C. LOGIN SSO o ALL ================= -->
+      <!-- ================= 2C. LOGIN SSO, ALL o CONFLICTO 409 ================= -->
       <form novalidate (submit)="onSsoLogin($event)">
         <header>
           <img [src]="siteConfig.siteLogo || 'logo.png'" [alt]="siteConfig.siteName" />
@@ -145,6 +145,16 @@
           @if (siteConfig.loginInstructions) {
             <div class="login-instructions" [innerHTML]="store.parsedLoginInstructions()"></div>
           }
+
+          @if (isConflict) {
+            <div class="conflict-alert">
+              <p i18n>Logging out of the Moodle website is required to regenerate the token.</p>
+              <button mat-stroked-button color="warn" type="button" (click)="redirectToLogout()">
+                Log out of Moodle <mat-icon>logout</mat-icon>
+              </button>
+            </div>
+          }
+
           <button type="submit" class="sso-button">
             SSO Access <mat-icon>open_in_new</mat-icon>
           </button>

@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
  * para la persistencia y lectura de las preferencias del sistema.
  */
 @Service()
-export class SystemPreferencesService {
+export class SystemService {
   private readonly http = inject(HttpClient);
 
   /**
@@ -17,8 +17,8 @@ export class SystemPreferencesService {
    *
    * @returns Observable con el objeto de preferencias deserializado.
    */
-  read(): Observable<SystemPreferences> {
-    return this.http.get<SystemPreferences>(env.endpoints.preferences);
+  getPreferences(): Observable<SystemPreferences> {
+    return this.http.get<SystemPreferences>(env.endpoints.system.preferences);
   }
 
   /**
@@ -26,7 +26,7 @@ export class SystemPreferencesService {
    *
    * @param preferences Objeto completo con las preferencias a guardar.
    */
-  write(preferences: SystemPreferences): Observable<void> {
-    return this.http.put<void>(env.endpoints.preferences, preferences);
+  putPreferences(preferences: SystemPreferences): Observable<void> {
+    return this.http.put<void>(env.endpoints.system.preferences, preferences);
   }
 }

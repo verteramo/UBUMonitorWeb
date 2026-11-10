@@ -1,47 +1,51 @@
 import { computed, inject } from '@angular/core';
-import { SystemPreferences, Theme } from '@core/models/system-preferences';
-import { SystemPreferencesService } from '@core/services/system-preferences.service';
+import { SystemPreferences } from '@core/models/system-preferences';
+import { nextTheme } from '@core/models/theme';
+import { SystemService } from '@core/services/system.service';
 import { cleanUrl } from '@core/utils/string.utils';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { pipe, switchMap, tap } from 'rxjs';
+import { catchError, EMPTY, pipe, switchMap, tap } from 'rxjs';
+import { withAutoSave } from './features/auto-save.feature';
+import { extractLoadingFromState, withLoading } from './features/loading.feature';
 
-type SystemPreferencesState = SystemPreferences & {
-  loading: boolean;
-};
-
-const initialState: SystemPreferencesState = {
+const initialState: SystemPreferences = {
   theme: 'system',
   sites: [],
   usernames: [],
   rememberSite: false,
   rememberUsername: false,
-  loading: true,
-};
-
-const nextTheme: Record<Theme, Theme> = {
-  system: 'light',
-  light: 'dark',
-  dark: 'system',
 };
 
 export const SystemPreferencesStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
+  withLoading(),
   withComputed(({ theme, sites, usernames }) => ({
     nextTheme: computed(() => nextTheme[theme()]),
     site: computed(() => sites()[0] ?? ''),
     username: computed(() => usernames()[0] ?? ''),
   })),
-  withMethods((store, prefsService = inject(SystemPreferencesService)) => ({
+  withAutoSave(() => {
+    const prefsService = inject(SystemService);
+    return (prefs: SystemPreferences) => prefsService.putPreferences(prefs);
+  }),
+  withMethods((store, prefsService = inject(SystemService)) => ({
     loadPreferences: rxMethod<void>(
       pipe(
-        switchMap(() => prefsService.read()),
-        tap((prefs) => {
+        tap(() => store.startLoading()),
+        switchMap(() => prefsService.getPreferences()),
+        tap((preferences) => {
           patchState(store, {
-            ...prefs,
-            loading: false,
+            ...initialState,
+            ...preferences,
           });
+
+          store.stopLoading();
+        }),
+        catchError(() => {
+          store.stopLoading();
+          return EMPTY;
         }),
       ),
     ),
@@ -53,7 +57,7 @@ export const SystemPreferencesStore = signalStore(
           theme: nextTheme[state.theme],
         };
 
-        prefsService.write(updatedState).subscribe();
+        store.save(extractLoadingFromState(updatedState));
         return updatedState;
       });
     },
@@ -70,7 +74,7 @@ export const SystemPreferencesStore = signalStore(
           sites: updatedSites,
         };
 
-        prefsService.write(updatedState).subscribe();
+        store.save(extractLoadingFromState(updatedState));
         return updatedState;
       });
     },
@@ -87,7 +91,7 @@ export const SystemPreferencesStore = signalStore(
           usernames: updatedUsernames,
         };
 
-        prefsService.write(updatedState).subscribe();
+        store.save(extractLoadingFromState(updatedState));
         return updatedState;
       });
     },

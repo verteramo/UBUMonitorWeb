@@ -15,7 +15,6 @@ import java.io.File
  * @property publicRoutes Conjunto de rutas públicas.
  * @property digestAlgorithm Algoritmo de derivación.
  * @property baseDirectory Directorio base de la aplicación.
- * @property ssoUrlTemplate Plantilla para construir la URL de autenticación SSO en Moodle.
  */
 @ConfigurationProperties("system")
 data class SystemProperties(
@@ -23,8 +22,5 @@ data class SystemProperties(
   val digestAlgorithm: String = "SHA-256",
   val baseDirectory: File = File(System.getProperty("user.home"), ".umw"),
   val preferencesFile: File = baseDirectory.resolve("preferences.yaml"),
-  val ssoUrlTemplate: String = "%s?service=moodle_mobile_app&passport=%s&urlscheme=%s",
-  val cookiesDirectory: File = baseDirectory.resolve("cookies"),
-  val preferencesDirectory: File = baseDirectory.resolve("preferences"),
   val databaseFile: File = baseDirectory.resolve("database"),
 )

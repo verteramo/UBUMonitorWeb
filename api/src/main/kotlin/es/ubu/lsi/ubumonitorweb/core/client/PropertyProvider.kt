@@ -6,7 +6,7 @@
 
 package es.ubu.lsi.ubumonitorweb.core.client
 
-import es.ubu.lsi.ubumonitorweb.domain.Keychain
+import es.ubu.lsi.ubumonitorweb.domain.Keyring
 import es.ubu.lsi.ubumonitorweb.domain.User
 import org.springframework.core.MethodParameter
 import org.springframework.security.core.context.SecurityContextHolder
@@ -69,8 +69,8 @@ sealed class PropertyProvider<out T> {
   /**
    * Llavero del usuario autenticado.
    */
-  protected val keychain: Keychain?
-    get() = SecurityContextHolder.getContext().authentication?.credentials as? Keychain
+  protected val keyring: Keyring?
+    get() = SecurityContextHolder.getContext().authentication?.credentials as? Keyring
 
   /**
    * Resuelve un valor determinando el invocador correcto de acuerdo con el tipo del provider.

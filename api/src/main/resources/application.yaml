@@ -6,9 +6,11 @@ spring:
   # de mensajes
   web:
     locale: en
+    error:
+      include-message: always
   messages:
     fallback-to-system-locale: false
-  # Por defecto, se asume el perfil de desarrollo
+  # Por defecto, se asume el perfil de desarrollo,
   # que en determinados casos puede habilitar un
   # logging más completo de todo lo que ocurre en
   # cada momento
@@ -25,7 +27,7 @@ spring:
   # Configuración de la base de datos y repositorios
   # que almacenan los datos de los usuarios
   datasource:
-    url: jdbc:h2:file:./umw/umw;AUTO_SERVER=TRUE
+    url: jdbc:h2:file:${user.home}/.umw/database;AUTO_SERVER=TRUE
     driver-class-name: org.h2.Driver
     username: sa
     password: ''
@@ -35,12 +37,10 @@ spring:
       ddl-auto: update
     show-sql: false
   # Consola H2
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
-
-
+#  h2:
+#    console:
+#      enabled: true
+#      path: /h2-console
 
 # Configuración de las cookies de sesión
 server:

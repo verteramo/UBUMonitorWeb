@@ -19,4 +19,5 @@ export type User = {
   siteVersion: string | null;
   siteRelease: string | null;
   siteTimezone: string;
+  preferences: Record<string, any>;
 };

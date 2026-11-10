@@ -77,20 +77,12 @@ object ScrapingExtensions {
   ): Elements = Jsoup.parse(this, charset.name(), baseUri).select(query)
 
   /**
-   * Extrae el token CSRF `logintoken` desde el HTML del formulario de login de Moodle.
-   *
-   * @receiver Respuesta HTTP devuelta por el cliente.
-   * @return La cadena del token de seguridad inyectado en el formulario.
-   */
-  val ResponseEntity<String>.loginToken: String? get() = select("input[name=logintoken]").first()?.attr("value")
-
-  /**
    * Extrae el token CSRF `sesskey` desde el HTML de varias páginas de Moodle.
    *
    * @receiver Respuesta HTTP devuelta por el cliente.
    * @return La cadena del token de seguridad inyectado en el formulario.
    */
-  val ResponseEntity<String>.sessionKey: String? get() = find("\"sesskey\":\"(\\w+)\"")?.groupValues?.getOrNull(1)
+  val ResponseEntity<String>.sesskey: String? get() = select("input[name=sesskey]").first()?.attr("value")
 
   /**
    * Extrae la zona horaria del sitio desde el HTML del formulario de edición del perfil de Moodle.

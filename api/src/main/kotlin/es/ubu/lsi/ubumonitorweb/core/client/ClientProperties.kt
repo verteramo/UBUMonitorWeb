@@ -6,7 +6,6 @@
 
 package es.ubu.lsi.ubumonitorweb.core.client
 
-import es.ubu.lsi.ubumonitorweb.core.locale.Message
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
@@ -190,7 +189,7 @@ data class ClientProperties(
      */
     profiles.forEach { (name, profile) ->
       profile.inherit.takeIf { it.isNotBlank() && it !in profiles }?.let { parent ->
-        error(Message.ERROR_PROFILE_INHERITANCE(name, parent))
+        error("Profile '$name' inherits from '$parent', which does not exist.")
       }
     }
   }

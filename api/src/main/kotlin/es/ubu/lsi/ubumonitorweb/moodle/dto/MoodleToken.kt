@@ -14,5 +14,5 @@ package es.ubu.lsi.ubumonitorweb.moodle.dto
  */
 data class MoodleToken(
   val token: String,
-  val privatetoken: String,
+  val privatetoken: String?,
 )

@@ -34,5 +34,5 @@ data class Passport(
   /**
    * Hash MD5 en formato String.
    */
-  val hash: String get() = digest.joinToString("") { "%02x".format(it) }
+  val signature: String get() = digest.joinToString("") { "%02x".format(it) }
 }
